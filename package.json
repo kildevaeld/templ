@@ -1,0 +1,23 @@
+{
+  "name": "templ",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "gulp": "^3.9.0",
+    "gulp-concat": "^2.6.0",
+    "gulp-typescript": "^2.8.1",
+    "gulp-wrap-umd": "^0.2.1",
+    "install": "^0.1.8",
+    "jsdom": "^6.1.0",
+    "merge2": "^0.3.6",
+    "node-dom": "^0.1.0",
+    "requiredir": "^1.0.7",
+    "underscore": "^1.8.3"
+  }
+}

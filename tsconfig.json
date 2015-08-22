@@ -1,0 +1,44 @@
+{
+    "version": "1.5.3",
+    "compilerOptions": {
+        "target": "ES5",
+        "isolatedModules": false,
+        "experimentalDecorators": true,
+        "emitDecoratorMetadata": true,
+        "declaration": true,
+        "noImplicitAny": false,
+        "removeComments": false,
+        "noLib": false,
+        "preserveConstEnums": true,
+        "suppressImplicitAnyIndexErrors": true,
+        "outDir": "./lib",
+        "out": "./dist/templ.js"
+    },
+    "filesGlob": [
+        "./src/*.ts",
+        "./**/*.tsx",
+        "!./node_modules/**/*"
+    ],
+    "files": [
+        "./src/index.ts",
+        "./src/parser.ts",
+        "./src/transpiler.ts",
+        "./src/compiler.ts",
+        "./src/utils.ts",
+        "./src/binding.ts",
+        "./src/view.ts",
+        "./src/vnode/comment.ts",
+        "./src/vnode/dynamic.ts",
+        "./src/vnode/element.ts",
+        "./src/vnode/fragment.ts",
+        "./src/vnode/text.ts",
+        "./src/vnode/vnode.ts",
+        "./src/vnode/section.ts",
+        "./src/vnode/fragmentsection.ts",
+        "./src/vnode/nodesection.ts",
+        "./src/vnode/template.ts",
+        "./src/vnode/view.ts",
+        "./src/attributes/base.ts",
+        "./src/attributes/value.ts"
+    ]
+}

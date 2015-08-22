@@ -1,0 +1,43 @@
+<html>
+	<head>
+		
+		
+		<script src="../dist/templ.js"></script>
+		
+	</head>
+	<body>
+		<script type="text/html" id="template">
+			<!-- speed demo for rendering a dynamic list of items -->
+			Generate <input type="text" class="form-control" style="width:60px;display:inline-block;" value="{{<~>numItems}}"></input> items: <br />
+			{{~numItems}}
+			<repeat each="{{ range(numItems) }}" as='number'>
+				{{~number}} <br />
+			</repeat>
+		
+		</script>
+		
+		<script>
+			'use strict';
+			let t = document.getElementById('template')
+			
+			let template = templ.compile(t.innerHTML);
+			
+			let view = template.view({
+  			numItems: 1000,
+  			range: function (count) {
+    			return _.range(Math.min(count, 20000)).reverse();
+  			}
+			})
+			let elm = view.render();
+			view.update()
+			document.body.appendChild(elm)
+			console.log(view)
+			
+			setTimeout(function () {
+				view.set('numItems', 2000)
+			}, 1000)
+			
+		</script>
+	</body>
+	
+</html>
