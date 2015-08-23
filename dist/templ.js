@@ -2399,7 +2399,7 @@
 
     function component(name, cmp) {
       if (typeof cmp !== 'function') {
-        cmp = utils.extendClass(attributes.BaseAttribute, cmp);
+        cmp = utils.extendClass(components.BaseComponent, cmp);
       }
       components[name] = cmp;
     }

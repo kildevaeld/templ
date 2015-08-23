@@ -44,7 +44,7 @@ module templ {
 	
 	export function component(name:string, cmp:vnode.ComponentConstructor|vnode.ComponentConstructor) {
 		if (typeof cmp !== 'function') {
-			cmp = utils.extendClass<vnode.ComponentConstructor>(attributes.BaseAttribute, cmp)
+			cmp = utils.extendClass<vnode.ComponentConstructor>(components.BaseComponent, cmp)
 		}
 		components[name] = cmp
 	}
