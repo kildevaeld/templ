@@ -1,9 +1,6 @@
 
 /// <reference path="parser" />
 /// <reference path="./vnode/vnode" />
-
-
-
 module parser {
   
   export interface BindingCreator {
@@ -34,7 +31,9 @@ module parser {
     (fragment:FragmentCreator, element:ElementCreator, text:TextCreator, comment:CommentCreator, dynamic:DynamicCreator, createBindingClass:BindingCreator): vnode.VNode
   }
   
- 
+  /**
+   * Transpile AST to Function
+   */
   export class Transpiler {
     _refCounter: number
     _refs: any[]

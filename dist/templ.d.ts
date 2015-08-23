@@ -176,6 +176,9 @@ declare module parser {
     interface TranspilerFunc {
         (fragment: FragmentCreator, element: ElementCreator, text: TextCreator, comment: CommentCreator, dynamic: DynamicCreator, createBindingClass: BindingCreator): vnode.VNode;
     }
+    /**
+     * Transpile AST to Function
+     */
     class Transpiler {
         _refCounter: number;
         _refs: any[];
