@@ -10,13 +10,15 @@
 <body>
 	<script type="text/html" id="template">
 		<!-- speed demo for rendering a dynamic list of items -->
-		Generate
+		<div>
+				Generate
 		<input type="text" class="form-control" style="width:60px;display:inline-block;" value="{{<~>numItems}}"></input> items:
 		<br /> {{~numItems}}
 		<repeat each="{{ range(numItems) }}" as='number'>
 			{{~number}}
 			<br />
 		</repeat>
+		</div>
 
 	</script>
 
@@ -39,12 +41,12 @@
 			return range;
 			}
 			
-			templ.debugging(true)
+			templ.debugging(false)
 			
 			let t = document.getElementById('template')
 		
 			let template = templ.compile(t.innerHTML);
-			
+			console.log(template)
 			let view = template.view({
   			numItems: 1000,
   			range: function (count) {
@@ -53,7 +55,7 @@
   			}
 			})
 			let elm = view.render();
-			
+			console.log(elm)
 			document.body.appendChild(elm)
 			console.log(view)
 			

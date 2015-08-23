@@ -1028,8 +1028,8 @@ var vnode;
         NodeType[NodeType["Element"] = 1] = "Element";
         NodeType[NodeType["Fragment"] = 11] = "Fragment";
         NodeType[NodeType["Comment"] = 8] = "Comment";
-        NodeType[NodeType["Dynamic"] = 9] = "Dynamic";
-        NodeType[NodeType["Text"] = 10] = "Text";
+        NodeType[NodeType["Dynamic"] = -200] = "Dynamic";
+        NodeType[NodeType["Text"] = -201] = "Text";
     })(vnode_2.NodeType || (vnode_2.NodeType = {}));
     var NodeType = vnode_2.NodeType;
     function getNodeByPath(root, path) {
@@ -1676,7 +1676,6 @@ var vnode;
 (function (vnode) {
     var Element = (function () {
         function Element(tagName, attributes, children) {
-            if (children === void 0) { children = []; }
             this.nodeType = vnode.NodeType.Element;
             this.tagName = String(tagName).toLocaleLowerCase();
             this.childNodes = children;
@@ -1705,15 +1704,21 @@ var vnode;
             return section.render();
         };
         Element.prototype._renderElement = function (options, renderers) {
-            var elm = options.document.createElement(this.tagName);
+            var element = options.document.createElement(this.tagName);
             var _attr = this._splitAttributes(options);
+            // Set static attributes
             for (var attrKey in _attr.staticAttributes) {
-                elm.setAttribute(attrKey, _attr.staticAttributes[attrKey]);
+                element.setAttribute(attrKey, _attr.staticAttributes[attrKey]);
             }
+            for (var _i = 0, _a = this.childNodes; _i < _a.length; _i++) {
+                var child = _a[_i];
+                element.appendChild(child.render(options, renderers));
+            }
+            // Set dynamic attributes
             if (Object.keys(_attr.dynamicAttributes).length) {
-                renderers.push(new ElementAttributeRenderer(new vnode.NodeSection(options.document, elm), options, _attr.dynamicAttributes));
+                renderers.push(new ElementAttributeRenderer(new vnode.NodeSection(options.document, element), options, _attr.dynamicAttributes));
             }
-            return elm;
+            return element;
         };
         Element.prototype._splitAttributes = function (options) {
             var dynamicAttributes = {};
@@ -1740,7 +1745,11 @@ var vnode;
         return Element;
     })();
     vnode.Element = Element;
-    vnode.element = function (tagName, attributes, children) {
+    vnode.element = function (tagName, attributes) {
+        var children = [];
+        for (var _i = 2; _i < arguments.length; _i++) {
+            children[_i - 2] = arguments[_i];
+        }
         return new Element(tagName, attributes, children);
     };
 })(vnode || (vnode = {}));

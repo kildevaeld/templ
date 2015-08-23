@@ -12,13 +12,13 @@ module vnode {
     attributes: AttributeMap
     childNodes: VNode[]
 
-    constructor(tagName: string, attributes: AttributeMap, children: VNode[]=[]) {
+    constructor(tagName: string, attributes: AttributeMap, children: VNode[]) {
 
       this.tagName = String(tagName).toLocaleLowerCase();
       this.childNodes = children;
       this.attributes = attributes||{};
       
-
+      
       for (var i = 0; i < children.length; i++) children[i].parentNode = this;
 
     }
@@ -55,20 +55,25 @@ module vnode {
 
     _renderElement(options: VNodeOptions, renderers:Renderer[]): HTMLElement {
 
-      let elm = options.document.createElement(this.tagName);
+      let element = options.document.createElement(this.tagName);
 
       let _attr = this._splitAttributes(options);
-      
+      // Set static attributes
       for (let attrKey in _attr.staticAttributes) {
-        elm.setAttribute(attrKey, _attr.staticAttributes[attrKey]);
+        element.setAttribute(attrKey, _attr.staticAttributes[attrKey]);
       }
       
+      for (let child of this.childNodes) {
+        element.appendChild(child.render(options, renderers));
+      }
+      
+      // Set dynamic attributes
       if (Object.keys(_attr.dynamicAttributes).length) {
         
-        renderers.push(new ElementAttributeRenderer(new NodeSection(options.document, elm),options,_attr.dynamicAttributes))
+        renderers.push(new ElementAttributeRenderer(new NodeSection(options.document, element),options,_attr.dynamicAttributes))
       }
 
-      return elm;
+      return element;
 
     }
 
@@ -102,7 +107,7 @@ module vnode {
   }
 
 
-  export const element: parser.ElementCreator = function (tagName: string, attributes: AttributeMap, children: VNode[]): Element {
+  export const element: parser.ElementCreator = function (tagName: string, attributes: AttributeMap, ...children: VNode[]): Element {
     
     return new Element(tagName, attributes, children);
   }
@@ -132,6 +137,7 @@ class ComponentAttributeRenderer implements vnode.Renderer {
     
     var ref = new this.componentClass(this._marker.createSection(root), this.element, this.attributes, view);
     if (Object.keys(this.dynamicAttributes).length) {
+      
       _hydrateDynamicAttributes(ref, this.options, this.dynamicAttributes, view);
     }
    

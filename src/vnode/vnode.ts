@@ -4,7 +4,7 @@
 module vnode {
 
   export enum NodeType {
-    Element=1, Fragment=11, Comment=8, Dynamic, Text
+    Element=1, Fragment=11, Comment=8, Dynamic=-200, Text=-201
   }
 
   export interface VNodeCreator {

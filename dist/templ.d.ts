@@ -78,8 +78,8 @@ declare module vnode {
         Element = 1,
         Fragment = 11,
         Comment = 8,
-        Dynamic = 9,
-        Text = 10,
+        Dynamic = -200,
+        Text = -201,
     }
     interface VNodeCreator {
         (): VNode;
@@ -162,7 +162,7 @@ declare module parser {
         (childen: vnode.VNode[]): vnode.Fragment;
     }
     interface ElementCreator {
-        (tagName: string, attributes: vnode.AttributeMap, children: vnode.VNode[]): vnode.Element;
+        (tagName: string, attributes: vnode.AttributeMap, ...children: vnode.VNode[]): vnode.Element;
     }
     interface TextCreator {
         (nodeValue: string): vnode.Text;
@@ -352,7 +352,7 @@ declare module vnode {
         tagName: string;
         attributes: AttributeMap;
         childNodes: VNode[];
-        constructor(tagName: string, attributes: AttributeMap, children?: VNode[]);
+        constructor(tagName: string, attributes: AttributeMap, children: VNode[]);
         render(options: VNodeOptions, renderers: Renderer[]): HTMLElement;
         setAttributes(key: AttributeMap | string, value?: string): void;
         _renderComponent(component: ComponentConstructor, options: VNodeOptions, renderers: Renderer[]): HTMLElement;

@@ -35,7 +35,8 @@ module vnode {
 			var element = this.vnode.render(options, _r);
 			
     	renderers.push(new DynamicComponentRenderer(_r[0], this.bindingClass, options));
-    	return element;
+    	
+			return element;
 		}
 		
 	}

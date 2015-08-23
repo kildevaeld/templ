@@ -13,6 +13,7 @@ module vnode {
 			for (let binding of this.bindings) {
 				binding.update()
 			}
+			
 		}
 		render () {
 			

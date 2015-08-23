@@ -5,7 +5,6 @@ module parser {
 	export function compile (src:string, options?:any): TranspilerFunc {
 		var transpiler = new Transpiler();
 		var str = transpiler.transpile(src);
-		
 		return new Function("return " + str)();
 	}
 	

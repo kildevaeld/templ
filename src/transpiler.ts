@@ -15,7 +15,7 @@ module parser {
   }
   
   export interface ElementCreator {
-    (tagName:string,attributes:vnode.AttributeMap, children:vnode.VNode[]): vnode.Element
+    (tagName:string,attributes:vnode.AttributeMap, ...children:vnode.VNode[]): vnode.Element
   }
   
   export interface TextCreator {
