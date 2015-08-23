@@ -6,9 +6,8 @@
 
 module vnode {
 
-	export interface TemplateOptions {
-		document: Document
-		viewClass: new (section:Section, template:Template, context:any, options?:any) => IView
+	export interface TemplateOptions extends VNodeOptions {
+		viewClass?: new (section:Section, template:Template, context:any, options?:any) => IView
 	}
 	
 	export class Template {
@@ -37,7 +36,7 @@ module vnode {
 			for (let renderer of this._renderers) {
 				renderer.generate(section.node||section.start.parentNode,view)
 			}
-			console.log(DestView)
+		
 			return view
 		}
 	}

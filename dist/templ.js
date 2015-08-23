@@ -818,7 +818,12 @@ var vnode;
 (function (vnode) {
     var NodeSection = (function () {
         function NodeSection(document, node) {
+            this.document = document;
+            this.node = node;
         }
+        NodeSection.prototype.createMarker = function () {
+            return new NodeSectionMarker(this.document, vnode.getNodePath(this.node));
+        };
         NodeSection.prototype.appendChild = function (node) {
             this.node.appendChild(node);
         };
@@ -839,6 +844,20 @@ var vnode;
         return NodeSection;
     })();
     vnode.NodeSection = NodeSection;
+    var NodeSectionMarker = (function () {
+        function NodeSectionMarker(document, path) {
+            this.document = document;
+            this.path = path;
+        }
+        NodeSectionMarker.prototype.createSection = function (root) {
+            return new NodeSection(this.document, this.findNode(root));
+        };
+        NodeSectionMarker.prototype.findNode = function (root) {
+            return vnode.getNodeByPath(root, this.path);
+        };
+        return NodeSectionMarker;
+    })();
+    vnode.NodeSectionMarker = NodeSectionMarker;
 })(vnode || (vnode = {}));
 /// <reference path="vnode" />
 var vnode;
@@ -855,6 +874,7 @@ var vnode;
             }
         }
         FragmentSection.prototype.appendChild = function (node) {
+            //console.log(document.body.appendChild(node))
             this.end.parentNode.insertBefore(node, this.end);
         };
         FragmentSection.prototype.render = function () {
@@ -877,7 +897,7 @@ var vnode;
             return node;
         };
         FragmentSection.prototype.createMarker = function () {
-            return new Marker(this.document, vnode.getNodePath(this.start), vnode.getNodePath(this.end));
+            return new FragmentSectionMarker(this.document, vnode.getNodePath(this.start), vnode.getNodePath(this.end));
         };
         FragmentSection.prototype.clone = function () {
             var parentClone;
@@ -910,20 +930,22 @@ var vnode;
         return FragmentSection;
     })();
     vnode.FragmentSection = FragmentSection;
+    var FragmentSectionMarker = (function () {
+        function FragmentSectionMarker(document, startPath, endPath) {
+            this.document = document;
+            this.startPath = startPath;
+            this.endPath = endPath;
+        }
+        FragmentSectionMarker.prototype.createSection = function (root) {
+            return new vnode.FragmentSection(this.document, vnode.getNodeByPath(root, this.startPath), vnode.getNodeByPath(root, this.endPath));
+        };
+        return FragmentSectionMarker;
+    })();
+    vnode.FragmentSectionMarker = FragmentSectionMarker;
 })(vnode || (vnode = {}));
-var Marker = (function () {
-    function Marker(document, startPath, endPath) {
-        this.document = document;
-        this.startPath = startPath;
-        this.endPath = endPath;
-    }
-    Marker.prototype.createSection = function (root) {
-        return new vnode.FragmentSection(this.document, vnode.getNodeByPath(root, this.startPath), vnode.getNodeByPath(root, this.endPath));
-    };
-    return Marker;
-})();
 /// <reference path="nodesection" />
 /// <reference path="fragmentsection" />
+/// <reference path="nodesection" />
 /// <reference path="vnode" />
 var vnode;
 (function (vnode) {
@@ -935,6 +957,7 @@ var vnode;
             section = frag;
         }
         else {
+            section = new vnode.NodeSection(document, node);
         }
         return section;
     }
@@ -950,17 +973,14 @@ var vnode;
             this.template = template;
             this.context = context;
             this.bindings = [];
-            console.log('contro');
         }
         View.prototype.update = function () {
-            console.log('ypdate');
             for (var _i = 0, _a = this.bindings; _i < _a.length; _i++) {
                 var binding = _a[_i];
                 binding.update();
             }
         };
         View.prototype.render = function () {
-            console.log('render');
             return this.section.render();
         };
         View.prototype.remove = function () {
@@ -991,7 +1011,6 @@ var vnode;
                 var renderer = _a[_i];
                 renderer.generate(section.node || section.start.parentNode, view);
             }
-            console.log(DestView);
             return view;
         };
         return Template;
@@ -1004,15 +1023,15 @@ var vnode;
 })(vnode || (vnode = {}));
 /// <reference path="template" />
 var vnode;
-(function (vnode) {
+(function (vnode_2) {
     (function (NodeType) {
-        NodeType[NodeType["Element"] = 0] = "Element";
+        NodeType[NodeType["Element"] = 1] = "Element";
         NodeType[NodeType["Fragment"] = 11] = "Fragment";
         NodeType[NodeType["Comment"] = 8] = "Comment";
         NodeType[NodeType["Dynamic"] = 9] = "Dynamic";
         NodeType[NodeType["Text"] = 10] = "Text";
-    })(vnode.NodeType || (vnode.NodeType = {}));
-    var NodeType = vnode.NodeType;
+    })(vnode_2.NodeType || (vnode_2.NodeType = {}));
+    var NodeType = vnode_2.NodeType;
     function getNodeByPath(root, path) {
         var c = root;
         for (var i = 0, n = path.length; i < n; i++) {
@@ -1020,7 +1039,7 @@ var vnode;
         }
         return c;
     }
-    vnode.getNodeByPath = getNodeByPath;
+    vnode_2.getNodeByPath = getNodeByPath;
     function getNodePath(node) {
         var path = [];
         var p = node.parentNode;
@@ -1035,7 +1054,7 @@ var vnode;
         }
         return path;
     }
-    vnode.getNodePath = getNodePath;
+    vnode_2.getNodePath = getNodePath;
 })(vnode || (vnode = {}));
 /// <reference path="parser" />
 /// <reference path="./vnode/vnode" />
@@ -1342,7 +1361,6 @@ var parser;
     function compile(src, options) {
         var transpiler = new parser.Transpiler();
         var str = transpiler.transpile(src);
-        console.log(str);
         return new Function("return " + str)();
     }
     parser.compile = compile;
@@ -1423,6 +1441,95 @@ var utils;
         return fBound;
     }
     utils.bind = bind;
+    var Debug = (function () {
+        function Debug(namespace) {
+            this.enabled = false;
+            this.namespace = namespace;
+        }
+        Debug.enable = function (enabled, namespace) {
+            for (var k in this.loggers) {
+                if (namespace && k === namespace) {
+                    this.loggers[k].enabled = enabled;
+                }
+                else if (!namespace) {
+                    this.loggers[k].enabled = enabled;
+                }
+            }
+        };
+        Debug.create = function (namespace) {
+            var logger;
+            if (this.loggers[namespace]) {
+                logger = this.loggers[namespace].debug;
+            }
+            else {
+                logger = new Debug(namespace);
+                this.loggers[namespace] = logger;
+            }
+            return bind(logger.debug, logger);
+        };
+        Debug.prototype.debug = function () {
+            var args = [];
+            for (var _i = 0; _i < arguments.length; _i++) {
+                args[_i - 0] = arguments[_i];
+            }
+            if (!this.enabled)
+                return;
+            args[0] = this._coerce(args[0]);
+            if ('string' !== typeof args[0]) {
+                // anything else let's inspect with %o
+                args = ['%o'].concat(args);
+            }
+            // apply any `formatters` transformations
+            var index = 0;
+            args[0] = args[0].replace(/%([a-z%])/g, function (match, format) {
+                // if we encounter an escaped % then don't increase the array index
+                if (match === '%%')
+                    return match;
+                index++;
+                var formatter = Debug.formatters[format];
+                if ('function' === typeof formatter) {
+                    var val = args[index];
+                    match = formatter.call(self, val);
+                    // now we need to remove `args[index]` since it's inlined in the `format`
+                    args.splice(index, 1);
+                    index--;
+                }
+                return match;
+            });
+            args = this._formatArgs(args);
+            this._log.apply(this, args);
+        };
+        Debug.prototype._log = function () {
+            var args = [];
+            for (var _i = 0; _i < arguments.length; _i++) {
+                args[_i - 0] = arguments[_i];
+            }
+            return 'object' === typeof console
+                && console.log
+                && Function.prototype.apply.call(console.log, console, arguments);
+        };
+        Debug.prototype._coerce = function (val) {
+            if (val instanceof Error)
+                return val.stack || val.message;
+            return val;
+        };
+        Debug.prototype._formatArgs = function (args) {
+            args[0] = '[templ:' + this.namespace + '] ' + args[0];
+            return args;
+        };
+        Debug.loggers = {};
+        Debug.formatters = {
+            j: function (args) {
+                return JSON.stringify(args);
+            }
+        };
+        return Debug;
+    })();
+    utils.Debug = Debug;
+    function debug(namespace) {
+        return Debug.create(namespace);
+    }
+    utils.debug = debug;
 })(utils || (utils = {}));
 /// <reference path="vnode/vnode" />
 /// <reference path="transpiler" />
@@ -1431,14 +1538,42 @@ var engine;
 (function (engine) {
     var Binding = (function () {
         function Binding(ref, view) {
+            this._attributeClasses = {};
+            this._attrBindings = {};
             this.ref = ref;
             this.view = view;
+            this.options = view.template.options;
+            this._attributeClasses = this.options.attributes;
         }
         Binding.prototype.setAttribute = function (key, value) {
+            if (!this.setAsRegisteredAttribute(key, value)) {
+                if (value != void 0) {
+                    this.ref.setAttribute(key, value);
+                }
+                else {
+                }
+            }
+        };
+        Binding.prototype.setAsRegisteredAttribute = function (key, value) {
+            if (this._attrBindings[key]) {
+                this._attrBindings[key].value = value;
+            }
+            else {
+                var attrClass = this._attributeClasses[key];
+                if (attrClass) {
+                    this._attrBindings[key] = new attrClass(this.ref, key, value, this.view);
+                }
+                else {
+                    return false;
+                }
+            }
+            return true;
         };
         Binding.prototype.update = function (context) {
-            console.log(this.ref);
             this._update();
+            for (var key in this._attrBindings) {
+                this._attrBindings[key].update();
+            }
         };
         return Binding;
     })();
@@ -1473,26 +1608,53 @@ var vnode;
 /// <reference path="vnode" />
 /// <reference path="../transpiler" />
 var vnode;
-(function (vnode_2) {
+(function (vnode_3) {
     var Dynamic = (function () {
         function Dynamic(vnode, bindingClass) {
-            this.nodeType = vnode_2.NodeType.Dynamic;
+            this.nodeType = vnode_3.NodeType.Dynamic;
             this.vnode = vnode;
             this.bindingClass = bindingClass;
             this.vnode.parentNode = this;
         }
         Dynamic.prototype.render = function (options, renderers) {
+            if (options.components[this.vnode['tagName']]) {
+                return this._renderComponent(options, renderers);
+            }
+            else {
+                return this._renderElement(options, renderers);
+            }
+        };
+        Dynamic.prototype._renderElement = function (options, renderers) {
             var node = this.vnode.render(options, renderers);
             renderers.push(new DynamicRenderer(node, this.bindingClass, options));
             return node;
         };
+        Dynamic.prototype._renderComponent = function (options, renderers) {
+            var _r = [];
+            var element = this.vnode.render(options, _r);
+            renderers.push(new DynamicComponentRenderer(_r[0], this.bindingClass, options));
+            return element;
+        };
         return Dynamic;
     })();
-    vnode_2.Dynamic = Dynamic;
-    vnode_2.dynamic = function (vnode, bindClass) {
+    vnode_3.Dynamic = Dynamic;
+    vnode_3.dynamic = function (vnode, bindClass) {
         return new Dynamic(vnode, bindClass);
     };
 })(vnode || (vnode = {}));
+var DynamicComponentRenderer = (function () {
+    function DynamicComponentRenderer(renderer, bindingClass, options) {
+        this.renderer = renderer;
+        this.bindingClass = bindingClass;
+        this.options = options;
+    }
+    DynamicComponentRenderer.prototype.generate = function (root, view) {
+        this.renderer.generate(root, view);
+        var component = view.bindings[view.bindings.length - 1];
+        view.bindings.splice(view.bindings.indexOf(component), 0, new this.bindingClass(component, view));
+    };
+    return DynamicComponentRenderer;
+})();
 var DynamicRenderer = (function () {
     function DynamicRenderer(node, bindingClass, options) {
         this.ref = node;
@@ -1506,6 +1668,7 @@ var DynamicRenderer = (function () {
     };
     return DynamicRenderer;
 })();
+/// <reference path="nodesection" />
 /// <reference path="vnode" />
 /// <reference path="../utils" />
 /// <reference path="../transpiler" />
@@ -1515,14 +1678,18 @@ var vnode;
         function Element(tagName, attributes, children) {
             if (children === void 0) { children = []; }
             this.nodeType = vnode.NodeType.Element;
-            this.tagName = tagName;
+            this.tagName = String(tagName).toLocaleLowerCase();
             this.childNodes = children;
-            this.attributes = {};
+            this.attributes = attributes || {};
             for (var i = 0; i < children.length; i++)
                 children[i].parentNode = this;
         }
-        Element.prototype.render = function (options) {
-            return this._renderElement(options);
+        Element.prototype.render = function (options, renderers) {
+            var components = options.components || {};
+            if (components[this.tagName]) {
+                return this._renderComponent(components[this.tagName], options, renderers);
+            }
+            return this._renderElement(options, renderers);
         };
         Element.prototype.setAttributes = function (key, value) {
             if (typeof key === 'string') {
@@ -1532,13 +1699,19 @@ var vnode;
                 utils.extend(this.attributes, key);
             }
         };
-        Element.prototype._renderElement = function (options) {
+        Element.prototype._renderComponent = function (component, options, renderers) {
+            var section = new vnode.FragmentSection(options.document);
+            renderers.push(new ComponentAttributeRenderer(component, section, this, this._splitAttributes(options), options));
+            return section.render();
+        };
+        Element.prototype._renderElement = function (options, renderers) {
             var elm = options.document.createElement(this.tagName);
             var _attr = this._splitAttributes(options);
             for (var attrKey in _attr.staticAttributes) {
                 elm.setAttribute(attrKey, _attr.staticAttributes[attrKey]);
             }
             if (Object.keys(_attr.dynamicAttributes).length) {
+                renderers.push(new ElementAttributeRenderer(new vnode.NodeSection(options.document, elm), options, _attr.dynamicAttributes));
             }
             return elm;
         };
@@ -1571,6 +1744,27 @@ var vnode;
         return new Element(tagName, attributes, children);
     };
 })(vnode || (vnode = {}));
+var ComponentAttributeRenderer = (function () {
+    function ComponentAttributeRenderer(component, section, element, attr, options) {
+        this.section = section;
+        this.componentClass = component;
+        this.element = element;
+        this.options = options;
+        this.attributes = attr.staticAttributes;
+        this.dynamicAttributes = attr.dynamicAttributes;
+    }
+    ComponentAttributeRenderer.prototype.generate = function (root, view) {
+        if (!this._marker)
+            this._marker = this.section.createMarker();
+        var ref = new this.componentClass(this._marker.createSection(root), this.element, this.attributes, view);
+        if (Object.keys(this.dynamicAttributes).length) {
+            _hydrateDynamicAttributes(ref, this.options, this.dynamicAttributes, view);
+        }
+        if (ref.update)
+            view.bindings.push(ref);
+    };
+    return ComponentAttributeRenderer;
+})();
 var ElementAttributeRenderer = (function () {
     function ElementAttributeRenderer(section, options, attributes) {
         this.section = section;
@@ -1578,9 +1772,20 @@ var ElementAttributeRenderer = (function () {
         this.attributes = attributes;
     }
     ElementAttributeRenderer.prototype.generate = function (root, view) {
+        if (!this._marker)
+            this._marker = this.section.createMarker();
+        _hydrateDynamicAttributes(this._marker.findNode(root), this.options, this.attributes, view);
     };
     return ElementAttributeRenderer;
 })();
+function _hydrateDynamicAttributes(ref, options, dynamicAttributes, view) {
+    for (var key in dynamicAttributes) {
+        var clazz = options.attributes[key];
+        var attr = new clazz(ref, key, dynamicAttributes[key], view);
+        if (attr.update)
+            view.bindings.push(attr);
+    }
+}
 /// <reference path="vnode" />
 /// <reference path="../transpiler" />
 var vnode;
@@ -1625,14 +1830,16 @@ var vnode;
         return new Comment(nodeValue);
     };
 })(vnode || (vnode = {}));
-/// <reference path="vnode/view" />
-/// <reference path="vnode/vnode" />
 var __extends = (this && this.__extends) || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
     __.prototype = b.prototype;
     d.prototype = new __();
 };
+/// <reference path="vnode/view" />
+/// <reference path="vnode/vnode" />
+/// <reference path="utils" />
+var debug = utils.debug('view');
 function _set(target, keypath, value) {
     var keys = typeof keypath === "string" ? keypath.split(".") : keypath;
     var ct = target;
@@ -1671,13 +1878,37 @@ var templ;
     templ.Reference = Reference;
     var View = (function (_super) {
         __extends(View, _super);
-        function View() {
-            _super.apply(this, arguments);
+        function View(section, template, context, options) {
+            if (options === void 0) { options = {}; }
+            _super.call(this, section, template, context, options);
+            this.context = context;
+            this._callers = {};
+            this._getters = {};
+            if (options.parent) {
+                this.parent = options.parent;
+            }
         }
-        View.prototype.get = function (key) {
-            return this.context[key];
+        View.prototype.get = function (keypath) {
+            if (!this.context)
+                return void 0;
+            var pt = typeof keypath !== "string" ? keypath.join(".") : keypath;
+            var v;
+            try {
+                var getter;
+                if (!(getter = this._getters[pt])) {
+                    getter = this._getters[pt] = new Function("return this." + pt);
+                }
+                v = getter.call(this.context);
+            }
+            catch (e) {
+                v = void 0;
+            }
+            v = v != void 0 ? v : this.parent ? this.parent.get(keypath) : void 0;
+            debug('get value %s', v);
+            return v;
         };
         View.prototype.set = function (path, value) {
+            debug('set value %s on context %j', value, this.context);
             if (!this.context)
                 return void 0;
             if (typeof path === "string")
@@ -1685,15 +1916,258 @@ var templ;
             var ret = _set(this.context, path, value);
             this.update();
         };
+        View.prototype.render = function () {
+            this.update();
+            var section = _super.prototype.render.call(this);
+            //this.transitions.enter();
+            return section;
+        };
         View.prototype.ref = function (path, gettable, settable) {
+            debug('reference %s, gettable: %o, settabble: %o', path, gettable, settable);
             return new Reference(this, path, gettable, settable);
         };
-        View.prototype.call = function () {
+        View.prototype.call = function (keypath, params) {
+            var caller;
+            var v;
+            debug('call keypath "%s", args: "%o"', keypath, params);
+            if (typeof keypath !== "string")
+                keypath = keypath.join(".");
+            if (!(caller = this._callers[keypath])) {
+                var ctxPath = ["this"].concat(keypath.split("."));
+                ctxPath.pop();
+                caller = this._callers[keypath] = new Function("params", "return this." + keypath + ".apply(" + ctxPath.join(".") + ", params);");
+            }
+            try {
+                v = caller.call(this.context, params);
+            }
+            catch (e) {
+                console.error('could not call', e);
+            }
+            return v != void 0 ? v : this.parent ? this.parent.call(keypath, params) : void 0;
         };
         return View;
     })(vnode.View);
     templ.View = View;
 })(templ || (templ = {}));
+/// <reference path="../vnode/vnode" />
+var attributes;
+(function (attributes) {
+    var BaseAttribute = (function () {
+        function BaseAttribute(ref, key, value, view) {
+            this.ref = ref;
+            this.key = key;
+            this.value = value;
+            this.view = view;
+            this.initialize();
+        }
+        BaseAttribute.prototype.initialize = function () {
+        };
+        BaseAttribute.prototype.update = function () {
+        };
+        return BaseAttribute;
+    })();
+    attributes.BaseAttribute = BaseAttribute;
+})(attributes || (attributes = {}));
+/// <reference path="base" />
+/// <reference path="../utils" />
+/// <reference path="../view" />
+var attributes;
+(function (attributes) {
+    var _events = ['change', 'keyup', 'input'];
+    var ValueAttribute = (function (_super) {
+        __extends(ValueAttribute, _super);
+        function ValueAttribute() {
+            _super.apply(this, arguments);
+        }
+        ValueAttribute.prototype.initialize = function () {
+            this._onInput = utils.bind(this._onInput, this, null);
+            for (var _i = 0; _i < _events.length; _i++) {
+                var e = _events[_i];
+                this.ref.addEventListener(e, this._onInput);
+            }
+        };
+        ValueAttribute.prototype.update = function () {
+            var model = this.model = this.value;
+            if (!model)
+                return;
+            if (!model || !(model instanceof templ.Reference)) {
+                throw new Error("input value must be a reference. Make sure you have <~> defined");
+            }
+            if (model.gettable) {
+                this._elementValue(this._parseValue(model.value()));
+            }
+        };
+        ValueAttribute.prototype._parseValue = function (value) {
+            if (value == null || value === "")
+                return void 0;
+            return value;
+        };
+        ValueAttribute.prototype._onInput = function (event) {
+            clearInterval(this._autocompleteCheckInterval);
+            // ignore some keys
+            if (event && (!event.keyCode || !~[27].indexOf(event.keyCode))) {
+                event.stopPropagation();
+            }
+            var value = this._parseValue(this._elementValue());
+            if (!this.model)
+                return;
+            if (String(this.model.value()) == String(value))
+                return;
+            this.model.value(value);
+        };
+        ValueAttribute.prototype._elementValue = function (value) {
+            var node = this.ref;
+            var isCheckbox = /checkbox/.test(node.type);
+            var isRadio = /radio/.test(node.type);
+            var isRadioOrCheckbox = isCheckbox || isRadio;
+            var hasValue = Object.prototype.hasOwnProperty.call(node, "value");
+            var isInput = hasValue || /input|textarea|checkbox/.test(node.nodeName.toLowerCase());
+            if (!arguments.length) {
+                if (isCheckbox) {
+                    return Boolean(node.checked);
+                }
+                else if (isInput) {
+                    return node.value || "";
+                }
+                else {
+                    return node.innerHTML || "";
+                }
+            }
+            if (value == null) {
+                value = "";
+            }
+            else {
+                clearInterval(this._autocompleteCheckInterval);
+            }
+            if (isRadioOrCheckbox) {
+                if (isRadio) {
+                    if (String(value) === String(node.value)) {
+                        node.checked = true;
+                    }
+                }
+                else {
+                    node.checked = value;
+                }
+            }
+            else if (String(value) !== this._elementValue()) {
+                if (isInput) {
+                    node.value = value;
+                }
+                else {
+                    node.innerHTML = value;
+                }
+            }
+        };
+        return ValueAttribute;
+    })(attributes.BaseAttribute);
+    attributes.ValueAttribute = ValueAttribute;
+})(attributes || (attributes = {}));
+/// <reference path="value" />
+var attributes;
+(function (attributes) {
+    attributes.value = attributes.ValueAttribute;
+})(attributes || (attributes = {}));
+/// <reference path="../vnode/vnode" />
+/// <reference path="../vnode/template" />
+/// <reference path="../vnode/fragment" />
+var components;
+(function (components) {
+    var BaseComponent = (function () {
+        function BaseComponent(section, vvnode, attributes, view) {
+            this.section = section;
+            this.vnode = vvnode;
+            this.attributes = attributes;
+            this.view = view;
+            this.document = view.template.options.document;
+            if (vvnode.childNodes)
+                this.childTemplate = vnode.template(vnode.fragment(vvnode.childNodes), view.template.options);
+            for (var key in attributes)
+                this.setAttribute(key, attributes[key]);
+            this.initialize();
+        }
+        BaseComponent.prototype.initialize = function () {
+        };
+        BaseComponent.prototype.setAttribute = function (key, value) {
+        };
+        BaseComponent.prototype.removeAttribute = function (key) {
+        };
+        return BaseComponent;
+    })();
+    components.BaseComponent = BaseComponent;
+})(components || (components = {}));
+/// <reference path="component" />
+/// <reference path="../vnode/vnode" />
+var components;
+(function (components) {
+    function _each(target, iterate) {
+        if (!target)
+            return;
+        if (target.forEach) {
+            // use API here since target could be an object
+            target.forEach(iterate);
+        }
+        else {
+            for (var key in target) {
+                if (target.hasOwnProperty(key))
+                    iterate(target[key], key);
+            }
+        }
+    }
+    var Repeat = (function (_super) {
+        __extends(Repeat, _super);
+        function Repeat() {
+            _super.apply(this, arguments);
+            this._children = [];
+        }
+        Repeat.prototype.update = function () {
+            var as = this['as'];
+            var each = this['each'];
+            var key = this['key'] || "key";
+            var n = 0;
+            var self = this;
+            var parent = this.view;
+            var properties;
+            _each(each, function (model, k) {
+                var child;
+                if (as) {
+                    properties = {};
+                    properties[key] = k;
+                    properties[as] = model;
+                }
+                else {
+                    properties = model;
+                }
+                // TODO - provide SAME context here for speed and stability
+                if (n >= self._children.length) {
+                    child = self.childTemplate.view(properties, {
+                        parent: parent
+                    });
+                    self._children.push(child);
+                    self.section.appendChild(child.render(properties));
+                }
+                else {
+                    child = self._children[n];
+                    child.context = properties;
+                    child.update();
+                }
+                n++;
+            });
+            this._children.splice(n).forEach(function (child) {
+                child.remove();
+            });
+        };
+        Repeat.prototype.setAttribute = function (key, value) {
+            this[key] = value;
+        };
+        return Repeat;
+    })(components.BaseComponent);
+    components.Repeat = Repeat;
+})(components || (components = {}));
+/// <reference path="repeat" />
+var components;
+(function (components) {
+    components.repeat = components.Repeat;
+})(components || (components = {}));
 /// <reference path="compiler" />
 /// <reference path="binding" />
 /// <reference path="vnode/template" />
@@ -1703,7 +2177,8 @@ var templ;
 /// <reference path="vnode/fragment" />
 /// <reference path="vnode/comment" />
 /// <reference path="view" />
-/// <reference path="attributes/value" />
+/// <reference path="attributes/index" />
+/// <reference path="components/index" />
 var virtualnode = {
     text: vnode.text,
     dynamic: vnode.dynamic,
@@ -1719,14 +2194,18 @@ var templ;
         compiler.compile = parser.compile;
         compiler.vnode = virtualnode;
     })(compiler = templ.compiler || (templ.compiler = {}));
+    function debugging(enabled) {
+        utils.Debug.enable(enabled);
+    }
+    templ.debugging = debugging;
     function compile(str) {
-        var vn = virtualnode;
-        var fn = parser.compile(str);
+        var vn = virtualnode, fn = parser.compile(str);
         var vnode = fn(vn.fragment, vn.element, vn.text, vn.comment, vn.dynamic, engine.binding);
         return vn.template(vnode, {
             document: document,
             viewClass: templ.View,
-            attributes: attributes
+            attributes: attributes,
+            components: components
         });
     }
     templ.compile = compile;

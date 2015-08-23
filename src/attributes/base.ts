@@ -3,7 +3,7 @@
 
 module attributes {
 	
-	export class BaseAttribute {
+	export class BaseAttribute implements vnode.Attribute {
 		ref: Node
 		key: string
 		value: any
@@ -14,7 +14,7 @@ module attributes {
 			this.key = key
 			this.value = value
 			this.view = view
-		
+			
 			this.initialize()
 		}
 		

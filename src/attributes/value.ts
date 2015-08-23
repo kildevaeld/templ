@@ -4,18 +4,18 @@
 /// <reference path="../view" />
 
 module attributes {
-
+	const _events = ['change', 'keyup', 'input']
 	export class ValueAttribute extends BaseAttribute {
-		_events = ['change', 'keyup', 'input']
+		
 		model: templ.Reference
 		_autocompleteCheckInterval: number
 		initialize() {
 			(<any>this)._onInput = utils.bind(this._onInput, this, null)
-
-			for (let e in this._events) {
+			
+			for (let e of _events) {
+				
 				this.ref.addEventListener(e, this._onInput)
 			}
-
 		}
 
 		update() {

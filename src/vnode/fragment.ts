@@ -18,7 +18,7 @@ module vnode {
     render(options: VNodeOptions, renderers:Renderer[]): DocumentFragment {
 
       let fragment = options.document.createDocumentFragment()
-
+      
       for (var i = 0, n = this.childNodes.length; i < n; i++) {
         fragment.appendChild(this.childNodes[i].render(options, renderers));
       }

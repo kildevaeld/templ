@@ -10,7 +10,8 @@
 
 /// <reference path="view" />
 
-/// <reference path="attributes/value" />
+/// <reference path="attributes/index" />
+/// <reference path="components/index" />
 
 
 let virtualnode = {
@@ -32,16 +33,21 @@ module templ {
 		view(context:any, options:any): vnode.IView
 	}
 	
+	export function debugging(enabled:boolean) {
+		utils.Debug.enable(enabled)
+	}
 	
 	export function compile(str:string): Template {
-		let vn = virtualnode
-		let fn = parser.compile(str);
-	
+		let vn = virtualnode,
+			fn = parser.compile(str);
+		
 		let vnode = fn(vn.fragment,vn.element,vn.text,vn.comment,vn.dynamic,engine.binding);   
+		
 		return vn.template(vnode, {
 			document: document,
 			viewClass: templ.View,
-			attributes: attributes
+			attributes: <any>attributes,
+			components:<any>components
 		})
 	}
 	

@@ -1,43 +1,66 @@
 <html>
-	<head>
-		
-		
-		<script src="../dist/templ.js"></script>
-		
-	</head>
-	<body>
-		<script type="text/html" id="template">
-			<!-- speed demo for rendering a dynamic list of items -->
-			Generate <input type="text" class="form-control" style="width:60px;display:inline-block;" value="{{<~>numItems}}"></input> items: <br />
-			{{~numItems}}
-			<repeat each="{{ range(numItems) }}" as='number'>
-				{{~number}} <br />
-			</repeat>
-		
-		</script>
-		
-		<script>
-			'use strict';
-			let t = document.getElementById('template')
+
+<head>
+
+	<script src "../node_modules/underscore/underscore.js"></script>
+	<script src="../dist/templ.js"></script>
+
+</head>
+
+<body>
+	<script type="text/html" id="template">
+		<!-- speed demo for rendering a dynamic list of items -->
+		Generate
+		<input type="text" class="form-control" style="width:60px;display:inline-block;" value="{{<~>numItems}}"></input> items:
+		<br /> {{~numItems}}
+		<repeat each="{{ range(numItems) }}" as='number'>
+			{{~number}}
+			<br />
+		</repeat>
+
+	</script>
+
+	<script>
+		'use strict';
+		var range = function(start, stop, step) {
+			if (stop == null) {
+				stop = start || 0;
+				start = 0;
+			}
+			step = step || 1;
+	
+			var length = Math.max(Math.ceil((stop - start) / step), 0);
+			var range = Array(length);
+	
+			for (var idx = 0; idx < length; idx++, start += step) {
+				range[idx] = start;
+			}
+	
+			return range;
+			}
 			
+			templ.debugging(true)
+			
+			let t = document.getElementById('template')
+		
 			let template = templ.compile(t.innerHTML);
 			
 			let view = template.view({
   			numItems: 1000,
   			range: function (count) {
-    			return _.range(Math.min(count, 20000)).reverse();
+
+    			return range(Math.min(count, 20000)).reverse();
   			}
 			})
 			let elm = view.render();
-			view.update()
+			
 			document.body.appendChild(elm)
 			console.log(view)
 			
 			setTimeout(function () {
-				view.set('numItems', 2000)
+				//view.set('numItems', 2000)
 			}, 1000)
-			
-		</script>
-	</body>
-	
+	</script>
+</body>
+
 </html>

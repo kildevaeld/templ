@@ -4,7 +4,7 @@
 module vnode {
 
   export enum NodeType {
-    Element, Fragment=11, Comment=8, Dynamic, Text
+    Element=1, Fragment=11, Comment=8, Dynamic, Text
   }
 
   export interface VNodeCreator {
@@ -13,12 +13,15 @@ module vnode {
 
   export interface VNodeOptions {
     document: HTMLDocument
+    attributes: {[key:string]: AttributeConstructor}
+		components: {[key: string]: ComponentConstructor}
   }
 
   export interface VNode {
     nodeType: NodeType
     parentNode?:VNode
     render (option:VNodeOptions, renderes:Renderer[]): Node
+    childNodes?:VNode[]
   }
 
   export interface Section {
@@ -28,7 +31,13 @@ module vnode {
     clone(): Section
     render(): Node
     remove()
+    appendChild(child:Node)
+    createMarker(): Marker
   }
+  
+  export interface Marker {
+    createSection(root:Node): Section
+  } 
 
   export interface IView {
     bindings:Binding[]
@@ -39,6 +48,28 @@ module vnode {
   
   export interface Renderer {
     generate(node:Node, view:IView)
+  }
+  
+  export interface Attribute {
+    ref: Node
+		key: string
+		value: any
+		view: vnode.IView
+    update?: () => void
+    
+  }
+  
+  export interface AttributeConstructor {
+    new (ref:Node, key:string, value:any, view:vnode.IView): Attribute
+  }
+  
+  export interface Component {
+    setAttribute (key:string, value:any)
+    removeAttribute (key:string) 
+  }
+  
+  export interface ComponentConstructor {
+    new (section:Section, vnode:VNode, attributes:AttributeMap, view:IView)
   }
 
   export interface Binding {
@@ -52,6 +83,7 @@ module vnode {
 
   export type AttributeMap = {[key: string]: string}
   
+  export type DynamicAttributeMap = {[key: string]: AttributeConstructor }
   
   export function getNodeByPath (root:Node, path:string[]): Node {
       var c = root;

@@ -13,8 +13,9 @@ module vnode {
 
 			this.start = start || document.createTextNode('')
 			this.end = end || document.createTextNode('')
-
+			
 			if (!this.start.parentNode) {
+				
 				let parent = document.createDocumentFragment();
 				parent.appendChild(this.start);
 				parent.appendChild(this.end)
@@ -23,6 +24,7 @@ module vnode {
 		}
 
 		appendChild(node: Node) {
+			//console.log(document.body.appendChild(node))
 			this.end.parentNode.insertBefore(node, this.end)
 		}
 
@@ -52,8 +54,8 @@ module vnode {
 			return node;
 		}
 
-		createMarker() {
-			return new Marker(this.document, getNodePath(this.start),getNodePath(this.end))
+		createMarker(): FragmentSectionMarker {
+			return new FragmentSectionMarker(this.document, getNodePath(this.start),getNodePath(this.end))
 		}
 
 		clone(): FragmentSection {
@@ -92,7 +94,7 @@ module vnode {
 
 	}
 	
-	class Marker {
+	export class FragmentSectionMarker implements vnode.Marker {
 	document: Document
 	startPath: string[]
 	endPath: string[]
