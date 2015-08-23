@@ -180,93 +180,7 @@ declare module parser {
     interface TranspilerFunc {
         (fragment: FragmentCreator, element: ElementCreator, text: TextCreator, comment: CommentCreator, dynamic: DynamicCreator, createBindingClass: BindingCreator): vnode.VNode;
     }
-    /**
-     * Transpile AST to Function
-     */
-    class Transpiler {
-        _refCounter: number;
-        _refs: any[];
-        constructor();
-        /**
-         */
-        transpile(source: string): string;
-        /**
-         */
-        _root(elements: any): string;
-        /**
-         */
-        _expression(expression: any): any;
-        /**
-         * check for stuff like <li repeat.each={{items}}></li>
-         */
-        _element(expression: any): string;
-        /**
-         */
-        _doctype(expression: any): string;
-        /**
-         */
-        _children(children: any): any;
-        /**
-         */
-        _element2(expression: any): string;
-        /**
-         */
-        __addReference(expression: any): string;
-        /**
-         */
-        _block(expression: any): string;
-        /**
-         */
-        _text(expression: any): string;
-        /**
-         */
-        _comment(expression: any): string;
-        /**
-         */
-        _hash(expression: any): string;
-        /**
-         */
-        _script(expression: any): any;
-        /**
-         */
-        _referenceKeyPath(expression: any): any[];
-        /**
-         */
-        _reference(expression: any): string;
-        /**
-         */
-        _string(expression: any): string;
-        /**
-         */
-        _operator(expression: any): any;
-        /**
-         */
-        _condition(expression: any): string;
-        /**
-         */
-        _literal(expression: any): any;
-        /**
-         */
-        _not(expression: any): string;
-        /**
-         */
-        _negative(expression: any): string;
-        /**
-         */
-        _call(expression: any): string;
-        /**
-         */
-        _modifier(expression: any): string;
-        /**
-         */
-        _group(expression: any): string;
-        /**
-         */
-        __findExpressions(type: any, expr: any): any[];
-        /**
-         */
-        __traverse(expr: any, iterator: any): void;
-    }
+    function transpile(source: string): string;
 }
 /**
  */
@@ -415,10 +329,10 @@ declare module templ {
     class Reference {
         gettable: boolean;
         settable: boolean;
-        view: templ.View;
+        view: View;
         path: string;
         value(value?: any): any;
-        constructor(view: templ.View, path: string, gettable: boolean, settable: boolean);
+        constructor(view: View, path: string, gettable: boolean, settable: boolean);
         toString(): string;
     }
     class View extends vnode.View {
@@ -460,6 +374,7 @@ declare module attributes {
 }
 declare module attributes {
     var value: typeof ValueAttribute;
+    function add(name: string, attribute: vnode.AttributeConstructor | Object): void;
 }
 declare module components {
     class BaseComponent implements vnode.Component {
@@ -495,8 +410,8 @@ declare let virtualnode: {
 };
 declare module templ {
     module compiler {
-        var compile: typeof parser.compile;
-        var vnode: {
+        const compile: typeof parser.compile;
+        const vnode: {
             text: parser.TextCreator;
             dynamic: parser.DynamicCreator;
             comment: parser.CommentCreator;
@@ -504,10 +419,10 @@ declare module templ {
             fragment: parser.FragmentCreator;
             template: (vnode: vnode.VNode, options: vnode.TemplateOptions) => vnode.Template;
         };
+        const transpile: typeof parser.transpile;
     }
-    interface Template {
-        view(context: any, options: any): vnode.IView;
-    }
+    function attribute(name: string, attr: vnode.AttributeConstructor | vnode.Attribute): void;
+    function component(name: string, cmp: vnode.ComponentConstructor | vnode.ComponentConstructor): void;
     function debugging(enabled: boolean): void;
-    function compile(str: string, options?: vnode.VNodeOptions): Template;
+    function compile(str: string, options?: vnode.VNodeOptions): vnode.Template;
 }

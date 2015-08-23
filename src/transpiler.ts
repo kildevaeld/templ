@@ -31,10 +31,15 @@ module parser {
     (fragment:FragmentCreator, element:ElementCreator, text:TextCreator, comment:CommentCreator, dynamic:DynamicCreator, createBindingClass:BindingCreator): vnode.VNode
   }
   
+  export function transpile (source:string): string {
+    let transpiler = new Transpiler()
+    return transpiler.transpile(source);
+  }
+  
   /**
    * Transpile AST to Function
    */
-  export class Transpiler {
+  class Transpiler {
     _refCounter: number
     _refs: any[]
     

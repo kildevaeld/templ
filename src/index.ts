@@ -12,6 +12,8 @@
 /// <reference path="view" />
 
 /// <reference path="attributes/index" />
+/// <reference path="attributes/base" />
+
 /// <reference path="components/index" />
 
 
@@ -26,19 +28,32 @@ let virtualnode = {
 
 
 module templ {
+	
 	export module compiler {
-		export var compile = parser.compile
-		export var vnode = virtualnode
+		export const compile = parser.compile
+		export const vnode = virtualnode
+		export const transpile = parser.transpile
 	}
-	export interface Template {
-		view(context:any, options:any): vnode.IView
+	
+	export function attribute (name:string, attr:vnode.AttributeConstructor|vnode.Attribute) {
+		if (typeof attr !== 'function') {
+			attr = utils.extendClass<vnode.AttributeConstructor>(attributes.BaseAttribute, attr)
+		}
+		attributes[name] = attr
+	}
+	
+	export function component(name:string, cmp:vnode.ComponentConstructor|vnode.ComponentConstructor) {
+		if (typeof cmp !== 'function') {
+			cmp = utils.extendClass<vnode.ComponentConstructor>(attributes.BaseAttribute, cmp)
+		}
+		components[name] = cmp
 	}
 
 	export function debugging(enabled:boolean) {
 		utils.Debug.enable(enabled)
 	}
 
-	export function compile(str:string, options?:vnode.VNodeOptions): Template {
+	export function compile(str:string, options?:vnode.VNodeOptions): vnode.Template {
 		let vn = virtualnode,
 			fn = parser.compile(str);
 

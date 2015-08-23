@@ -26,7 +26,7 @@ module templ {
 	export class Reference {
 		gettable: boolean
 		settable: boolean
-		view: templ.View
+		view: View
 		path: string
 
 		value(value?: any): any {
@@ -37,7 +37,7 @@ module templ {
 		}
 
 
-		constructor(view: templ.View, path: string, gettable: boolean, settable: boolean) {
+		constructor(view: View, path: string, gettable: boolean, settable: boolean) {
 			this.gettable = gettable
 			this.settable = settable
 			this.view = view
@@ -47,7 +47,7 @@ module templ {
 
 
 		toString(): string {
-			return this.view.get(this.path)
+			return this.view.get(this.path)||''
 		}
 	}
 

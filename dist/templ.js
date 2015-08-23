@@ -1281,6 +1281,11 @@
   })(vnode || (vnode = {}));
   var parser;
   (function (parser) {
+    function transpile(source) {
+      var transpiler = new Transpiler();
+      return transpiler.transpile(source);
+    }
+    parser.transpile = transpile;
     /**
      * Transpile AST to Function
      */
@@ -1563,7 +1568,6 @@
       };
       return Transpiler;
     })();
-    parser.Transpiler = Transpiler;
   })(parser || (parser = {}));
   /**
    */
@@ -1579,8 +1583,7 @@
   var parser;
   (function (parser) {
     function compile(src, options) {
-      var transpiler = new parser.Transpiler();
-      var str = transpiler.transpile(src);
+      var str = parser.transpile(src);
       return new Function("return " + str)();
     }
     parser.compile = compile;
@@ -2082,7 +2085,7 @@
         if (this.settable) this.view.set(this.path, value);
       };
       Reference.prototype.toString = function () {
-        return this.view.get(this.path);
+        return this.view.get(this.path) || '';
       };
       return Reference;
     })();
@@ -2266,6 +2269,14 @@
   var attributes;
   (function (attributes) {
     attributes.value = attributes.ValueAttribute;
+
+    function add(name, attribute) {
+      if (typeof attribute !== 'function') {
+        attribute = utils.extendClass.call(attributes.BaseAttribute, attribute);
+      }
+      attributes[name] = attribute;
+    }
+    attributes.add = add;
   })(attributes || (attributes = {}));
   var components;
   (function (components) {
@@ -2375,7 +2386,24 @@
     (function (compiler) {
       compiler.compile = parser.compile;
       compiler.vnode = virtualnode;
+      compiler.transpile = parser.transpile;
     })(compiler = templ.compiler || (templ.compiler = {}));
+
+    function attribute(name, attr) {
+      if (typeof attr !== 'function') {
+        attr = utils.extendClass(attributes.BaseAttribute, attr);
+      }
+      attributes[name] = attr;
+    }
+    templ.attribute = attribute;
+
+    function component(name, cmp) {
+      if (typeof cmp !== 'function') {
+        cmp = utils.extendClass(attributes.BaseAttribute, cmp);
+      }
+      components[name] = cmp;
+    }
+    templ.component = component;
 
     function debugging(enabled) {
       utils.Debug.enable(enabled);
