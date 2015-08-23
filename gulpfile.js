@@ -9,7 +9,8 @@ const gulp = require('gulp'),
 	pretty = require('gulp-beautify'),
 	replace = require('gulp-replace'),
 	uglify = require('gulp-uglify'),
-	rename = require('gulp-rename');
+	rename = require('gulp-rename'),
+	insert = require('gulp-insert');
 
 var tsp = tsc.createProject('tsconfig.json', {
 		sortOutput:true,
@@ -35,10 +36,15 @@ gulp.task('build', function () {
 		indentSize: 2,
 		preserveNewlines: false,
 	})).pipe(gulp.dest('./dist'));
-	
+
+	let dst = result.dts
+	.pipe(rename('templ.d.ts'))
+	.pipe(insert.prepend('declare module "templ" {\n\texport = templ\n}\n\n'))
+	.pipe(gulp.dest('./'));
+
 	return merge([
-		js, result.dts.pipe(gulp.dest('./dist'))
-	])
+		js, dst
+	]);
 });
 
 gulp.task('uglify', ['build'], function () {
@@ -46,7 +52,7 @@ gulp.task('uglify', ['build'], function () {
 	.pipe(uglify())
 	.pipe(rename('templ.min.js'))
 	.pipe(gulp.dest('./dist'))
-	
+
 });
 
 gulp.task('watch', ['build'], function () {

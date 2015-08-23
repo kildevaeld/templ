@@ -1,3 +1,7 @@
+declare module "templ" {
+	export = templ
+}
+
 declare module parser {
     var parser: any;
 }
@@ -505,5 +509,5 @@ declare module templ {
         view(context: any, options: any): vnode.IView;
     }
     function debugging(enabled: boolean): void;
-    function compile(str: string): Template;
+    function compile(str: string, options?: vnode.VNodeOptions): Template;
 }

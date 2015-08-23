@@ -2282,8 +2282,12 @@
         this.initialize();
       }
       BaseComponent.prototype.initialize = function () {};
-      BaseComponent.prototype.setAttribute = function (key, value) {};
-      BaseComponent.prototype.removeAttribute = function (key) {};
+      BaseComponent.prototype.setAttribute = function (key, value) {
+        this.attributes[key] = value;
+      };
+      BaseComponent.prototype.removeAttribute = function (key) {
+        this.attributes[key] = void 0;
+      };
       return BaseComponent;
     })();
     components.BaseComponent = BaseComponent;
@@ -2378,16 +2382,16 @@
     }
     templ.debugging = debugging;
 
-    function compile(str) {
+    function compile(str, options) {
       var vn = virtualnode,
           fn = parser.compile(str);
       var vnode = fn(vn.fragment, vn.element, vn.text, vn.comment, vn.dynamic, engine.binding);
-      return vn.template(vnode, {
+      return vn.template(vnode, utils.extend({
         document: document,
         viewClass: templ.View,
         attributes: attributes,
         components: components
-      });
+      }, options || {}));
     }
     templ.compile = compile;
   })(templ || (templ = {}));

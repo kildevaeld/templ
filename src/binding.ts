@@ -25,7 +25,6 @@ module engine {
         if (value != void 0) {
           this.ref.setAttribute(key, value);
         } else {
-					
           //this.ref.removeAttribute(key);
         }
       }

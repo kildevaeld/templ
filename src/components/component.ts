@@ -30,11 +30,11 @@ module components {
 		}
 		
 		setAttribute (key:string, value:any) {
-			
+			this.attributes[key]  = value
 		}
 		
 		removeAttribute(key:string) {
-			
+			this.attributes[key] = void 0
 		}
 	}
 	

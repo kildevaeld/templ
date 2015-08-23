@@ -7,6 +7,7 @@
 /// <reference path="vnode/element" />
 /// <reference path="vnode/fragment" />
 /// <reference path="vnode/comment" />
+/// <reference path="utils" />
 
 /// <reference path="view" />
 
@@ -27,28 +28,28 @@ let virtualnode = {
 module templ {
 	export module compiler {
 		export var compile = parser.compile
-		export var vnode = virtualnode 
+		export var vnode = virtualnode
 	}
 	export interface Template {
 		view(context:any, options:any): vnode.IView
 	}
-	
+
 	export function debugging(enabled:boolean) {
 		utils.Debug.enable(enabled)
 	}
-	
-	export function compile(str:string): Template {
+
+	export function compile(str:string, options?:vnode.VNodeOptions): Template {
 		let vn = virtualnode,
 			fn = parser.compile(str);
-		
-		let vnode = fn(vn.fragment,vn.element,vn.text,vn.comment,vn.dynamic,engine.binding);   
-		
-		return vn.template(vnode, {
+
+		let vnode = fn(vn.fragment,vn.element,vn.text,vn.comment,vn.dynamic,engine.binding);
+
+		return vn.template(vnode, utils.extend({
 			document: document,
 			viewClass: templ.View,
 			attributes: <any>attributes,
 			components:<any>components
-		})
+		}, options||{}))
 	}
-	
+
 }
