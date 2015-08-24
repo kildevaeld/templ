@@ -1208,6 +1208,10 @@
         return this.section.render();
       };
       View.prototype.remove = function () {
+        for (var _i = 0, _a = this.bindings; _i < _a.length; _i++) {
+          var binding = _a[_i];
+          binding.destroy();
+        }
         return this.section.remove();
       };
       return View;
@@ -1792,6 +1796,11 @@
           this._attrBindings[key].update();
         }
       };
+      Binding.prototype.destroy = function () {
+        for (var key in this._attrBindings) {
+          this._attrBindings[key].destroy();
+        }
+      };
       return Binding;
     })();
     engine.Binding = Binding;
@@ -2174,6 +2183,7 @@
       }
       BaseAttribute.prototype.initialize = function () {};
       BaseAttribute.prototype.update = function () {};
+      BaseAttribute.prototype.destroy = function () {};
       return BaseAttribute;
     })();
     attributes.BaseAttribute = BaseAttribute;
@@ -2269,14 +2279,6 @@
   var attributes;
   (function (attributes) {
     attributes.value = attributes.ValueAttribute;
-
-    function add(name, attribute) {
-      if (typeof attribute !== 'function') {
-        attribute = utils.extendClass.call(attributes.BaseAttribute, attribute);
-      }
-      attributes[name] = attribute;
-    }
-    attributes.add = add;
   })(attributes || (attributes = {}));
   var components;
   (function (components) {
@@ -2299,6 +2301,7 @@
       BaseComponent.prototype.removeAttribute = function (key) {
         this.attributes[key] = void 0;
       };
+      BaseComponent.prototype.destroy = function () {};
       return BaseComponent;
     })();
     components.BaseComponent = BaseComponent;
@@ -2382,6 +2385,7 @@
   };
   var templ;
   (function (templ) {
+    templ.version = "0.0.5";
     var compiler;
     (function (compiler) {
       compiler.compile = parser.compile;

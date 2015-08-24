@@ -4,7 +4,7 @@
 module vnode {
 	
 	export class View implements IView {
-		bindings: Binding[] = []
+		bindings: Bindable[] = []
 		constructor(public section:Section, public template:Template,public context:any,options?:any) {
 			
 		}
@@ -15,11 +15,15 @@ module vnode {
 			}
 			
 		}
+		
 		render () {
-			
 			return this.section.render()
 		}
+		
 		remove () {
+			for (let binding of this.bindings) {
+				binding.destroy();
+			}
 			return this.section.remove()
 		}
 		

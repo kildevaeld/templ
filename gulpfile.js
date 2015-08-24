@@ -18,6 +18,7 @@ var tsp = tsc.createProject('tsconfig.json', {
     noExternalResolve: true,
 		target:'es5'
 	});
+var pkg = require('./package.json')
 
 const reg = /\/\/\/\s?<reference path=\"[a-zA-Z0-9.\/]*\"\s?\/>/gi
 
@@ -27,6 +28,7 @@ gulp.task('build', function () {
 
 	let js = result.js
 	.pipe(replace(reg, ''))
+	.pipe(replace('$$version$$', pkg.version))
 	.pipe(concat('templ.js'))
 	.pipe(wrap({
 		namespace: 'templ',

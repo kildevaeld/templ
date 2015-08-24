@@ -159,7 +159,7 @@ class ElementAttributeRenderer implements vnode.Renderer {
   }
 }
 
-function _hydrateDynamicAttributes(ref, options, dynamicAttributes, view) {
+function _hydrateDynamicAttributes(ref, options:vnode.VNodeOptions, dynamicAttributes, view:vnode.IView) {
   for (var key in dynamicAttributes) {
     var clazz = options.attributes[key];
     var attr = new clazz(ref, key, dynamicAttributes[key], view);

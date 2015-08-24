@@ -29,10 +29,19 @@ let virtualnode = {
 
 module templ {
 	
+	export var version = "$$version$$"
+	
 	export module compiler {
 		export const compile = parser.compile
 		export const vnode = virtualnode
 		export const transpile = parser.transpile
+	}
+	
+	export interface TemplateOptions {
+		document?: Document
+		attributes?: {[key:string]: vnode.AttributeConstructor}
+		components?: {[key: string]: vnode.ComponentConstructor}
+		viewClass?:vnode.IViewConstructor
 	}
 	
 	export function attribute (name:string, attr:vnode.AttributeConstructor|vnode.Attribute) {
@@ -53,7 +62,7 @@ module templ {
 		utils.Debug.enable(enabled)
 	}
 
-	export function compile(str:string, options?:vnode.VNodeOptions): vnode.Template {
+	export function compile(str:string, options?:TemplateOptions): vnode.Template {
 		let vn = virtualnode,
 			fn = parser.compile(str);
 

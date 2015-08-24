@@ -56,7 +56,7 @@ declare module vnode {
         section: Section;
         template: Template;
         context: any;
-        bindings: Binding[];
+        bindings: Bindable[];
         constructor(section: Section, template: Template, context: any, options?: any);
         update(): void;
         render(): Node;
@@ -65,7 +65,7 @@ declare module vnode {
 }
 declare module vnode {
     interface TemplateOptions extends VNodeOptions {
-        viewClass?: new (section: Section, template: Template, context: any, options?: any) => IView;
+        viewClass?: IViewConstructor;
     }
     class Template {
         section: Section;
@@ -117,34 +117,41 @@ declare module vnode {
         createSection(root: Node): Section;
     }
     interface IView {
-        bindings: Binding[];
+        bindings: Bindable[];
         section: Section;
         template: Template;
         context: any;
     }
+    interface IViewConstructor {
+        new (section: Section, template: Template, context: any, options?: any): IView;
+    }
+    interface Destroyable {
+        destroy(): any;
+    }
     interface Renderer {
         generate(node: Node, view: IView): any;
     }
-    interface Attribute {
+    interface Attribute extends Bindable {
         ref: Node;
         key: string;
         value: any;
         view: vnode.IView;
-        update?: () => void;
     }
     interface AttributeConstructor {
         new (ref: Node, key: string, value: any, view: vnode.IView): Attribute;
     }
-    interface Component {
+    interface Component extends Bindable {
         setAttribute(key: string, value: any): any;
         removeAttribute(key: string): any;
     }
     interface ComponentConstructor {
-        new (section: Section, vnode: VNode, attributes: AttributeMap, view: IView): any;
+        new (section: Section, vnode: VNode, attributes: AttributeMap, view: IView): Component;
     }
-    interface Binding {
+    interface Bindable extends Destroyable {
+        update?: (context?: any) => void;
+    }
+    interface Binding extends Bindable {
         setAttribute(key: string, value: string): any;
-        update(context?: any): any;
     }
     interface BindingContructor {
         new (ref: Node, view: IView): Binding;
@@ -228,6 +235,7 @@ declare module engine {
         setAttribute(key: string, value: string): void;
         private setAsRegisteredAttribute(key, value);
         update(context: any): void;
+        destroy(): void;
     }
     function binding(initialize: () => void, update: (context) => void): vnode.BindingContructor;
 }
@@ -304,7 +312,7 @@ declare class ElementAttributeRenderer implements vnode.Renderer {
     constructor(section: vnode.NodeSection, options: any, attributes: any);
     generate(root: Node, view: vnode.IView): void;
 }
-declare function _hydrateDynamicAttributes(ref: any, options: any, dynamicAttributes: any, view: any): void;
+declare function _hydrateDynamicAttributes(ref: any, options: vnode.VNodeOptions, dynamicAttributes: any, view: vnode.IView): void;
 declare module vnode {
     class Fragment implements VNode {
         nodeType: NodeType;
@@ -359,6 +367,7 @@ declare module attributes {
         constructor(ref: Node, key: string, value: any, view: vnode.IView);
         initialize(): void;
         update(): void;
+        destroy(): void;
     }
 }
 declare module attributes {
@@ -374,7 +383,6 @@ declare module attributes {
 }
 declare module attributes {
     var value: typeof ValueAttribute;
-    function add(name: string, attribute: vnode.AttributeConstructor | Object): void;
 }
 declare module components {
     class BaseComponent implements vnode.Component {
@@ -388,6 +396,7 @@ declare module components {
         initialize(): void;
         setAttribute(key: string, value: any): void;
         removeAttribute(key: string): void;
+        destroy(): void;
     }
 }
 declare module components {
@@ -409,6 +418,7 @@ declare let virtualnode: {
     template: (vnode: vnode.VNode, options: vnode.TemplateOptions) => vnode.Template;
 };
 declare module templ {
+    var version: string;
     module compiler {
         const compile: typeof parser.compile;
         const vnode: {
@@ -421,8 +431,18 @@ declare module templ {
         };
         const transpile: typeof parser.transpile;
     }
+    interface TemplateOptions {
+        document?: Document;
+        attributes?: {
+            [key: string]: vnode.AttributeConstructor;
+        };
+        components?: {
+            [key: string]: vnode.ComponentConstructor;
+        };
+        viewClass?: vnode.IViewConstructor;
+    }
     function attribute(name: string, attr: vnode.AttributeConstructor | vnode.Attribute): void;
     function component(name: string, cmp: vnode.ComponentConstructor | vnode.ComponentConstructor): void;
     function debugging(enabled: boolean): void;
-    function compile(str: string, options?: vnode.VNodeOptions): vnode.Template;
+    function compile(str: string, options?: TemplateOptions): vnode.Template;
 }

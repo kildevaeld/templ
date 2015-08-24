@@ -52,6 +52,12 @@ module engine {
 				this._attrBindings[key].update()
 			}
 		}
+		
+		destroy () {
+			for (let key in this._attrBindings) {
+				this._attrBindings[key].destroy();
+			}
+		}
 	}
 	
 	

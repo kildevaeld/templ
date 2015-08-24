@@ -21,7 +21,8 @@
 		</div>
 
 	</script>
-
+	<button id="remove">Remove</button>
+	
 	<script>
 		'use strict';
 		var range = function(start, stop, step) {
@@ -58,6 +59,13 @@
 			console.log(elm)
 			document.body.appendChild(elm)
 			console.log(view)
+			
+			document.getElementById('remove').addEventListener('click', function () {
+				view.remove()
+				setTimeout(function () {
+					document.body.appendChild(view.render())
+				}, 500)
+			})
 			
 			setTimeout(function () {
 				//view.set('numItems', 2000)

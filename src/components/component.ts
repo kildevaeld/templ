@@ -36,6 +36,10 @@ module components {
 		removeAttribute(key:string) {
 			this.attributes[key] = void 0
 		}
+	
+		destroy () {
+			
+		}
 	}
 	
 	

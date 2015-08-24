@@ -40,22 +40,30 @@ module vnode {
   } 
 
   export interface IView {
-    bindings:Binding[]
+    bindings:Bindable[]
     section:Section
     template: Template
     context:any
+  }
+  
+  export interface IViewConstructor {
+    new (section:Section, template:Template, context:any, options?:any): IView
+  }
+  
+  export interface Destroyable {
+    destroy()
   }
   
   export interface Renderer {
     generate(node:Node, view:IView)
   }
   
-  export interface Attribute {
+  export interface Attribute extends Bindable {
     ref: Node
 		key: string
 		value: any
 		view: vnode.IView
-    update?: () => void
+    //update?: () => void
     
   }
   
@@ -63,18 +71,22 @@ module vnode {
     new (ref:Node, key:string, value:any, view:vnode.IView): Attribute
   }
   
-  export interface Component {
+  export interface Component extends Bindable {
     setAttribute (key:string, value:any)
-    removeAttribute (key:string) 
+    removeAttribute (key:string)
   }
   
   export interface ComponentConstructor {
-    new (section:Section, vnode:VNode, attributes:AttributeMap, view:IView)
+    new (section:Section, vnode:VNode, attributes:AttributeMap, view:IView): Component
+  }
+  
+  export interface Bindable extends Destroyable {
+    update?:(context?:any) => void
   }
 
-  export interface Binding {
+  export interface Binding extends Bindable {
     setAttribute(key:string, value:string)
-    update(context?:any)
+    //update(context?:any)
   }
   
   export interface BindingContructor {

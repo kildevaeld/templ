@@ -25,6 +25,10 @@ module attributes {
 		update () {
 			
 		}
+		
+		destroy() {
+			
+		}
 	}
 	
 	

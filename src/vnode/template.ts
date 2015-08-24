@@ -7,7 +7,7 @@
 module vnode {
 
 	export interface TemplateOptions extends VNodeOptions {
-		viewClass?: new (section:Section, template:Template, context:any, options?:any) => IView
+		viewClass?: IViewConstructor
 	}
 	
 	export class Template {
