@@ -1,7 +1,7 @@
 /// <reference path="template" />
 
 
-module vnode {
+module templ.vnode {
 
   export enum NodeType {
     Element=1, Fragment=11, Comment=8, Dynamic=-200, Text=-201

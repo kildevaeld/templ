@@ -6,7 +6,7 @@
 
 
 
-module attributes {
+module templ.attributes {
 	
 	const debug = utils.debug('attributes:event')	
 	

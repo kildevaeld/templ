@@ -31,9 +31,9 @@ function _stringifyNode(node) {
   return buffer;
 }
 
-let t = templ.compiler.transpile(template);
+let t = templ.compiler.parseToVNode(template)
 
-console.log(t)
+console.log(_stringifyNode(t))
 
 /*console.log(_stringifyNode(t), {
   numItems: 10,
@@ -41,9 +41,7 @@ console.log(t)
     return _.range(Math.min(count, 20000)).reverse();
   }
  
-});
-
-let rendered = t.render({
-  document: dom.defaultView.document
 });*/
+
+
 

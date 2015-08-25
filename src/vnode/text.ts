@@ -1,7 +1,7 @@
 /// <reference path="vnode" />
 /// <reference path="../transpiler" />
 
-module vnode {
+module templ.vnode {
 	
 	export class Text implements VNode {
 		nodeType = NodeType.Text
@@ -14,7 +14,7 @@ module vnode {
 		}
 	}
 	
-	export var text: parser.TextCreator = function text (nodeValue:string): Text {
+	export var text: compiler.TextCreator = function text (nodeValue:string): Text {
 		return new Text(nodeValue)
 	} 
 	

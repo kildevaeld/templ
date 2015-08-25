@@ -1,6 +1,6 @@
 /// <reference path="transpiler" />
 
-module parser {
+module templ.compiler {
 	
 	export function compile (src:string, options?:any): TranspilerFunc {
 		var str = transpile(src);

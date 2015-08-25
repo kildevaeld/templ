@@ -1,6 +1,6 @@
 /// <reference path="base" />
 
-module attributes {
+module templ.attributes {
 	
 	export class StyleAttribute extends BaseAttribute {
 		_currentStyles: {[key: string]: string}

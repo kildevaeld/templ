@@ -1,5 +1,5 @@
 
-module parser {
+module templ.compiler {
   
   export var parser = <any>(function() {
   /*

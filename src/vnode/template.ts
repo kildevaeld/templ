@@ -4,7 +4,7 @@
 
 
 
-module vnode {
+module templ.vnode {
 
 	export interface TemplateOptions extends VNodeOptions {
 		viewClass?: IViewConstructor

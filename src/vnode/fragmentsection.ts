@@ -1,7 +1,7 @@
 /// <reference path="vnode" />
 
 
-module vnode {
+module templ.vnode {
 	
 	export class FragmentSection implements Section {
 		document: Document

@@ -3,7 +3,7 @@
 /// <reference path="../utils" />
 /// <reference path="../view" />
 
-module attributes {
+module templ.attributes {
 	const _events = ['change', 'keyup', 'input']
 	export class ValueAttribute extends BaseAttribute {
 		

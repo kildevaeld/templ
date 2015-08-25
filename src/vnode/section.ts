@@ -6,7 +6,7 @@
 /// <reference path="vnode" />
 
 
-module vnode {
+module templ.vnode {
 	export function section (document:Document, node:Node) {
 		let section: Section
 		if (node.nodeType == NodeType.Fragment) {

@@ -4,8 +4,8 @@
 /// <reference path="../utils" />
 /// <reference path="../transpiler" />
 
-module vnode {
-  
+module templ.vnode {
+
   export class Element implements VNode {
     nodeType = NodeType.Element
     tagName: string
@@ -16,20 +16,20 @@ module vnode {
 
       this.tagName = String(tagName).toLocaleLowerCase();
       this.childNodes = children;
-      this.attributes = attributes||{};
-      
-      
+      this.attributes = attributes || {};
+
+
       for (var i = 0; i < children.length; i++) children[i].parentNode = this;
 
     }
 
-    render(options: VNodeOptions, renderers:Renderer[]): HTMLElement {
+    render(options: VNodeOptions, renderers: Renderer[]): HTMLElement {
 
-      let components = options.components||{}
-      
+      let components = options.components || {}
+
       if (components[this.tagName]) {
-      
-        return this._renderComponent(components[this.tagName],options,renderers)
+
+        return this._renderComponent(components[this.tagName], options, renderers)
       }
 
       return this._renderElement(options, renderers);
@@ -44,16 +44,16 @@ module vnode {
       }
     }
 
-    _renderComponent(component:ComponentConstructor, options:VNodeOptions, renderers:Renderer[]): HTMLElement {
-      
+    _renderComponent(component: ComponentConstructor, options: VNodeOptions, renderers: Renderer[]): HTMLElement {
+
       var section = new FragmentSection(options.document)
-     
-      renderers.push(new ComponentAttributeRenderer(component,section,this,this._splitAttributes(options),options))
-      
+
+      renderers.push(new ComponentAttributeRenderer(component, section, this, this._splitAttributes(options), options))
+
       return <any>section.render()
     }
 
-    _renderElement(options: VNodeOptions, renderers:Renderer[]): HTMLElement {
+    _renderElement(options: VNodeOptions, renderers: Renderer[]): HTMLElement {
 
       let element = options.document.createElement(this.tagName);
 
@@ -62,15 +62,15 @@ module vnode {
       for (let attrKey in _attr.staticAttributes) {
         element.setAttribute(attrKey, _attr.staticAttributes[attrKey]);
       }
-      
+
       for (let child of this.childNodes) {
         element.appendChild(child.render(options, renderers));
       }
       
       // Set dynamic attributes
       if (Object.keys(_attr.dynamicAttributes).length) {
-        
-        renderers.push(new ElementAttributeRenderer(new NodeSection(options.document, element),options,_attr.dynamicAttributes))
+
+        renderers.push(new ElementAttributeRenderer(new NodeSection(options.document, element), options, _attr.dynamicAttributes))
       }
 
       return element;
@@ -83,10 +83,10 @@ module vnode {
       var staticAttributes = {};
 
       if (options.attributes) {
-        
+
         for (var key in this.attributes) {
           var attrClass = options.attributes[key];
-          
+
           if (attrClass && (!attrClass.test || attrClass.test(this, key, this.attributes[key]))) {
             dynamicAttributes[key] = this.attributes[key];
           } else {
@@ -107,62 +107,64 @@ module vnode {
   }
 
 
-  export const element: parser.ElementCreator = function (tagName: string, attributes: AttributeMap, ...children: VNode[]): Element {
-    
+  export const element: compiler.ElementCreator = function(tagName: string, attributes: AttributeMap, ...children: VNode[]): Element {
+
     return new Element(tagName, attributes, children);
   }
-}
 
-class ComponentAttributeRenderer implements vnode.Renderer {
-  _marker: vnode.Marker
-  section: vnode.Section
-  componentClass: vnode.ComponentConstructor
-  attributes: vnode.AttributeMap
-  dynamicAttributes: vnode.DynamicAttributeMap
-  options:vnode.VNodeOptions
-  element:vnode.VNode
-  
-  constructor(component:vnode.ComponentConstructor, section:vnode.Section, element:vnode.VNode,attr:any, options:vnode.VNodeOptions) {
-    this.section = section
-    this.componentClass = component
-    this.element = element
-    this.options = options
-    this.attributes = attr.staticAttributes
-    this.dynamicAttributes = attr.dynamicAttributes
-    
-  }
-  
-  generate(root:Node, view:vnode.IView) {
-    if (!this._marker) this._marker = this.section.createMarker();
-    
-    var ref = new this.componentClass(this._marker.createSection(root), this.element, this.attributes, view);
-    if (Object.keys(this.dynamicAttributes).length) {
-      
-      _hydrateDynamicAttributes(ref, this.options, this.dynamicAttributes, view);
+  class ComponentAttributeRenderer implements vnode.Renderer {
+    _marker: vnode.Marker
+    section: vnode.Section
+    componentClass: vnode.ComponentConstructor
+    attributes: vnode.AttributeMap
+    dynamicAttributes: vnode.DynamicAttributeMap
+    options: vnode.VNodeOptions
+    element: vnode.VNode
+
+    constructor(component: vnode.ComponentConstructor, section: vnode.Section, element: vnode.VNode, attr: any, options: vnode.VNodeOptions) {
+      this.section = section
+      this.componentClass = component
+      this.element = element
+      this.options = options
+      this.attributes = attr.staticAttributes
+      this.dynamicAttributes = attr.dynamicAttributes
+
     }
-   
-    if (ref.update) view.bindings.push(ref);
-    
+
+    generate(root: Node, view: vnode.IView) {
+      if (!this._marker) this._marker = this.section.createMarker();
+
+      var ref = new this.componentClass(this._marker.createSection(root), this.element, this.attributes, view);
+      if (Object.keys(this.dynamicAttributes).length) {
+
+        _hydrateDynamicAttributes(ref, this.options, this.dynamicAttributes, view);
+      }
+
+      if (ref.update) view.bindings.push(ref);
+
+    }
   }
+
+  class ElementAttributeRenderer implements vnode.Renderer {
+    _marker: vnode.NodeSectionMarker
+    constructor(public section: vnode.NodeSection, public options: any, public attributes: any) {
+
+    }
+
+    generate(root: Node, view: vnode.IView) {
+      if (!this._marker) this._marker = this.section.createMarker();
+
+      _hydrateDynamicAttributes(this._marker.findNode(root), this.options, this.attributes, view)
+    }
+  }
+
+  function _hydrateDynamicAttributes(ref, options: vnode.VNodeOptions, dynamicAttributes, view: vnode.IView) {
+    for (var key in dynamicAttributes) {
+      var clazz = options.attributes[key];
+      var attr = new clazz(ref, key, dynamicAttributes[key], view);
+      if (attr.update) view.bindings.push(attr);
+    }
+  }
+
 }
 
-class ElementAttributeRenderer implements vnode.Renderer {
-  _marker: vnode.NodeSectionMarker
-  constructor (public section:vnode.NodeSection, public options:any, public attributes:any) {
-    
-  }
-  
-  generate(root:Node, view:vnode.IView) {
-    if (!this._marker) this._marker = this.section.createMarker();
-    
-    _hydrateDynamicAttributes(this._marker.findNode(root), this.options,this.attributes,view)
-  }
-}
-
-function _hydrateDynamicAttributes(ref, options:vnode.VNodeOptions, dynamicAttributes, view:vnode.IView) {
-  for (var key in dynamicAttributes) {
-    var clazz = options.attributes[key];
-    var attr = new clazz(ref, key, dynamicAttributes[key], view);
-    if (attr.update) view.bindings.push(attr);
-  }
-}

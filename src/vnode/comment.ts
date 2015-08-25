@@ -1,7 +1,7 @@
 /// <reference path="vnode" />
 /// <reference path="../transpiler" />
 
-module vnode {
+module templ.vnode {
 	
 	export class Comment implements VNode {
 		nodeType = NodeType.Comment
@@ -14,7 +14,7 @@ module vnode {
 		}
 	}
 	
-	export const comment: parser.CommentCreator = function (nodeValue:string): Comment {
+	export const comment: compiler.CommentCreator = function (nodeValue:string): Comment {
 		return new Comment(nodeValue)
 	} 
 	

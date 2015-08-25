@@ -8,7 +8,7 @@
 /// <reference path="base" />
 
 
-module attributes {
+module templ.attributes {
 	export var value = ValueAttribute;
 	export var onclick = ClickAttribute;
 	export var onenter = OnEnterAttribute;

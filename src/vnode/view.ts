@@ -1,7 +1,7 @@
 /// <reference path="vnode" />
 /// <reference path="template" />
 
-module vnode {
+module templ.vnode {
 	
 	export class View implements IView {
 		bindings: Bindable[] = []

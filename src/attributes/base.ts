@@ -1,7 +1,7 @@
 /// <reference path="../vnode/vnode" />
 
 
-module attributes {
+module templ.attributes {
 	
 	export class BaseAttribute implements vnode.Attribute {
 		ref: Node

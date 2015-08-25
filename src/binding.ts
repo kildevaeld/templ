@@ -4,7 +4,7 @@
 /// <reference path="utils" />
 
 
-module engine {
+module templ {
 	
 	export class Binding implements vnode.Binding {
 		ref:Element

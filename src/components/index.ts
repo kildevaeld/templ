@@ -1,5 +1,5 @@
 /// <reference path="repeat" />
-module components {
+module templ.components {
 	export const repeat = Repeat
 }
 

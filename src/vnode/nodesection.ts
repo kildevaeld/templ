@@ -1,6 +1,6 @@
 /// <reference path="vnode" />
 
-module vnode {
+module templ.vnode {
 
 	export class NodeSection implements Section {
 		document: Document

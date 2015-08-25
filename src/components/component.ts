@@ -2,7 +2,7 @@
 /// <reference path="../vnode/template" />
 /// <reference path="../vnode/fragment" />
 
-module components {
+module templ.components {
 	
 	export class BaseComponent implements vnode.Component {
 		section: vnode.Section

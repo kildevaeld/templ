@@ -2,10 +2,29 @@ declare module "templ" {
 	export = templ
 }
 
-declare module parser {
+declare module templ {
+    var version: string;
+    interface TemplateOptions {
+        document?: Document;
+        attributes?: {
+            [key: string]: vnode.AttributeConstructor;
+        };
+        components?: {
+            [key: string]: vnode.ComponentConstructor;
+        };
+        viewClass?: vnode.IViewConstructor;
+        modifiers?: (value: any) => any;
+    }
+    function attribute(name: string, attr: vnode.AttributeConstructor | vnode.Attribute): void;
+    function component(name: string, cmp: vnode.ComponentConstructor | vnode.ComponentConstructor): void;
+    function modifier(name: string, func: (value: any) => any): void;
+    function debugging(enabled: boolean): void;
+    function compile(str: string, options?: TemplateOptions): vnode.Template;
+}
+declare module templ.compiler {
     var parser: any;
 }
-declare module vnode {
+declare module templ.vnode {
     class NodeSection implements Section {
         document: Document;
         node: Node;
@@ -25,7 +44,7 @@ declare module vnode {
         findNode(root: any): Node;
     }
 }
-declare module vnode {
+declare module templ.vnode {
     class FragmentSection implements Section {
         document: Document;
         start: Node;
@@ -48,10 +67,10 @@ declare module vnode {
         createSection(root: Node): vnode.FragmentSection;
     }
 }
-declare module vnode {
+declare module templ.vnode {
     function section(document: Document, node: Node): Section;
 }
-declare module vnode {
+declare module templ.vnode {
     class View implements IView {
         section: Section;
         template: Template;
@@ -65,7 +84,7 @@ declare module vnode {
         remove(): any;
     }
 }
-declare module vnode {
+declare module templ.vnode {
     interface TemplateOptions extends VNodeOptions {
         viewClass?: IViewConstructor;
     }
@@ -79,7 +98,7 @@ declare module vnode {
     }
     function template(vnode: VNode, options: TemplateOptions): Template;
 }
-declare module vnode {
+declare module templ.vnode {
     enum NodeType {
         Element = 1,
         Fragment = 11,
@@ -167,7 +186,7 @@ declare module vnode {
     function getNodeByPath(root: Node, path: string[]): Node;
     function getNodePath(node: Node): string[];
 }
-declare module parser {
+declare module templ.compiler {
     interface BindingCreator {
         (intializer: () => void, update: (context) => void): vnode.BindingContructor;
     }
@@ -194,7 +213,7 @@ declare module parser {
 /**
  */
 declare function _dashToCamelCase(string: any): any;
-declare module parser {
+declare module templ.compiler {
     function compile(src: string, options?: any): TranspilerFunc;
 }
 declare module utils {
@@ -221,7 +240,7 @@ declare module utils {
     }
     function debug(namespace: string): (...args: any[]) => void;
 }
-declare module engine {
+declare module templ {
     class Binding implements vnode.Binding {
         ref: Element;
         view: vnode.IView;
@@ -240,106 +259,6 @@ declare module engine {
         destroy(): void;
     }
     function binding(initialize: () => void, update: (context) => void): vnode.BindingContructor;
-}
-declare module vnode {
-    class Text implements VNode {
-        nodeType: NodeType;
-        nodeValue: string;
-        constructor(nodeValue: string);
-        render(options: VNodeOptions): Node;
-    }
-    var text: parser.TextCreator;
-}
-declare module vnode {
-    class Dynamic implements VNode {
-        nodeType: NodeType;
-        vnode: VNode;
-        bindingClass: BindingContructor;
-        constructor(vnode: VNode, bindingClass: BindingContructor);
-        render(options: VNodeOptions, renderers: Renderer[]): Node;
-        _renderElement(options: VNodeOptions, renderers: Renderer[]): Node;
-        _renderComponent(options: VNodeOptions, renderers: Renderer[]): Node;
-    }
-    const dynamic: parser.DynamicCreator;
-}
-declare class DynamicComponentRenderer implements vnode.Renderer {
-    renderer: vnode.Renderer;
-    bindingClass: vnode.BindingContructor;
-    options: vnode.VNodeOptions;
-    constructor(renderer: vnode.Renderer, bindingClass: vnode.BindingContructor, options: vnode.VNodeOptions);
-    generate(root: Node, view: vnode.IView): void;
-}
-declare class DynamicRenderer implements vnode.Renderer {
-    options: any;
-    ref: Node;
-    bindingClass: any;
-    _refPath: string[];
-    constructor(node: Node, bindingClass: vnode.BindingContructor, options?: any);
-    generate(root: Node, view: vnode.IView): void;
-}
-declare module vnode {
-    class Element implements VNode {
-        nodeType: NodeType;
-        tagName: string;
-        attributes: AttributeMap;
-        childNodes: VNode[];
-        constructor(tagName: string, attributes: AttributeMap, children: VNode[]);
-        render(options: VNodeOptions, renderers: Renderer[]): HTMLElement;
-        setAttributes(key: AttributeMap | string, value?: string): void;
-        _renderComponent(component: ComponentConstructor, options: VNodeOptions, renderers: Renderer[]): HTMLElement;
-        _renderElement(options: VNodeOptions, renderers: Renderer[]): HTMLElement;
-        _splitAttributes(options: any): {
-            dynamicAttributes: {};
-            staticAttributes: {};
-        };
-    }
-    const element: parser.ElementCreator;
-}
-declare class ComponentAttributeRenderer implements vnode.Renderer {
-    _marker: vnode.Marker;
-    section: vnode.Section;
-    componentClass: vnode.ComponentConstructor;
-    attributes: vnode.AttributeMap;
-    dynamicAttributes: vnode.DynamicAttributeMap;
-    options: vnode.VNodeOptions;
-    element: vnode.VNode;
-    constructor(component: vnode.ComponentConstructor, section: vnode.Section, element: vnode.VNode, attr: any, options: vnode.VNodeOptions);
-    generate(root: Node, view: vnode.IView): void;
-}
-declare class ElementAttributeRenderer implements vnode.Renderer {
-    section: vnode.NodeSection;
-    options: any;
-    attributes: any;
-    _marker: vnode.NodeSectionMarker;
-    constructor(section: vnode.NodeSection, options: any, attributes: any);
-    generate(root: Node, view: vnode.IView): void;
-}
-declare function _hydrateDynamicAttributes(ref: any, options: vnode.VNodeOptions, dynamicAttributes: any, view: vnode.IView): void;
-declare module vnode {
-    class Fragment implements VNode {
-        nodeType: NodeType;
-        childNodes: VNode[];
-        constructor(children: VNode[]);
-        render(options: VNodeOptions, renderers: Renderer[]): DocumentFragment;
-    }
-    const fragment: parser.FragmentCreator;
-}
-declare module vnode {
-    class Comment implements VNode {
-        nodeType: NodeType;
-        nodeValue: string;
-        constructor(nodeValue: string);
-        render(options: VNodeOptions): Node;
-    }
-    const comment: parser.CommentCreator;
-}
-declare module modifiers {
-    function uppercase(value: any): string;
-    function lowercase(value: any): string;
-    function titlecase(value: any): any;
-    function json(value: any, count: any, delimiter: any): any;
-    function isNaN(value: any): any;
-    const round: (x: number) => number;
 }
 declare const debug: (...args: any[]) => void;
 declare function _set(target: any, keypath: any, value: any): any;
@@ -386,7 +305,64 @@ declare module templ {
         call(keypath: string | string[], params: any): any;
     }
 }
-declare module attributes {
+declare module templ.vnode {
+    class Comment implements VNode {
+        nodeType: NodeType;
+        nodeValue: string;
+        constructor(nodeValue: string);
+        render(options: VNodeOptions): Node;
+    }
+    const comment: compiler.CommentCreator;
+}
+declare module templ.vnode {
+    class Dynamic implements VNode {
+        nodeType: NodeType;
+        vnode: VNode;
+        bindingClass: BindingContructor;
+        constructor(vnode: VNode, bindingClass: BindingContructor);
+        render(options: VNodeOptions, renderers: Renderer[]): Node;
+        _renderElement(options: VNodeOptions, renderers: Renderer[]): Node;
+        _renderComponent(options: VNodeOptions, renderers: Renderer[]): Node;
+    }
+    const dynamic: compiler.DynamicCreator;
+}
+declare module templ.vnode {
+    class Element implements VNode {
+        nodeType: NodeType;
+        tagName: string;
+        attributes: AttributeMap;
+        childNodes: VNode[];
+        constructor(tagName: string, attributes: AttributeMap, children: VNode[]);
+        render(options: VNodeOptions, renderers: Renderer[]): HTMLElement;
+        setAttributes(key: AttributeMap | string, value?: string): void;
+        _renderComponent(component: ComponentConstructor, options: VNodeOptions, renderers: Renderer[]): HTMLElement;
+        _renderElement(options: VNodeOptions, renderers: Renderer[]): HTMLElement;
+        _splitAttributes(options: any): {
+            dynamicAttributes: {};
+            staticAttributes: {};
+        };
+    }
+    const element: compiler.ElementCreator;
+}
+declare module templ.vnode {
+    class Fragment implements VNode {
+        nodeType: NodeType;
+        childNodes: VNode[];
+        constructor(children: VNode[]);
+        render(options: VNodeOptions, renderers: Renderer[]): DocumentFragment;
+    }
+    const fragment: compiler.FragmentCreator;
+}
+declare module templ.vnode {
+    class Text implements VNode {
+        nodeType: NodeType;
+        nodeValue: string;
+        constructor(nodeValue: string);
+        render(options: VNodeOptions): Node;
+    }
+    var text: compiler.TextCreator;
+}
+declare module templ.attributes {
     class BaseAttribute implements vnode.Attribute {
         ref: Node;
         key: string;
@@ -398,7 +374,7 @@ declare module attributes {
         destroy(): void;
     }
 }
-declare module attributes {
+declare module templ.attributes {
     class ValueAttribute extends BaseAttribute {
         model: templ.Reference;
         _autocompleteCheckInterval: number;
@@ -409,7 +385,7 @@ declare module attributes {
         _elementValue(value?: any): any;
     }
 }
-declare module attributes {
+declare module templ.attributes {
     class EventAttribute extends BaseAttribute {
         event: string;
         initialize(): void;
@@ -430,7 +406,7 @@ declare module attributes {
         KeyCodes: number[];
     }
 }
-declare module attributes {
+declare module templ.attributes {
     var value: typeof ValueAttribute;
     var onclick: typeof ClickAttribute;
     var onenter: typeof OnEnterAttribute;
@@ -438,7 +414,16 @@ declare module attributes {
     var checked: typeof ValueAttribute;
     var style: typeof StyleAttribute;
 }
-declare module components {
+declare module templ.attributes {
+    class StyleAttribute extends BaseAttribute {
+        _currentStyles: {
+            [key: string]: string;
+        };
+        initialize(): void;
+        update(): void;
+    }
+}
+declare module templ.components {
     class BaseComponent implements vnode.Component {
         section: vnode.Section;
         vnode: vnode.VNode;
@@ -453,61 +438,21 @@ declare module components {
         destroy(): void;
     }
 }
-declare module components {
+declare module templ.components {
     class Repeat extends BaseComponent {
         _children: vnode.VNode[];
         update(): void;
         setAttribute(key: string, value: any): void;
     }
 }
-declare module components {
+declare module templ.components {
     const repeat: typeof Repeat;
 }
-declare let virtualnode: {
-    text: parser.TextCreator;
-    dynamic: parser.DynamicCreator;
-    comment: parser.CommentCreator;
-    element: parser.ElementCreator;
-    fragment: parser.FragmentCreator;
-    template: (vnode: vnode.VNode, options: vnode.TemplateOptions) => vnode.Template;
-};
-declare module templ {
-    var version: string;
-    const compiler: {
-        compile: (src: string, options?: any) => parser.TranspilerFunc;
-        vnode: typeof vnode;
-        transpile: (source: string) => string;
-    };
-    const lib: {
-        View: typeof View;
-        Attribute: typeof attributes.BaseAttribute;
-        Component: typeof components.BaseComponent;
-        attributes: typeof attributes;
-        components: typeof components;
-    };
-    interface TemplateOptions {
-        document?: Document;
-        attributes?: {
-            [key: string]: vnode.AttributeConstructor;
-        };
-        components?: {
-            [key: string]: vnode.ComponentConstructor;
-        };
-        viewClass?: vnode.IViewConstructor;
-        modifiers?: (value: any) => any;
-    }
-    function attribute(name: string, attr: vnode.AttributeConstructor | vnode.Attribute): void;
-    function component(name: string, cmp: vnode.ComponentConstructor | vnode.ComponentConstructor): void;
-    function modifier(name: string, func: (value: any) => any): void;
-    function debugging(enabled: boolean): void;
-    function compile(str: string, options?: TemplateOptions): vnode.Template;
-}
-declare module attributes {
-    class StyleAttribute extends BaseAttribute {
-        _currentStyles: {
-            [key: string]: string;
-        };
-        initialize(): void;
-        update(): void;
-    }
+declare module modifiers {
+    function uppercase(value: any): string;
+    function lowercase(value: any): string;
+    function titlecase(value: any): any;
+    function json(value: any, count: any, delimiter: any): any;
+    function isNaN(value: any): any;
+    const round: (x: number) => number;
 }

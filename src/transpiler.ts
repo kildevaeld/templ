@@ -1,7 +1,7 @@
 
 /// <reference path="parser" />
 /// <reference path="./vnode/vnode" />
-module parser {
+module templ.compiler {
   
   export interface BindingCreator {
     (intializer:() => void, update:(context) => void): vnode.BindingContructor

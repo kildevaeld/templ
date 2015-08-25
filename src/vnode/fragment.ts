@@ -2,7 +2,7 @@
 /// <reference path="vnode" />
 /// <reference path="../transpiler" />
 
-module vnode {
+module templ.vnode {
 
   export class Fragment implements VNode {
     nodeType = NodeType.Fragment
@@ -30,7 +30,7 @@ module vnode {
   }
   
   
-  export const fragment: parser.FragmentCreator = function (children: VNode[]): Fragment {
+  export const fragment: compiler.FragmentCreator = function (children: VNode[]): Fragment {
     return new Fragment(children);
   }
   

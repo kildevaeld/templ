@@ -2,7 +2,7 @@
 /// <reference path="../vnode/vnode" />
 
 
-module components {
+module templ.components {
 
   function _each(target, iterate) {
 
