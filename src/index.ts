@@ -7,6 +7,10 @@
 /// <reference path="vnode/element" />
 /// <reference path="vnode/fragment" />
 /// <reference path="vnode/comment" />
+
+
+/// <reference path="modifiers/index" />
+
 /// <reference path="utils" />
 
 /// <reference path="view" />
@@ -31,17 +35,26 @@ module templ {
 	
 	export var version = "$$version$$"
 	
-	export module compiler {
-		export const compile = parser.compile
-		export const vnode = virtualnode
-		export const transpile = parser.transpile
+	export const compiler = {
+		compile: parser.compile,
+		vnode: vnode,
+		transpile: parser.transpile
+	}
+	
+	export const lib = {
+		View: templ.View,
+		Attribute: attributes.BaseAttribute,
+		Component: components.BaseComponent,
+		attributes: attributes,
+		components: components
 	}
 	
 	export interface TemplateOptions {
 		document?: Document
 		attributes?: {[key:string]: vnode.AttributeConstructor}
 		components?: {[key: string]: vnode.ComponentConstructor}
-		viewClass?:vnode.IViewConstructor
+		viewClass?:vnode.IViewConstructor,
+		modifiers?:(value:any) => any
 	}
 	
 	export function attribute (name:string, attr:vnode.AttributeConstructor|vnode.Attribute) {
@@ -56,6 +69,10 @@ module templ {
 			cmp = utils.extendClass<vnode.ComponentConstructor>(components.BaseComponent, cmp)
 		}
 		components[name] = cmp
+	}
+	
+	export function modifier(name:string, func:(value:any) => any) {
+		modifiers[name] = func;
 	}
 
 	export function debugging(enabled:boolean) {
@@ -72,7 +89,8 @@ module templ {
 			document: document,
 			viewClass: templ.View,
 			attributes: <any>attributes,
-			components:<any>components
+			components:<any>components,
+			modifiers: modifiers
 		}, options||{}))
 	}
 

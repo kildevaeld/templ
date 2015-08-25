@@ -10,9 +10,10 @@
 <body>
 	<script type="text/html" id="template">
 		<!-- speed demo for rendering a dynamic list of items -->
+		<button onclick="{{count = count + 1}}">Click {{count}}, onEnter: {{onEnter}}</button>
 		<div>
-				Generate
-		<input type="text" class="form-control" style="width:60px;display:inline-block;" value="{{<~>numItems}}"></input> items:
+				Generate {{title | uppercase}}
+		<input type="text" class="form-control" style="width:60px;display:inline-block;" value="{{<~>numItems}}" onenter="{{onEnter = true}}"></input> items:
 		<br /> {{~numItems}}
 		<repeat each="{{ range(numItems) }}" as='number'>
 			{{~number}}
@@ -25,6 +26,8 @@
 	
 	<script>
 		'use strict';
+		templ.debugging(false)
+		
 		var range = function(start, stop, step) {
 			if (stop == null) {
 				stop = start || 0;
@@ -42,29 +45,29 @@
 			return range;
 			}
 			
-			templ.debugging(false)
+			
 			
 			let t = document.getElementById('template')
 		
 			let template = templ.compile(t.innerHTML);
-			console.log(template)
+			
 			let view = template.view({
+				count: 0,
+				title: 'test',
   			numItems: 1000,
   			range: function (count) {
 
-    			return range(Math.min(count, 20000)).reverse();
+    			return range(Math.min(count, 2000)).reverse();
   			}
 			})
 			let elm = view.render();
-			console.log(elm)
+			
 			document.body.appendChild(elm)
-			console.log(view)
+			
 			
 			document.getElementById('remove').addEventListener('click', function () {
 				view.remove()
-				setTimeout(function () {
-					document.body.appendChild(view.render())
-				}, 500)
+				
 			})
 			
 			setTimeout(function () {

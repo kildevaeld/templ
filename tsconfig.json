@@ -41,8 +41,11 @@
         "./src/attributes/base.ts",
         "./src/attributes/value.ts",
         "./src/attributes/index.ts",
+        "./src/attributes/event.ts",
+        "./src/attributes/style.ts",
         "./src/components/component.ts",
         "./src/components/repeat.ts",
-        "./src/components/index.ts"
+        "./src/components/index.ts",
+        "./src/modifiers/index.ts"
     ]
 }

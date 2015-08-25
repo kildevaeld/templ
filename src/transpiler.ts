@@ -68,7 +68,7 @@ module parser {
       var fragment = "fragment([" + this._children(elements) + "])";
       buffer += "'use strict';return " + fragment;
       buffer += "})";
-
+      
       return buffer;
     }
 
@@ -381,6 +381,12 @@ module parser {
 
     _modifier(expression) {
       return "this.options.modifiers." + expression[1] + "(" + expression[2].map(this._expression).join(",") + ")";
+    }
+    
+    _assign(expression) {
+      
+      return 'this.view.assign("' + expression[1][1] + '", ' + 
+        'function () { return ' + this._expression(expression[2]) + ';})'
     }
 
     /**

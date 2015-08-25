@@ -50,6 +50,22 @@ module templ {
 			return this.view.get(this.path)||''
 		}
 	}
+	
+	export class Assignment {
+		view: View
+		path: string
+		value: () => any
+		constructor(view:View, path: string, value:() => any) {
+			this.view = view
+			this.path = path
+			this.value = value
+			this.assign = utils.bind(this.assign, this);
+		}
+		
+		assign(value?:(any)) {
+			this.view.set(this.path, this.value.call(this));
+		}
+	}
 
 	export class View extends vnode.View {
 
@@ -78,7 +94,7 @@ module templ {
 			}
 			
 			v = v != void 0 ? v : this.parent ? this.parent.get(keypath) : void 0;
-			debug('get value %s', v)
+			debug('get value "%s": %s', keypath, v)
 			
 			return v	
 		}
@@ -111,6 +127,11 @@ module templ {
 		ref(path: string, gettable: boolean, settable: boolean): Reference {
 			debug('reference %s, gettable: %o, settabble: %o',path, gettable, settable)
 			return new Reference(this, path, gettable, settable)
+		}
+
+		assign(path:string, value:any): Assignment {
+			debug('assignment %s %s',path, value);
+			return new Assignment(this, path, value);
 		}
 
 		call(keypath: string|string[], params) {

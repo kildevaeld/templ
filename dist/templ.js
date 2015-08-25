@@ -1546,6 +1546,9 @@
       Transpiler.prototype._modifier = function (expression) {
         return "this.options.modifiers." + expression[1] + "(" + expression[2].map(this._expression).join(",") + ")";
       };
+      Transpiler.prototype._assign = function (expression) {
+        return 'this.view.assign("' + expression[1][1] + '", ' + 'function () { return ' + this._expression(expression[2]) + ';})';
+      };
       /**
        */
       Transpiler.prototype._group = function (expression) {
@@ -2052,6 +2055,36 @@
       return new Comment(nodeValue);
     };
   })(vnode || (vnode = {}));
+  var modifiers;
+  (function (modifiers) {
+    function uppercase(value) {
+      return String(value).toUpperCase();
+    }
+    modifiers.uppercase = uppercase;
+
+    function lowercase(value) {
+      return String(value).toLowerCase();
+    }
+    modifiers.lowercase = lowercase;
+
+    function titlecase(value) {
+      var str;
+      str = String(value);
+      return str.substr(0, 1).toUpperCase() + str.substr(1);
+    }
+    modifiers.titlecase = titlecase;
+
+    function json(value, count, delimiter) {
+      return JSON.stringify.apply(JSON, arguments);
+    }
+    modifiers.json = json;
+
+    function isNaN(value) {
+      return isNaN(value);
+    }
+    modifiers.isNaN = isNaN;
+    modifiers.round = Math.round;
+  })(modifiers || (modifiers = {}));
   var __extends = (this && this.__extends) ||
   function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
@@ -2099,6 +2132,19 @@
       return Reference;
     })();
     templ.Reference = Reference;
+    var Assignment = (function () {
+      function Assignment(view, path, value) {
+        this.view = view;
+        this.path = path;
+        this.value = value;
+        this.assign = utils.bind(this.assign, this);
+      }
+      Assignment.prototype.assign = function (value) {
+        this.view.set(this.path, this.value.call(this));
+      };
+      return Assignment;
+    })();
+    templ.Assignment = Assignment;
     var View = (function (_super) {
       __extends(View, _super);
 
@@ -2129,7 +2175,7 @@
           v = void 0;
         }
         v = v != void 0 ? v : this.parent ? this.parent.get(keypath) : void 0;
-        debug('get value %s', v);
+        debug('get value "%s": %s', keypath, v);
         return v;
       };
       View.prototype.set = function (path, value) {
@@ -2148,6 +2194,10 @@
       View.prototype.ref = function (path, gettable, settable) {
         debug('reference %s, gettable: %o, settabble: %o', path, gettable, settable);
         return new Reference(this, path, gettable, settable);
+      };
+      View.prototype.assign = function (path, value) {
+        debug('assignment %s %s', path, value);
+        return new Assignment(this, path, value);
       };
       View.prototype.call = function (keypath, params) {
         var caller;
@@ -2278,7 +2328,96 @@
   })(attributes || (attributes = {}));
   var attributes;
   (function (attributes) {
+    var debug = utils.debug('attributes:event');
+    var EventAttribute = (function (_super) {
+      __extends(EventAttribute, _super);
+
+      function EventAttribute() {
+        _super.apply(this, arguments);
+      }
+      EventAttribute.prototype.initialize = function () {
+        this._onEvent = utils.bind(this._onEvent, this);
+        if (!this.event) this.event = this.key.match(/on(.+)/)[1].toLowerCase();
+        debug('added event listener %s: %o', this.event, this.value);
+        this.ref.addEventListener(this.event, this._onEvent);
+      };
+      EventAttribute.prototype._onEvent = function (e) {
+        var self = this;
+        var fn;
+        if (this.value instanceof templ.Assignment) {
+          fn = this.value.assign;
+        }
+        else {
+          fn = this.value;
+        }
+        if (typeof fn !== 'function') {
+          throw new Error('[event] value is not a function');
+        }
+        debug('fired event: %s', this.event);
+        fn(e);
+      };
+      EventAttribute.prototype.destroy = function () {
+        debug('removed event listener %s: %o', this.event, this.value);
+        this.ref.removeEventListener('click', this._onEvent);
+      };
+      return EventAttribute;
+    })(attributes.BaseAttribute);
+    attributes.EventAttribute = EventAttribute;
+    var KeyCodeAttribute = (function (_super) {
+      __extends(KeyCodeAttribute, _super);
+
+      function KeyCodeAttribute(ref, key, value, view) {
+        this.event = "keydown";
+        this.keyCodes = [];
+        _super.call(this, ref, key, value, view);
+      }
+      KeyCodeAttribute.prototype._onEvent = function (event) {
+        if (!~this.keyCodes.indexOf(event.keyCode)) {
+          return;
+        }
+        _super.prototype._onEvent.call(this, event);
+      };
+      return KeyCodeAttribute;
+    })(EventAttribute);
+    attributes.KeyCodeAttribute = KeyCodeAttribute;
+    var ClickAttribute = (function (_super) {
+      __extends(ClickAttribute, _super);
+
+      function ClickAttribute() {
+        _super.apply(this, arguments);
+      }
+      return ClickAttribute;
+    })(EventAttribute);
+    attributes.ClickAttribute = ClickAttribute;
+    var OnEnterAttribute = (function (_super) {
+      __extends(OnEnterAttribute, _super);
+
+      function OnEnterAttribute() {
+        _super.apply(this, arguments);
+        this.keyCodes = [13];
+      }
+      return OnEnterAttribute;
+    })(KeyCodeAttribute);
+    attributes.OnEnterAttribute = OnEnterAttribute;
+    var OnEscapeAttribute = (function (_super) {
+      __extends(OnEscapeAttribute, _super);
+
+      function OnEscapeAttribute() {
+        _super.apply(this, arguments);
+        this.KeyCodes = [27];
+      }
+      return OnEscapeAttribute;
+    })(KeyCodeAttribute);
+    attributes.OnEscapeAttribute = OnEscapeAttribute;
+  })(attributes || (attributes = {}));
+  var attributes;
+  (function (attributes) {
     attributes.value = attributes.ValueAttribute;
+    attributes.onclick = attributes.ClickAttribute;
+    attributes.onenter = attributes.OnEnterAttribute;
+    attributes.onescape = attributes.OnEscapeAttribute;
+    attributes.checked = attributes.ValueAttribute;
+    attributes.style = attributes.StyleAttribute;
   })(attributes || (attributes = {}));
   var components;
   (function (components) {
@@ -2385,13 +2524,19 @@
   };
   var templ;
   (function (templ) {
-    templ.version = "0.0.5";
-    var compiler;
-    (function (compiler) {
-      compiler.compile = parser.compile;
-      compiler.vnode = virtualnode;
-      compiler.transpile = parser.transpile;
-    })(compiler = templ.compiler || (templ.compiler = {}));
+    templ.version = "0.0.6";
+    templ.compiler = {
+      compile: parser.compile,
+      vnode: vnode,
+      transpile: parser.transpile
+    };
+    templ.lib = {
+      View: templ.View,
+      Attribute: attributes.BaseAttribute,
+      Component: components.BaseComponent,
+      attributes: attributes,
+      components: components
+    };
 
     function attribute(name, attr) {
       if (typeof attr !== 'function') {
@@ -2409,6 +2554,11 @@
     }
     templ.component = component;
 
+    function modifier(name, func) {
+      modifiers[name] = func;
+    }
+    templ.modifier = modifier;
+
     function debugging(enabled) {
       utils.Debug.enable(enabled);
     }
@@ -2422,10 +2572,43 @@
         document: document,
         viewClass: templ.View,
         attributes: attributes,
-        components: components
+        components: components,
+        modifiers: modifiers
       }, options || {}));
     }
     templ.compile = compile;
   })(templ || (templ = {}));
+  var attributes;
+  (function (attributes) {
+    var StyleAttribute = (function (_super) {
+      __extends(StyleAttribute, _super);
+
+      function StyleAttribute() {
+        _super.apply(this, arguments);
+      }
+      StyleAttribute.prototype.initialize = function () {
+        this._currentStyles = {};
+      };
+      StyleAttribute.prototype.update = function () {
+        var styles = this.value;
+        if (typeof styles === "string") {
+          this.ref.setAttribute("style", styles);
+          return;
+        }
+        var newStyles = {};
+        for (var name in styles) {
+          var style = styles[name];
+          if (style !== this._currentStyles[name]) {
+            newStyles[name] = this._currentStyles[name] = style || "";
+          }
+        }
+        for (var key in newStyles) {
+          this.ref.style[key] = newStyles[key];
+        }
+      };
+      return StyleAttribute;
+    })(attributes.BaseAttribute);
+    attributes.StyleAttribute = StyleAttribute;
+  })(attributes || (attributes = {}));
   return templ;
 }));

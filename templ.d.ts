@@ -331,6 +331,14 @@ declare module vnode {
     }
     const comment: parser.CommentCreator;
 }
+declare module modifiers {
+    function uppercase(value: any): string;
+    function lowercase(value: any): string;
+    function titlecase(value: any): any;
+    function json(value: any, count: any, delimiter: any): any;
+    function isNaN(value: any): any;
+    const round: (x: number) => number;
+}
 declare const debug: (...args: any[]) => void;
 declare function _set(target: any, keypath: any, value: any): any;
 declare module templ {
@@ -342,6 +350,13 @@ declare module templ {
         value(value?: any): any;
         constructor(view: View, path: string, gettable: boolean, settable: boolean);
         toString(): string;
+    }
+    class Assignment {
+        view: View;
+        path: string;
+        value: () => any;
+        constructor(view: View, path: string, value: () => any);
+        assign(value?: (any)): void;
     }
     class View extends vnode.View {
         context: any;
@@ -355,6 +370,7 @@ declare module templ {
         set(path: string | string[], value: any): any;
         render(): Node;
         ref(path: string, gettable: boolean, settable: boolean): Reference;
+        assign(path: string, value: any): Assignment;
         call(keypath: string | string[], params: any): any;
     }
 }
@@ -382,7 +398,33 @@ declare module attributes {
     }
 }
 declare module attributes {
+    class EventAttribute extends BaseAttribute {
+        event: string;
+        initialize(): void;
+        _onEvent(e: any): void;
+        destroy(): void;
+    }
+    class KeyCodeAttribute extends EventAttribute {
+        keyCodes: number[];
+        constructor(ref: Node, key: string, value: any, view: vnode.IView);
+        _onEvent(event: any): void;
+    }
+    class ClickAttribute extends EventAttribute {
+    }
+    class OnEnterAttribute extends KeyCodeAttribute {
+        keyCodes: number[];
+    }
+    class OnEscapeAttribute extends KeyCodeAttribute {
+        KeyCodes: number[];
+    }
+}
+declare module attributes {
     var value: typeof ValueAttribute;
+    var onclick: typeof ClickAttribute;
+    var onenter: typeof OnEnterAttribute;
+    var onescape: typeof OnEscapeAttribute;
+    var checked: typeof ValueAttribute;
+    var style: typeof StyleAttribute;
 }
 declare module components {
     class BaseComponent implements vnode.Component {
@@ -419,18 +461,18 @@ declare let virtualnode: {
 };
 declare module templ {
     var version: string;
-    module compiler {
-        const compile: typeof parser.compile;
-        const vnode: {
-            text: parser.TextCreator;
-            dynamic: parser.DynamicCreator;
-            comment: parser.CommentCreator;
-            element: parser.ElementCreator;
-            fragment: parser.FragmentCreator;
-            template: (vnode: vnode.VNode, options: vnode.TemplateOptions) => vnode.Template;
-        };
-        const transpile: typeof parser.transpile;
-    }
+    const compiler: {
+        compile: (src: string, options?: any) => parser.TranspilerFunc;
+        vnode: typeof vnode;
+        transpile: (source: string) => string;
+    };
+    const lib: {
+        View: typeof View;
+        Attribute: typeof attributes.BaseAttribute;
+        Component: typeof components.BaseComponent;
+        attributes: typeof attributes;
+        components: typeof components;
+    };
     interface TemplateOptions {
         document?: Document;
         attributes?: {
@@ -440,9 +482,20 @@ declare module templ {
             [key: string]: vnode.ComponentConstructor;
         };
         viewClass?: vnode.IViewConstructor;
+        modifiers?: (value: any) => any;
     }
     function attribute(name: string, attr: vnode.AttributeConstructor | vnode.Attribute): void;
     function component(name: string, cmp: vnode.ComponentConstructor | vnode.ComponentConstructor): void;
+    function modifier(name: string, func: (value: any) => any): void;
     function debugging(enabled: boolean): void;
     function compile(str: string, options?: TemplateOptions): vnode.Template;
+}
+declare module attributes {
+    class StyleAttribute extends BaseAttribute {
+        _currentStyles: {
+            [key: string]: string;
+        };
+        initialize(): void;
+        update(): void;
+    }
 }

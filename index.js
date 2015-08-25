@@ -2,7 +2,7 @@
 const template = `<!-- speed demo for rendering a dynamic list of items -->
 
 Generate <input type="text" class="form-control" style="width:60px;display:inline-block;" value="{{<~>numItems}}"></input> items: <br />
-
+<button class="{{test = 'ok'}}"></button>
 <repeat each="{{ range(numItems) }}" as='number'>
   {{~number}} <br />
 </repeat>`
@@ -31,9 +31,11 @@ function _stringifyNode(node) {
   return buffer;
 }
 
-let t = templ.compile(template);
+let t = templ.compiler.transpile(template);
 
-console.log(_stringifyNode(t), {
+console.log(t)
+
+/*console.log(_stringifyNode(t), {
   numItems: 10,
   range: function (count) {
     return _.range(Math.min(count, 20000)).reverse();
@@ -43,5 +45,5 @@ console.log(_stringifyNode(t), {
 
 let rendered = t.render({
   document: dom.defaultView.document
-});
+});*/
 
