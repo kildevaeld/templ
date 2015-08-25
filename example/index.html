@@ -10,15 +10,16 @@
 <body>
 	<script type="text/html" id="template">
 		<!-- speed demo for rendering a dynamic list of items -->
-		<button onclick="{{count = count + 1}}">Click {{count}}, onEnter: {{onEnter}}</button>
+		<button onclick="{{count = count + 1}}">Click {{count}}, onEnter: {{onEnter ? 'Entered' : ''}}</button>
 		<div>
-				Generate {{title | uppercase}}
+				Generate {{title = count}}
 		<input type="text" class="form-control" style="width:60px;display:inline-block;" value="{{<~>numItems}}" onenter="{{onEnter = true}}"></input> items:
 		<br /> {{~numItems}}
 		<repeat each="{{ range(numItems) }}" as='number'>
 			{{~number}}
 			<br />
 		</repeat>
+		{{title}}
 		</div>
 
 	</script>

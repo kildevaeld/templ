@@ -1204,6 +1204,18 @@
           binding.update();
         }
       };
+      View.prototype.addListener = function (elm, eventName, callback, capture) {
+        if (capture === void 0) {
+          capture = false;
+        }
+        elm.addEventListener(eventName, callback, capture);
+      };
+      View.prototype.removeListener = function (elm, eventName, callback, capture) {
+        if (capture === void 0) {
+          capture = false;
+        }
+        elm.removeEventListener(eventName, callback, capture);
+      };
       View.prototype.render = function () {
         return this.section.render();
       };
@@ -2138,9 +2150,14 @@
         this.path = path;
         this.value = value;
         this.assign = utils.bind(this.assign, this);
+        this.toString = utils.bind(this.toString, this);
       }
       Assignment.prototype.assign = function (value) {
         this.view.set(this.path, this.value.call(this));
+      };
+      Assignment.prototype.toString = function () {
+        var val = this.value.call(this);
+        return val ? String(val) : '';
       };
       return Assignment;
     })();
@@ -2159,7 +2176,54 @@
         if (options.parent) {
           this.parent = options.parent;
         }
+        if (options.delegator) {
+          this._delegator = options._delegator;
+        }
       }
+      View.prototype.root = function () {
+        if (this.parent == null) return this;
+        var root = this,
+            tmp = root;
+        while (tmp) {
+          tmp = tmp.parent;
+          if (tmp) root = tmp;
+        }
+        return root;
+      };
+      View.prototype._getDelegator = function () {
+        if (this._delegator) return this._delegator;
+        var parent = this.parent;
+        while (parent) {
+          console.log('paernt');
+          if (parent._delegator) return parent._delegator;
+          parent = parent.parent;
+        }
+        return null;
+      };
+      View.prototype.addListener = function (elm, eventName, callback, capture) {
+        if (capture === void 0) {
+          capture = false;
+        }
+        var delegator = this._getDelegator();
+        if (delegator) {
+          delegator.addListener(elm, eventName, callback, capture);
+        }
+        else {
+          _super.prototype.addListener.call(this, elm, eventName, callback, capture);
+        }
+      };
+      View.prototype.removeListener = function (elm, eventName, callback, capture) {
+        if (capture === void 0) {
+          capture = false;
+        }
+        var delegator = this._getDelegator();
+        if (delegator) {
+          this._delegator.removeListener(elm, eventName, callback, capture);
+        }
+        else {
+          _super.prototype.removeListener.call(this, elm, eventName, callback, capture);
+        }
+      };
       View.prototype.get = function (keypath) {
         if (!this.context) return void 0;
         var pt = typeof keypath !== "string" ? keypath.join(".") : keypath;
@@ -2339,7 +2403,7 @@
         this._onEvent = utils.bind(this._onEvent, this);
         if (!this.event) this.event = this.key.match(/on(.+)/)[1].toLowerCase();
         debug('added event listener %s: %o', this.event, this.value);
-        this.ref.addEventListener(this.event, this._onEvent);
+        this.view.addListener(this.ref, this.event, this._onEvent);
       };
       EventAttribute.prototype._onEvent = function (e) {
         var self = this;
@@ -2358,7 +2422,7 @@
       };
       EventAttribute.prototype.destroy = function () {
         debug('removed event listener %s: %o', this.event, this.value);
-        this.ref.removeEventListener('click', this._onEvent);
+        this.view.removeListener(this.ref, this.event, this._onEvent);
       };
       return EventAttribute;
     })(attributes.BaseAttribute);
@@ -2524,7 +2588,7 @@
   };
   var templ;
   (function (templ) {
-    templ.version = "0.0.6";
+    templ.version = "0.0.7";
     templ.compiler = {
       compile: parser.compile,
       vnode: vnode,

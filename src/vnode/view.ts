@@ -16,6 +16,14 @@ module vnode {
 			
 		}
 		
+		addListener(elm:Node,eventName:string, callback:EventListener, capture:boolean = false) {
+			elm.addEventListener(eventName, callback, capture)
+		}
+		
+		removeListener(elm:Node, eventName:string, callback:EventListener, capture:boolean = false) {
+			elm.removeEventListener(eventName, callback, capture)
+		}
+		
 		render () {
 			return this.section.render()
 		}

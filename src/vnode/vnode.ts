@@ -39,11 +39,13 @@ module vnode {
     createSection(root:Node): Section
   } 
 
-  export interface IView {
+  export interface IView extends templ.IDelegator {
     bindings:Bindable[]
     section:Section
     template: Template
     context:any
+    
+		
   }
   
   export interface IViewConstructor {

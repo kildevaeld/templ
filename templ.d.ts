@@ -59,6 +59,8 @@ declare module vnode {
         bindings: Bindable[];
         constructor(section: Section, template: Template, context: any, options?: any);
         update(): void;
+        addListener(elm: Node, eventName: string, callback: EventListener, capture?: boolean): void;
+        removeListener(elm: Node, eventName: string, callback: EventListener, capture?: boolean): void;
         render(): Node;
         remove(): any;
     }
@@ -116,7 +118,7 @@ declare module vnode {
     interface Marker {
         createSection(root: Node): Section;
     }
-    interface IView {
+    interface IView extends templ.IDelegator {
         bindings: Bindable[];
         section: Section;
         template: Template;
@@ -357,6 +359,11 @@ declare module templ {
         value: () => any;
         constructor(view: View, path: string, value: () => any);
         assign(value?: (any)): void;
+        toString(): string;
+    }
+    interface IDelegator {
+        addListener(elm: Element, eventName: string, callback: (e: any) => void, capture?: boolean): any;
+        removeListener(elm: Element, eventName: string, callback: (e: any) => void, capture?: boolean): any;
     }
     class View extends vnode.View {
         context: any;
@@ -365,6 +372,11 @@ declare module templ {
         };
         _getters: any;
         parent: View;
+        _delegator: IDelegator;
+        root(): View;
+        _getDelegator(): IDelegator;
+        addListener(elm: Element, eventName: string, callback: EventListener, capture?: boolean): void;
+        removeListener(elm: Element, eventName: string, callback: EventListener, capture?: boolean): void;
         get(keypath: any): any;
         constructor(section: vnode.Section, template: vnode.Template, context: any, options?: any);
         set(path: string | string[], value: any): any;

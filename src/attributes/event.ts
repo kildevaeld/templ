@@ -16,10 +16,11 @@ module attributes {
 			this._onEvent = utils.bind(this._onEvent, this);
 			if (!this.event) this.event = this.key.match(/on(.+)/)[1].toLowerCase();
 			debug('added event listener %s: %o', this.event, this.value)
-			this.ref.addEventListener(this.event, this._onEvent);
+			this.view.addListener(<Element>this.ref, this.event, this._onEvent)
+			
 		}
 		
-		_onEvent (e) {
+		_onEvent (e:any) {
 			var self = this;
 			let fn;
 			if (this.value instanceof templ.Assignment) {
@@ -37,7 +38,7 @@ module attributes {
 		
 		destroy () {
 			debug('removed event listener %s: %o', this.event, this.value);
-			this.ref.removeEventListener('click', this._onEvent);
+			this.view.removeListener(<Element>this.ref, this.event, this._onEvent)
 		}
 	}
 	
