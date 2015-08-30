@@ -9,7 +9,7 @@
 }(this, function (require, exports, module) {
   var templ;
   (function (templ) {
-    templ.version = "0.0.8";
+    templ.version = "0.0.9";
 
     function attribute(name, attr) {
       if (typeof attr !== 'function') {
@@ -1984,16 +1984,20 @@
           this._delegator = options._delegator;
         }
       }
-      View.prototype.root = function () {
-        if (this.parent == null) return this;
-        var root = this,
-            tmp = root;
-        while (tmp) {
-          tmp = tmp.parent;
-          if (tmp) root = tmp;
-        }
-        return root;
-      };
+      Object.defineProperty(View.prototype, "root", {
+        get: function () {
+          if (this.parent == null) return this;
+          var root = this,
+              tmp = root;
+          while (tmp) {
+            tmp = tmp.parent;
+            if (tmp) root = tmp;
+          }
+          return root;
+        },
+        enumerable: true,
+        configurable: true
+      });
       View.prototype._getDelegator = function () {
         if (this._delegator) return this._delegator;
         var parent = this.parent;

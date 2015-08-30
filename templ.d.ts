@@ -286,13 +286,13 @@ declare module templ {
     }
     class View extends vnode.View {
         context: any;
+        _delegator: IDelegator;
         _callers: {
             [key: string]: Function;
         };
         _getters: any;
         parent: View;
-        _delegator: IDelegator;
-        root(): View;
+        root: View;
         _getDelegator(): IDelegator;
         addListener(elm: Element, eventName: string, callback: EventListener, capture?: boolean): void;
         removeListener(elm: Element, eventName: string, callback: EventListener, capture?: boolean): void;

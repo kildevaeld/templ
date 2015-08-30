@@ -79,12 +79,13 @@ module templ {
 	}
 
 	export class View extends vnode.View {
-
+		_delegator: IDelegator
 		_callers: { [key: string]: Function } = {}
 		_getters: any = {}
 		parent: View
-		_delegator: IDelegator
-		root (): View {
+		
+		
+		get root (): View {
 			if (this.parent == null) return this
 		
 			let root = this, tmp = root
