@@ -1,4 +1,3 @@
-
 /// <reference path="base" />
 /// <reference path="../utils" />
 /// <reference path="../view" />
@@ -6,14 +5,14 @@
 module templ.attributes {
 	const _events = ['change', 'keyup', 'input']
 	export class ValueAttribute extends BaseAttribute {
-		
+
 		model: templ.Reference
 		_autocompleteCheckInterval: number
 		initialize() {
 			(<any>this)._onInput = utils.bind(this._onInput, this, null)
-			
+
 			for (let e of _events) {
-				
+
 				this.ref.addEventListener(e, this._onInput)
 			}
 		}

@@ -2,47 +2,47 @@
 /// <reference path="parser" />
 /// <reference path="./vnode/vnode" />
 module templ.compiler {
-  
+
   export interface BindingCreator {
     (intializer:() => void, update:(context) => void): vnode.BindingContructor
   }
-  
+
   export interface FragmentCreator {
     (childen:vnode.VNode[]): vnode.Fragment
   }
-  
+
   export interface ElementCreator {
     (tagName:string,attributes:vnode.AttributeMap, ...children:vnode.VNode[]): vnode.Element
   }
-  
+
   export interface TextCreator {
     (nodeValue:string): vnode.Text
   }
-  
+
   export interface CommentCreator {
     (nodeValue:string): vnode.Comment
   }
-  
+
   export interface DynamicCreator {
     (node:vnode.VNode, bindingClass:vnode.BindingContructor): vnode.Dynamic
   }
-  
+
   export interface TranspilerFunc {
     (fragment:FragmentCreator, element:ElementCreator, text:TextCreator, comment:CommentCreator, dynamic:DynamicCreator, createBindingClass:BindingCreator): vnode.VNode
   }
-  
+
   export function transpile (source:string): string {
     let transpiler = new Transpiler()
     return transpiler.transpile(source);
   }
-  
+
   /**
    * Transpile AST to Function
    */
   class Transpiler {
     _refCounter: number
     _refs: any[]
-    
+
     constructor() {
       for (var k in this) {
         if (k.charAt(0) === "_") {
@@ -68,7 +68,7 @@ module templ.compiler {
       var fragment = "fragment([" + this._children(elements) + "])";
       buffer += "'use strict';return " + fragment;
       buffer += "})";
-      
+
       return buffer;
     }
 
@@ -221,8 +221,8 @@ module templ.compiler {
         }
       }
 
-
       return buffer;
+
     }
 
     /**
@@ -382,10 +382,10 @@ module templ.compiler {
     _modifier(expression) {
       return "this.options.modifiers." + expression[1] + "(" + expression[2].map(this._expression).join(",") + ")";
     }
-    
+
     _assign(expression) {
-      
-      return 'this.view.assign("' + expression[1][1] + '", ' + 
+
+      return 'this.view.assign("' + expression[1][1] + '", ' +
         'function () { return ' + this._expression(expression[2]) + ';})'
     }
 
