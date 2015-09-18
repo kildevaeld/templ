@@ -9,7 +9,7 @@
 }(this, function (require, exports, module) {
   var templ;
   (function (templ) {
-    templ.version = "0.0.9";
+    templ.version = "0.1.0";
 
     function attribute(name, attr) {
       if (typeof attr !== 'function') {
@@ -1267,6 +1267,7 @@
             capture = false;
           }
           elm.addEventListener(eventName, callback, capture);
+          return callback;
         };
         View.prototype.removeListener = function (elm, eventName, callback, capture) {
           if (capture === void 0) {
@@ -2025,10 +2026,10 @@
         }
         var delegator = this._getDelegator();
         if (delegator) {
-          delegator.addListener(elm, eventName, callback, capture);
+          return delegator.addListener(elm, eventName, callback, capture);
         }
         else if (typeof callback === 'function') {
-          _super.prototype.addListener.call(this, elm, eventName, callback, capture);
+          return _super.prototype.addListener.call(this, elm, eventName, callback, capture);
         }
       };
       View.prototype.removeListener = function (elm, eventName, callback, capture) {

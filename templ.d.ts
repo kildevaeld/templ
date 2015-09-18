@@ -78,7 +78,7 @@ declare module templ.vnode {
         bindings: Bindable[];
         constructor(section: Section, template: Template, context: any, options?: any);
         update(): void;
-        addListener(elm: Node, eventName: string, callback: EventListener, capture?: boolean): void;
+        addListener(elm: Node, eventName: string, callback: EventListener, capture?: boolean): Function;
         removeListener(elm: Node, eventName: string, callback: EventListener, capture?: boolean): void;
         render(): Node;
         remove(): any;
@@ -282,7 +282,7 @@ declare module templ {
         toString(): string;
     }
     interface IDelegator {
-        addListener(elm: Element, eventName: string, callback: string | EventListener, capture?: boolean): any;
+        addListener(elm: Element, eventName: string, callback: string | EventListener, capture?: boolean): Function;
         removeListener(elm: Element, eventName: string, callback: string | EventListener, capture?: boolean): any;
     }
     class View extends vnode.View {
@@ -295,7 +295,7 @@ declare module templ {
         parent: View;
         root: View;
         _getDelegator(): IDelegator;
-        addListener(elm: Element, eventName: string, callback: EventListener | string, capture?: boolean): void;
+        addListener(elm: Element, eventName: string, callback: EventListener | string, capture?: boolean): Function;
         removeListener(elm: Element, eventName: string, callback: EventListener | string, capture?: boolean): void;
         get(keypath: any): any;
         constructor(section: vnode.Section, template: vnode.Template, context: any, options?: any);

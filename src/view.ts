@@ -73,7 +73,7 @@ module templ {
 	}
 
 	export interface IDelegator {
-      addListener(elm: Element, eventName: string, callback: string|EventListener, capture?: boolean)
+      addListener(elm: Element, eventName: string, callback: string|EventListener, capture?: boolean): Function
       removeListener(elm: Element, eventName: string, callback: string|EventListener, capture?: boolean)
 	}
 
@@ -109,12 +109,12 @@ module templ {
 			return null
 		}
 
-		addListener(elm:Element, eventName:string, callback:EventListener|string, capture:boolean = false) {
+		addListener(elm:Element, eventName:string, callback:EventListener|string, capture:boolean = false): Function {
 			let delegator = this._getDelegator();
 			if (delegator) {
-				delegator.addListener(elm,eventName,callback,capture)
+				return delegator.addListener(elm,eventName,callback,capture)
 			} else if (typeof callback === 'function'){
-				super.addListener(elm, eventName, callback, capture)
+				return super.addListener(elm, eventName, callback, capture)
 			}
 		}
 
