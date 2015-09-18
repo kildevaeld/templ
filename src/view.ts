@@ -21,7 +21,6 @@ function _set(target, keypath, value) {
   return value;
 }
 
-
 module templ {
 	export class Reference {
 		gettable: boolean
@@ -50,7 +49,7 @@ module templ {
 			return this.view.get(this.path)||''
 		}
 	}
-	
+
 	export class Assignment {
 		view: View
 		path: string
@@ -62,20 +61,20 @@ module templ {
 			this.assign = utils.bind(this.assign, this);
 			this.toString = utils.bind(this.toString, this);
 		}
-		
+
 		assign(value?:(any)) {
 			this.view.set(this.path, this.value.call(this));
 		}
-		
+
 		toString (): string {
 			let val = this.value.call(this)
 			return val ? String(val) : ''
 		}
 	}
-	
+
 	export interface IDelegator {
-		addListener(elm:Element, eventName:string, callback:(e:any) => void, capture?:boolean)
-		removeListener(elm:Element, eventName:string,callback:(e:any) => void, capture?:boolean)
+      addListener(elm: Element, eventName: string, callback: string|EventListener, capture?: boolean)
+      removeListener(elm: Element, eventName: string, callback: string|EventListener, capture?: boolean)
 	}
 
 	export class View extends vnode.View {
@@ -83,24 +82,24 @@ module templ {
 		_callers: { [key: string]: Function } = {}
 		_getters: any = {}
 		parent: View
-		
-		
+
+
 		get root (): View {
 			if (this.parent == null) return this
-		
+
 			let root = this, tmp = root
 			while (tmp) {
 				tmp = <View>tmp.parent
 				if (tmp) root = tmp
-			} 
-		
+			}
+
 			return root
-		
+
 		}
-		
+
 		_getDelegator (): IDelegator {
 			if (this._delegator) return this._delegator;
-			
+
 			let parent = this.parent
 			while (parent) {
 				console.log('paernt')
@@ -109,28 +108,28 @@ module templ {
 			}
 			return null
 		}
-		
-		addListener(elm:Element,eventName:string, callback:EventListener, capture:boolean = false) {
+
+		addListener(elm:Element, eventName:string, callback:EventListener|string, capture:boolean = false) {
 			let delegator = this._getDelegator();
 			if (delegator) {
 				delegator.addListener(elm,eventName,callback,capture)
-			} else {
+			} else if (typeof callback === 'function'){
 				super.addListener(elm, eventName, callback, capture)
 			}
 		}
-		
-		removeListener(elm:Element, eventName:string, callback:EventListener, capture:boolean = false) {
+
+		removeListener(elm:Element, eventName:string, callback:EventListener|string, capture:boolean = false) {
 			let delegator = this._getDelegator();
 			if (delegator) {
 				this._delegator.removeListener(elm,eventName,callback,capture)
-			} else {
+			} else if (typeof callback === 'function') {
 				super.removeListener(elm,eventName,callback,capture)
 			}
-			
+
 		}
-		
+
 		get(keypath): any {
-			
+
 			if (!this.context) return void 0;
 			var pt = typeof keypath !== "string" ? keypath.join(".") : keypath;
 
@@ -139,21 +138,21 @@ module templ {
 			try {
 
 				var getter;
-				
+
 				if (!(getter = this._getters[pt])) {
 					getter = this._getters[pt] = new Function("return this." + pt);
 				}
-				
+
 				v = getter.call(this.context);
 			} catch (e) {
-			
+
 				v = void 0;
 			}
-			
+
 			v = v != void 0 ? v : this.parent ? this.parent.get(keypath) : void 0;
 			debug('get value "%s": %s', keypath, v)
-			
-			return v	
+
+			return v
 		}
 
 		constructor(section: vnode.Section, template: vnode.Template, public context: any, options: any = {}) {
@@ -161,7 +160,7 @@ module templ {
 			if (options.parent) {
 				this.parent = options.parent
 			}
-			
+
 			if (options.delegator) {
 				this._delegator = options._delegator
 			}
@@ -173,7 +172,7 @@ module templ {
 			if (!this.context) return void 0;
 			if (typeof path === "string") path = (<any>path).split(".");
 			var ret = _set(this.context, path, value);
-		
+
 			this.update()
 		}
 
@@ -181,7 +180,7 @@ module templ {
 			this.update();
 			var section = super.render()
 			//this.transitions.enter();
-			
+
 			return section;
 		}
 
@@ -194,8 +193,6 @@ module templ {
 			debug('assignment %s %s',path, value);
 			return new Assignment(this, path, value);
 		}
-		
-		
 
 		call(keypath: string|string[], params) {
 			var caller;
@@ -215,7 +212,7 @@ module templ {
 			} catch (e) {
 				console.error('could not call', e)
 			}
-		
+
 			return v != void 0 ? v : this.parent ? this.parent.call(keypath, params) : void 0;
 		}
 

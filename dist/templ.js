@@ -1861,17 +1861,17 @@
           else {}
         }
       };
-/*setProperty (key:string, value:string) {
-          if (!this.setAsRegisteredAttribute(key, value)) {
-    
-            // no node type? It's a registered component.
-            if (!this.ref.nodeType) {
-              this.ref.setAttribute(key, value);
-            } else {
-              this.ref[key] = value;
-            }
+      Binding.prototype.setProperty = function (key, value) {
+        if (!this.setAsRegisteredAttribute(key, value)) {
+          // no node type? It's a registered component.
+          if (!this.ref.nodeType) {
+            this.ref.setAttribute(key, value);
           }
-        }*/
+          else {
+            this.ref[key] = value;
+          }
+        }
+      };
       Binding.prototype.setAsRegisteredAttribute = function (key, value) {
         if (this._attrBindings[key]) {
           this._attrBindings[key].value = value;
@@ -2027,7 +2027,7 @@
         if (delegator) {
           delegator.addListener(elm, eventName, callback, capture);
         }
-        else {
+        else if (typeof callback === 'function') {
           _super.prototype.addListener.call(this, elm, eventName, callback, capture);
         }
       };
@@ -2039,7 +2039,7 @@
         if (delegator) {
           this._delegator.removeListener(elm, eventName, callback, capture);
         }
-        else {
+        else if (typeof callback === 'function') {
           _super.prototype.removeListener.call(this, elm, eventName, callback, capture);
         }
       };

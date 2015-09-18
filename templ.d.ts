@@ -254,6 +254,7 @@ declare module templ {
         options: any;
         constructor(ref: Element, view: vnode.IView);
         setAttribute(key: string, value: string): void;
+        setProperty(key: string, value: string): void;
         private setAsRegisteredAttribute(key, value);
         update(context: any): void;
         destroy(): void;
@@ -281,8 +282,8 @@ declare module templ {
         toString(): string;
     }
     interface IDelegator {
-        addListener(elm: Element, eventName: string, callback: (e: any) => void, capture?: boolean): any;
-        removeListener(elm: Element, eventName: string, callback: (e: any) => void, capture?: boolean): any;
+        addListener(elm: Element, eventName: string, callback: string | EventListener, capture?: boolean): any;
+        removeListener(elm: Element, eventName: string, callback: string | EventListener, capture?: boolean): any;
     }
     class View extends vnode.View {
         context: any;
@@ -294,8 +295,8 @@ declare module templ {
         parent: View;
         root: View;
         _getDelegator(): IDelegator;
-        addListener(elm: Element, eventName: string, callback: EventListener, capture?: boolean): void;
-        removeListener(elm: Element, eventName: string, callback: EventListener, capture?: boolean): void;
+        addListener(elm: Element, eventName: string, callback: EventListener | string, capture?: boolean): void;
+        removeListener(elm: Element, eventName: string, callback: EventListener | string, capture?: boolean): void;
         get(keypath: any): any;
         constructor(section: vnode.Section, template: vnode.Template, context: any, options?: any);
         set(path: string | string[], value: any): any;
