@@ -5,7 +5,7 @@
 
 
 module templ {
-	
+
 	export class Binding implements vnode.Binding {
 		ref:Element
 		view:vnode.IView
@@ -19,7 +19,7 @@ module templ {
 			this.options = view.template.options
 			this._attributeClasses = this.options.attributes
 		}
-		
+
 		setAttribute (key:string, value:string) {
 			if (!this.setAsRegisteredAttribute(key, value)) {
         if (value != void 0) {
@@ -29,9 +29,21 @@ module templ {
         }
       }
 		}
-		
+
+    setProperty (key:string, value:string) {
+      if (!this.setAsRegisteredAttribute(key, value)) {
+
+        // no node type? It's a registered component.
+        if (!this.ref.nodeType) {
+          this.ref.setAttribute(key, value);
+        } else {
+          this.ref[key] = value;
+        }
+      }
+    }
+
 		private setAsRegisteredAttribute (key:string, value:string): boolean {
-			
+
       if (this._attrBindings[key]) {
         this._attrBindings[key].value = value;
       } else {
@@ -44,28 +56,28 @@ module templ {
       }
       return true;
     }
-		
+
 		update (context:any) {
-			
+
 			this._update()
 			for (let key in this._attrBindings) {
 				this._attrBindings[key].update()
 			}
 		}
-		
+
 		destroy () {
 			for (let key in this._attrBindings) {
 				this._attrBindings[key].destroy();
 			}
 		}
 	}
-	
-	
+
+
 	export function binding (initialize:()=>void,update:(context)=>void): vnode.BindingContructor {
 		return utils.extendClass<vnode.BindingContructor>(Binding,{
 			initialize: initialize||function () {},
 			_update: update||function () {}
 		});
 	}
-		
+
 }

@@ -1861,6 +1861,17 @@
           else {}
         }
       };
+/*setProperty (key:string, value:string) {
+          if (!this.setAsRegisteredAttribute(key, value)) {
+    
+            // no node type? It's a registered component.
+            if (!this.ref.nodeType) {
+              this.ref.setAttribute(key, value);
+            } else {
+              this.ref[key] = value;
+            }
+          }
+        }*/
       Binding.prototype.setAsRegisteredAttribute = function (key, value) {
         if (this._attrBindings[key]) {
           this._attrBindings[key].value = value;
