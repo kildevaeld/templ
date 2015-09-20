@@ -1,0 +1,25 @@
+{
+  "name": "templ",
+  "main": "dist/templ.js",
+  "version": "0.1.0",
+  "homepage": "https://github.com/kildevaeld/templ",
+  "authors": [
+    "Rasmus Kildevæld <rasmuskildevaeld@gmail.com>"
+  ],
+  "moduleType": [
+    "amd",
+    "globals",
+    "node"
+  ],
+  "keywords": [
+    "templating"
+  ],
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ]
+}
