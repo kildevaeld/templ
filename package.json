@@ -6,8 +6,12 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/kildevaeld/templ.git"
+  },
   "author": "",
-  "license": "ISC",
+  "license": "MIT",
   "devDependencies": {
     "gulp": "^3.9.0",
     "gulp-beautify": "^1.1.2",
@@ -29,5 +33,6 @@
   },
   "typescript": {
     "definition": "templ.d.ts"
-  }
+  },
+  "typings": "templ"
 }
