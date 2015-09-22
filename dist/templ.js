@@ -9,7 +9,7 @@
 }(this, function (require, exports, module) {
   var templ;
   (function (templ) {
-    templ.version = "0.1.1";
+    templ.version = "0.1.2";
 
     function attribute(name, attr) {
       if (typeof attr !== 'function') {
@@ -1993,7 +1993,7 @@
           this.parent = options.parent;
         }
         if (options.delegator) {
-          this._delegator = options._delegator;
+          this.delegator = options.delegator;
         }
       }
       Object.defineProperty(View.prototype, "root", {
@@ -2010,21 +2010,20 @@
         enumerable: true,
         configurable: true
       });
-      View.prototype._getDelegator = function () {
-        if (this._delegator) return this._delegator;
+      View.prototype.getDelegator = function () {
+        if (this.delegator) return this.delegator;
         var parent = this.parent;
         while (parent) {
-          console.log('paernt');
-          if (parent._delegator) return parent._delegator;
+          if (parent.delegator) return parent.delegator;
           parent = parent.parent;
         }
-        return null;
+        return this;
       };
       View.prototype.addListener = function (elm, eventName, callback, capture) {
         if (capture === void 0) {
           capture = false;
         }
-        var delegator = this._getDelegator();
+        var delegator = this.getDelegator();
         if (delegator) {
           return delegator.addListener(elm, eventName, callback, capture);
         }
@@ -2036,9 +2035,9 @@
         if (capture === void 0) {
           capture = false;
         }
-        var delegator = this._getDelegator();
+        var delegator = this.getDelegator();
         if (delegator) {
-          this._delegator.removeListener(elm, eventName, callback, capture);
+          delegator.removeListener(elm, eventName, callback, capture);
         }
         else if (typeof callback === 'function') {
           _super.prototype.removeListener.call(this, elm, eventName, callback, capture);

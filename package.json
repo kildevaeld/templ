@@ -1,8 +1,8 @@
 {
   "name": "templ",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "",
-  "main": "lib/index.js",
+  "main": "dist/templ.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -30,6 +30,9 @@
     "node-dom": "^0.1.0",
     "requiredir": "^1.0.7",
     "underscore": "^1.8.3"
+  },
+  "jspm": {
+    "registry": "github"
   },
   "typescript": {
     "definition": "templ.d.ts"
