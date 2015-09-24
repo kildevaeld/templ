@@ -105,6 +105,7 @@ module templ {
 				if (parent.delegator) return parent.delegator
 				parent = parent.parent
 			}
+
       return this;
 		}
 
