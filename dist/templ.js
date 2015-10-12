@@ -9,7 +9,7 @@
 }(this, function (require, exports, module) {
   var templ;
   (function (templ) {
-    templ.version = "0.1.2";
+    templ.version = "0.2.0";
 
     function attribute(name, attr) {
       if (typeof attr !== 'function') {
@@ -44,8 +44,8 @@
       return vn.template(vnode, utils.extend({
         document: document,
         viewClass: templ.View,
-        attributes: templ.attributes,
-        components: templ.components,
+        attributes: new templ.Repository(templ.attributes),
+        components: new templ.Repository(templ.components),
         modifiers: modifiers
       }, options || {}));
     }
@@ -1847,7 +1847,6 @@
   (function (templ) {
     var Binding = (function () {
       function Binding(ref, view) {
-        this._attributeClasses = {};
         this._attrBindings = {};
         this.ref = ref;
         this.view = view;
@@ -1878,7 +1877,7 @@
           this._attrBindings[key].value = value;
         }
         else {
-          var attrClass = this._attributeClasses[key];
+          var attrClass = this._attributeClasses.get(key);
           if (attrClass) {
             this._attrBindings[key] = new attrClass(this.ref, key, value, this.view);
           }
@@ -1993,7 +1992,7 @@
           this.parent = options.parent;
         }
         if (options.delegator) {
-          this.delegator = options.delegator;
+          this._delegator = options.delegator;
         }
       }
       Object.defineProperty(View.prototype, "root", {
@@ -2011,13 +2010,13 @@
         configurable: true
       });
       View.prototype.getDelegator = function () {
-        if (this.delegator) return this.delegator;
+        if (this._delegator) return this._delegator;
         var parent = this.parent;
-        while (parent) {
-          if (parent.delegator) return parent.delegator;
+        while (parent != undefined) {
+          if (parent._delegator) return parent._delegator;
           parent = parent.parent;
         }
-        return this;
+        return null;
       };
       View.prototype.addListener = function (elm, eventName, callback, capture) {
         if (capture === void 0) {
@@ -2035,7 +2034,7 @@
         if (capture === void 0) {
           capture = false;
         }
-        var delegator = this.getDelegator();
+        var delegator = null; // this.getDelegator();
         if (delegator) {
           delegator.removeListener(elm, eventName, callback, capture);
         }
@@ -2106,6 +2105,28 @@
   })(templ || (templ = {}));
   var templ;
   (function (templ) {
+    var Repository = (function () {
+      function Repository(values) {
+        this.values = values || {};
+      }
+      Repository.prototype.set = function (key, value) {
+        this.values[key] = value;
+      };
+      Repository.prototype.get = function (key) {
+        return this.values[key];
+      };
+      Repository.prototype.has = function (key) {
+        return !!this.get(key);
+      };
+      Repository.prototype.delete = function (key) {
+        delete this.values[key];
+      };
+      return Repository;
+    })();
+    templ.Repository = Repository;
+  })(templ || (templ = {}));
+  var templ;
+  (function (templ) {
     var vnode;
     (function (vnode) {
       var Comment = (function () {
@@ -2136,7 +2157,7 @@
           this.vnode.parentNode = this;
         }
         Dynamic.prototype.render = function (options, renderers) {
-          if (options.components[this.vnode['tagName']]) {
+          if (options.components.has(this.vnode['tagName'])) {
             return this._renderComponent(options, renderers);
           }
           else {
@@ -2201,9 +2222,9 @@
           children[i].parentNode = this;
         }
         Element.prototype.render = function (options, renderers) {
-          var components = options.components || {};
-          if (components[this.tagName]) {
-            return this._renderComponent(components[this.tagName], options, renderers);
+          var components = options.components; // || {}
+          if (components.has(this.tagName)) {
+            return this._renderComponent(components.get(this.tagName), options, renderers);
           }
           return this._renderElement(options, renderers);
         };
@@ -2242,7 +2263,7 @@
           var staticAttributes = {};
           if (options.attributes) {
             for (var key in this.attributes) {
-              var attrClass = options.attributes[key];
+              var attrClass = options.attributes.get(key);
               if (attrClass && (!attrClass.test || attrClass.test(this, key, this.attributes[key]))) {
                 dynamicAttributes[key] = this.attributes[key];
               }
@@ -2303,7 +2324,7 @@
 
       function _hydrateDynamicAttributes(ref, options, dynamicAttributes, view) {
         for (var key in dynamicAttributes) {
-          var clazz = options.attributes[key];
+          var clazz = options.attributes.get(key);
           var attr = new clazz(ref, key, dynamicAttributes[key], view);
           if (attr.update) view.bindings.push(attr);
         }
@@ -2371,6 +2392,7 @@
         BaseAttribute.prototype.initialize = function () {};
         BaseAttribute.prototype.update = function () {};
         BaseAttribute.prototype.destroy = function () {};
+        BaseAttribute.test = function () {};
         return BaseAttribute;
       })();
       attributes.BaseAttribute = BaseAttribute;

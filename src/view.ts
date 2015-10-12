@@ -78,7 +78,7 @@ module templ {
 	}
 
 	export class View extends vnode.View {
-		delegator: IDelegator
+		_delegator: IDelegator
 		_callers: { [key: string]: Function } = {}
 		_getters: any = {}
 		parent: View
@@ -98,15 +98,15 @@ module templ {
 		}
 
 		getDelegator (): IDelegator {
-			if (this.delegator) return this.delegator;
-
+			if (this._delegator) return this._delegator;
 			let parent = this.parent
-			while (parent) {
-				if (parent.delegator) return parent.delegator
+			while (parent != undefined) {
+				if (parent._delegator) return parent._delegator
 				parent = parent.parent
+				
 			}
 
-      return this;
+      return null;
 		}
 
 		addListener(elm:Element, eventName:string, callback:EventListener|string, capture:boolean = false): Function {
@@ -119,7 +119,7 @@ module templ {
 		}
 
 		removeListener(elm:Element, eventName:string, callback:EventListener|string, capture:boolean = false) {
-			let delegator = this.getDelegator();
+			let delegator = null// this.getDelegator();
 			if (delegator) {
 				delegator.removeListener(elm,eventName,callback,capture)
 			} else if (typeof callback === 'function') {
@@ -162,7 +162,7 @@ module templ {
 			}
 
 			if (options.delegator) {
-				this.delegator = options.delegator
+				this._delegator = options.delegator
 			}
 		}
 

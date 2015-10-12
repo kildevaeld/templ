@@ -22,6 +22,10 @@ module templ.attributes {
 		update () { }
 
 		destroy() { }
+		
+		static test() {
+			
+		}
 	}
 
 

@@ -9,10 +9,10 @@ module templ {
 	export class Binding implements vnode.Binding {
 		ref:Element
 		view:vnode.IView
-		_attributeClasses: {[key:string]: vnode.AttributeConstructor} = {}
+		_attributeClasses: IRepository<vnode.AttributeConstructor>
 		_attrBindings: {[key:string]: vnode.Attribute} = {}
 		_update: Function
-		options:any
+		options:TemplateOptions
 		constructor(ref:Element, view:vnode.IView) {
 			this.ref = ref
 			this.view = view
@@ -47,7 +47,7 @@ module templ {
       if (this._attrBindings[key]) {
         this._attrBindings[key].value = value;
       } else {
-        var attrClass = this._attributeClasses[key];
+        var attrClass = this._attributeClasses.get(key);
         if (attrClass) {
           this._attrBindings[key] = new attrClass(this.ref, key, value, this.view);
         } else {

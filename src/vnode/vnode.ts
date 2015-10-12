@@ -1,4 +1,5 @@
 /// <reference path="template" />
+/// <reference path="../index" />
 
 
 module templ.vnode {
@@ -13,8 +14,8 @@ module templ.vnode {
 
   export interface VNodeOptions {
     document: HTMLDocument
-    attributes: {[key:string]: AttributeConstructor}
-		components: {[key: string]: ComponentConstructor}
+    attributes: templ.IRepository<vnode.AttributeConstructor>
+		components: templ.IRepository<vnode.ComponentConstructor>
   }
 
   export interface VNode {
@@ -76,10 +77,12 @@ module templ.vnode {
   export interface Component extends Bindable {
     setAttribute (key:string, value:any)
     removeAttribute (key:string)
+     
   }
   
   export interface ComponentConstructor {
     new (section:Section, vnode:VNode, attributes:AttributeMap, view:IView): Component
+  
   }
   
   export interface Bindable extends Destroyable {

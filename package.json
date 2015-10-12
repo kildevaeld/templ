@@ -1,6 +1,6 @@
 {
   "name": "templ",
-  "version": "0.1.2",
+  "version": "0.2.0",
   "description": "",
   "main": "dist/templ.js",
   "scripts": {
@@ -37,5 +37,5 @@
   "typescript": {
     "definition": "templ.d.ts"
   },
-  "typings": "templ"
+  "typings": "templ.d.ts"
 }

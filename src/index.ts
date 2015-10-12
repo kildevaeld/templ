@@ -6,8 +6,8 @@ module templ {
 	
 	export interface TemplateOptions {
 		document?: Document
-		attributes?: {[key:string]: vnode.AttributeConstructor}
-		components?: {[key: string]: vnode.ComponentConstructor}
+		attributes?: IRepository<vnode.AttributeConstructor>
+		components?: IRepository<vnode.ComponentConstructor>
 		viewClass?:vnode.IViewConstructor,
 		modifiers?:(value:any) => any
 	}
@@ -43,8 +43,8 @@ module templ {
 		return vn.template(vnode, utils.extend({
 			document: document,
 			viewClass: templ.View,
-			attributes: <any>attributes,
-			components:<any>components,
+			attributes: new Repository(<any>attributes),
+			components:new Repository(<any>components),
 			modifiers: modifiers
 		}, options||{}))
 	}

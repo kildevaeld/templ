@@ -6,12 +6,8 @@ declare module templ {
     var version: string;
     interface TemplateOptions {
         document?: Document;
-        attributes?: {
-            [key: string]: vnode.AttributeConstructor;
-        };
-        components?: {
-            [key: string]: vnode.ComponentConstructor;
-        };
+        attributes?: IRepository<vnode.AttributeConstructor>;
+        components?: IRepository<vnode.ComponentConstructor>;
         viewClass?: vnode.IViewConstructor;
         modifiers?: (value: any) => any;
     }
@@ -111,12 +107,8 @@ declare module templ.vnode {
     }
     interface VNodeOptions {
         document: HTMLDocument;
-        attributes: {
-            [key: string]: AttributeConstructor;
-        };
-        components: {
-            [key: string]: ComponentConstructor;
-        };
+        attributes: templ.IRepository<vnode.AttributeConstructor>;
+        components: templ.IRepository<vnode.ComponentConstructor>;
     }
     interface VNode {
         nodeType: NodeType;
@@ -244,14 +236,12 @@ declare module templ {
     class Binding implements vnode.Binding {
         ref: Element;
         view: vnode.IView;
-        _attributeClasses: {
-            [key: string]: vnode.AttributeConstructor;
-        };
+        _attributeClasses: IRepository<vnode.AttributeConstructor>;
         _attrBindings: {
             [key: string]: vnode.Attribute;
         };
         _update: Function;
-        options: any;
+        options: TemplateOptions;
         constructor(ref: Element, view: vnode.IView);
         setAttribute(key: string, value: string): void;
         setProperty(key: string, value: string): void;
@@ -287,7 +277,7 @@ declare module templ {
     }
     class View extends vnode.View {
         context: any;
-        delegator: IDelegator;
+        _delegator: IDelegator;
         _callers: {
             [key: string]: Function;
         };
@@ -304,6 +294,26 @@ declare module templ {
         ref(path: string, gettable: boolean, settable: boolean): Reference;
         assign(path: string, value: any): Assignment;
         call(keypath: string | string[], params: any): any;
+    }
+}
+declare module templ {
+    interface IRepository<T> {
+        set(key: string, value: T): any;
+        get(key: string): T;
+        has(key: string): boolean;
+        delete(key: string): any;
+    }
+    class Repository<T> implements IRepository<T> {
+        values: {
+            [key: string]: T;
+        };
+        constructor(values?: {
+            [key: string]: T;
+        });
+        set(key: string, value: T): void;
+        get(key: string): T;
+        has(key: string): boolean;
+        delete(key: string): void;
     }
 }
 declare module templ.vnode {
@@ -338,7 +348,7 @@ declare module templ.vnode {
         setAttributes(key: AttributeMap | string, value?: string): void;
         _renderComponent(component: ComponentConstructor, options: VNodeOptions, renderers: Renderer[]): HTMLElement;
         _renderElement(options: VNodeOptions, renderers: Renderer[]): HTMLElement;
-        _splitAttributes(options: any): {
+        _splitAttributes(options: VNodeOptions): {
             dynamicAttributes: {};
             staticAttributes: {};
         };
@@ -373,6 +383,7 @@ declare module templ.attributes {
         initialize(): void;
         update(): void;
         destroy(): void;
+        static test(): void;
     }
 }
 declare module templ.attributes {

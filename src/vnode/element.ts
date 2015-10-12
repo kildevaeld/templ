@@ -25,11 +25,10 @@ module templ.vnode {
 
     render(options: VNodeOptions, renderers: Renderer[]): HTMLElement {
 
-      let components = options.components || {}
+      let components = options.components; // || {}
 
-      if (components[this.tagName]) {
-
-        return this._renderComponent(components[this.tagName], options, renderers)
+      if (components.has(this.tagName)) {
+        return this._renderComponent(components.get(this.tagName), options, renderers)
       }
 
       return this._renderElement(options, renderers);
@@ -77,7 +76,7 @@ module templ.vnode {
 
     }
 
-    _splitAttributes(options) {
+    _splitAttributes(options:VNodeOptions) {
 
       var dynamicAttributes = {};
       var staticAttributes = {};
@@ -85,7 +84,7 @@ module templ.vnode {
       if (options.attributes) {
 
         for (var key in this.attributes) {
-          var attrClass = options.attributes[key];
+          var attrClass:any = options.attributes.get(key);
 
           if (attrClass && (!attrClass.test || attrClass.test(this, key, this.attributes[key]))) {
             dynamicAttributes[key] = this.attributes[key];
@@ -160,7 +159,7 @@ module templ.vnode {
 
   function _hydrateDynamicAttributes(ref, options: vnode.VNodeOptions, dynamicAttributes, view: vnode.IView) {
     for (var key in dynamicAttributes) {
-      var clazz = options.attributes[key];
+      var clazz = options.attributes.get(key);
       var attr = new clazz(ref, key, dynamicAttributes[key], view);
       if (attr.update) view.bindings.push(attr);
     }

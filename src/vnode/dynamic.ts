@@ -16,7 +16,7 @@ module templ.vnode {
 
 		render(options: VNodeOptions, renderers: Renderer[]): Node {
 
-			if (options.components[this.vnode['tagName']]) {
+			if (options.components.has(this.vnode['tagName'])) {
 				return this._renderComponent(options, renderers)
 			} else {
 				return this._renderElement(options, renderers)
