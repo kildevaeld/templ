@@ -27,6 +27,7 @@
         "./src/utils.ts",
         "./src/binding.ts",
         "./src/view.ts",
+        "./src/repository.ts",
         "./src/vnode/comment.ts",
         "./src/vnode/dynamic.ts",
         "./src/vnode/element.ts",
