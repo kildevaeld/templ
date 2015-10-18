@@ -46,7 +46,7 @@ module templ.vnode {
     _renderComponent(component: ComponentConstructor, options: VNodeOptions, renderers: Renderer[]): HTMLElement {
 
       var section = new FragmentSection(options.document)
-
+      
       renderers.push(new ComponentAttributeRenderer(component, section, this, this._splitAttributes(options), options))
 
       return <any>section.render()

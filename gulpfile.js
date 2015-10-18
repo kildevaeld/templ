@@ -22,6 +22,7 @@ var pkg = require('./package.json')
 
 const reg = /\/\/\/\s?<reference path=\"[a-zA-Z0-9.\/]*\"\s?\/>/gi
 
+
 gulp.task('build', function () {
 	var result = tsp.src('./src/**/*.ts')
 	.pipe(tsc(tsp))

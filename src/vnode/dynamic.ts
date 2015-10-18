@@ -59,7 +59,7 @@ module templ.vnode {
 
 			this.renderer.generate(root, view)
 			let component = view.bindings[view.bindings.length - 1]
-
+			
 			view.bindings.splice(view.bindings.indexOf(component), 0, new this.bindingClass(<any>component, view))
 
 		}
@@ -78,7 +78,7 @@ module templ.vnode {
 
 		generate(root: Node, view: vnode.IView) {
 			if (!this._refPath) this._refPath = vnode.getNodePath(this.ref);
-
+			
 			view.bindings.push(new this.bindingClass(vnode.getNodeByPath(root, this._refPath), view));
 		}
 	}

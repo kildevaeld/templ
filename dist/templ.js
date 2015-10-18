@@ -9,7 +9,7 @@
 }(this, function (require, exports, module) {
   var templ;
   (function (templ) {
-    templ.version = "0.2.0";
+    templ.version = "0.2.1";
 
     function attribute(name, attr) {
       if (typeof attr !== 'function') {
