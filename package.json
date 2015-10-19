@@ -31,9 +31,6 @@
     "requiredir": "^1.0.7",
     "underscore": "^1.8.3"
   },
-  "jspm": {
-    "registry": "github"
-  },
   "typescript": {
     "definition": "templ.d.ts"
   },
