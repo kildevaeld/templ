@@ -9,7 +9,7 @@
 }(this, function (require, exports, module) {
   var templ;
   (function (templ) {
-    templ.version = "0.2.1";
+    templ.version = "0.2.2";
 
     function attribute(name, attr) {
       if (typeof attr !== 'function') {
@@ -2586,6 +2586,7 @@
       attributes.onescape = attributes.OnEscapeAttribute;
       attributes.checked = attributes.ValueAttribute;
       attributes.style = attributes.StyleAttribute;
+      attributes.focus = attributes.FocusAttribute;
     })(attributes = templ.attributes || (templ.attributes = {}));
   })(templ || (templ = {}));
   var templ;
@@ -2621,6 +2622,34 @@
         return StyleAttribute;
       })(attributes.BaseAttribute);
       attributes.StyleAttribute = StyleAttribute;
+    })(attributes = templ.attributes || (templ.attributes = {}));
+  })(templ || (templ = {}));
+  var templ;
+  (function (templ) {
+    var attributes;
+    (function (attributes) {
+      var FocusAttribute = (function (_super) {
+        __extends(FocusAttribute, _super);
+
+        function FocusAttribute() {
+          _super.apply(this, arguments);
+        }
+        FocusAttribute.prototype.initialize = function () {};
+        FocusAttribute.prototype.update = function () {
+          if (!this.value) return;
+          if (this.ref.focus) {
+            var self = this;
+            //if (!process.browser) return this.node.focus();
+            // focus after being on screen. Need to break out
+            // of animation, so setTimeout is the best option
+            setTimeout(function () {
+              self.ref.focus();
+            }, 1);
+          }
+        };
+        return FocusAttribute;
+      })(attributes.BaseAttribute);
+      attributes.FocusAttribute = FocusAttribute;
     })(attributes = templ.attributes || (templ.attributes = {}));
   })(templ || (templ = {}));
   var templ;

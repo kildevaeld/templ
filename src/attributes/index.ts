@@ -13,4 +13,5 @@ module templ.attributes {
 	export var onescape = OnEscapeAttribute;
 	export var checked = ValueAttribute
 	export var style = StyleAttribute;
+  export var focus = FocusAttribute;
 }

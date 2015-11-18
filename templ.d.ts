@@ -425,12 +425,19 @@ declare module templ.attributes {
     var onescape: typeof OnEscapeAttribute;
     var checked: typeof ValueAttribute;
     var style: typeof StyleAttribute;
+    var focus: typeof FocusAttribute;
 }
 declare module templ.attributes {
     class StyleAttribute extends BaseAttribute {
         _currentStyles: {
             [key: string]: string;
         };
+        initialize(): void;
+        update(): void;
+    }
+}
+declare module templ.attributes {
+    class FocusAttribute extends BaseAttribute {
         initialize(): void;
         update(): void;
     }

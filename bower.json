@@ -1,7 +1,7 @@
 {
   "name": "templ",
   "main": "dist/templ.js",
-  "version": "0.1.1",
+  "version": "0.2.2",
   "homepage": "https://github.com/kildevaeld/templ",
   "authors": [
     "Rasmus Kildevæld <rasmuskildevaeld@gmail.com>"
