@@ -1624,12 +1624,12 @@ return /******/ (function(modules) { // webpackBootstrap
 	        if (typeof fn !== 'function') {
 	            throw new Error('[event] value is not a function');
 	        }
-	        debug('fired event: %s', this.event);
+	        debug('fired event: %s', this._event);
 	        fn(e);
 	    };
 
 	    EventAttribute.prototype.destroy = function destroy() {
-	        debug('removed event listener %s: %o', this.event, this.value);
+	        debug('removed event listener %s: %o', this._event, this.value);
 	        this.view.removeListener(this.ref, this._event, this._onEvent);
 	    };
 
@@ -1637,11 +1637,15 @@ return /******/ (function(modules) { // webpackBootstrap
 	        key: 'event',
 	        set: function set(event) {
 	            if (this._event) {
+	                debug('added event listener %s: %o', this._event, this.value);
 	                this.view.removeListener(this.ref, this._event, this._onEvent);
 	            }
 	            this._event = event;
-	            debug('added event listener %s: %o', this.event, this.value);
+	            debug('added event listener %s: %o', this._event, this.value);
 	            this.view.addListener(this.ref, this._event, this._onEvent);
+	        },
+	        get: function get() {
+	            return this._event;
 	        }
 	    }]);
 

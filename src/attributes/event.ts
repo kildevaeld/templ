@@ -9,12 +9,18 @@ const debug = utils.debug('attributes:event')
 		private _event:string
 		set event (event:string) {
 			if (this._event) {
+				debug('added event listener %s: %o', this._event, this.value)
 				this.view.removeListener(<Element>this.ref, this._event, this._onEvent);
 			}
 			this._event = event;
-			debug('added event listener %s: %o', this.event, this.value)
+			debug('added event listener %s: %o', this._event, this.value)
 			this.view.addListener(<Element>this.ref, this._event, this._onEvent);
 		}
+		
+		get event () : string {
+			return this._event;
+		}
+		
 		initialize () {
 			this._onEvent = utils.bind(this._onEvent, this);
 			//if (!this.event) this.event = this.key.match(/on(.+)/)[1].toLowerCase();
@@ -35,12 +41,12 @@ const debug = utils.debug('attributes:event')
 			if (typeof fn !== 'function') {
 				throw new Error('[event] value is not a function')
 			}
-			debug('fired event: %s', this.event)
+			debug('fired event: %s', this._event)
 			fn(e);
 		}
 
 		destroy () {
-			debug('removed event listener %s: %o', this.event, this.value);
+			debug('removed event listener %s: %o', this._event, this.value);
 			this.view.removeListener(<Element>this.ref, this._event, this._onEvent)
 		}
 	}
