@@ -1,17 +1,16 @@
-/// <reference path="../vnode/vnode" />
-/// <reference path="../vnode/template" />
-/// <reference path="../vnode/fragment" />
 
-module templ.components {
+import {Component, Section, VNode, AttributeMap, IView} from '../vnode/vnode';
+import {Template, template} from '../vnode/template';
+import {fragment} from '../vnode/fragment';
 
-	export class BaseComponent implements vnode.Component {
-		section: vnode.Section
-		vnode: vnode.VNode
-		attributes: vnode.AttributeMap
-		view: vnode.IView
+export class BaseComponent implements Component {
+		section: Section
+		vnode: VNode
+		attributes: AttributeMap
+		view: IView
 		document:Document
-		childTemplate:vnode.Template
-		constructor(section:vnode.Section, vvnode:vnode.VNode, attributes:vnode.AttributeMap, view:vnode.IView) {
+		childTemplate:Template
+		constructor(section:Section, vvnode:VNode, attributes:AttributeMap, view:IView) {
 
 			this.section = section
 			this.vnode = vvnode
@@ -19,7 +18,7 @@ module templ.components {
 			this.view = view
 			this.document = view.template.options.document
 
-			if (vvnode.childNodes) this.childTemplate = vnode.template(vnode.fragment(vvnode.childNodes), view.template.options);
+			if (vvnode.childNodes) this.childTemplate = template(fragment(vvnode.childNodes), view.template.options);
   		for (var key in attributes) this.setAttribute(key, attributes[key]);
 
 			this.initialize()
@@ -41,6 +40,3 @@ module templ.components {
 
 		}
 	}
-
-
-}

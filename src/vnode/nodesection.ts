@@ -1,8 +1,7 @@
-/// <reference path="vnode" />
 
-module templ.vnode {
+import {Section, getNodePath, getNodeByPath, Marker} from './vnode';
 
-	export class NodeSection implements Section {
+export class NodeSection implements Section {
 		document: Document
 		node: Node
 		constructor(document: Document, node: Node) {
@@ -11,7 +10,7 @@ module templ.vnode {
 		}
 
 		createMarker(): NodeSectionMarker {
-			return new NodeSectionMarker(this.document, vnode.getNodePath(this.node));
+			return new NodeSectionMarker(this.document, getNodePath(this.node));
 		}
 
 		appendChild(node: Node) {
@@ -35,7 +34,7 @@ module templ.vnode {
 		}
 	}
 
-	export class NodeSectionMarker implements vnode.Marker {
+	export class NodeSectionMarker implements Marker {
 		document: Document
 		path: string[]
 
@@ -52,5 +51,3 @@ module templ.vnode {
 			return getNodeByPath(root, this.path);
 		}
 	}
-
-}

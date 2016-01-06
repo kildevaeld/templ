@@ -1,8 +1,6 @@
-/// <reference path="base" />
+import {BaseAttribute} from './base';
 
-module templ.attributes {
-
-    export class FocusAttribute extends BaseAttribute {
+export class FocusAttribute extends BaseAttribute {
 
         initialize() {
 
@@ -22,5 +20,3 @@ module templ.attributes {
             }
         }
     }
-
-}

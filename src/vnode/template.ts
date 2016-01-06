@@ -1,12 +1,10 @@
-/// <reference path="vnode" />
-/// <reference path="section" />
-/// <reference path="view" />
 
+import {IViewConstructor, VNodeOptions, Section, VNode, 
+	Renderer, IView} from './vnode';
+import {section} from './section';
+import {View} from './view';
 
-
-module templ.vnode {
-
-	export interface TemplateOptions extends VNodeOptions {
+export interface TemplateOptions extends VNodeOptions {
 		viewClass?: IViewConstructor
 	}
 	
@@ -28,13 +26,13 @@ module templ.vnode {
 		
 		view (context:any, options): IView {
 			
-			let section = this.section.clone();
+			let sec = this.section.clone();
 			let DestView = this.options.viewClass || View
 			
-			let view = new DestView(section,this,context,options)
+			var view = new DestView(sec,this,context,options)
 			
 			for (let renderer of this._renderers) {
-				renderer.generate(section.node||section.start.parentNode,view)
+				renderer.generate(sec.node||sec.start.parentNode,view)
 			}
 		
 			return view
@@ -44,4 +42,3 @@ module templ.vnode {
 	export function template (vnode:VNode, options:TemplateOptions): Template {
 		return new Template(vnode, options)
 	}
-}

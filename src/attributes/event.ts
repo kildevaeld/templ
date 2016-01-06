@@ -1,26 +1,32 @@
-/// <reference path="base" />
-/// <reference path="../utils" />
-/// <reference path="../view" />
-/// <reference path="../utils" />
+import {BaseAttribute} from './base';
+import {Assignment} from '../view';
+import * as utils from '../utils';
+import {IView} from '../vnode/vnode';
 
-module templ.attributes {
-
-	const debug = utils.debug('attributes:event')
+const debug = utils.debug('attributes:event')
 
 	export class EventAttribute extends BaseAttribute {
-		event:string
+		private _event:string
+		set event (event:string) {
+			if (this._event) {
+				this.view.removeListener(<Element>this.ref, this._event, this._onEvent);
+			}
+			this._event = event;
+			debug('added event listener %s: %o', this.event, this.value)
+			this.view.addListener(<Element>this.ref, this._event, this._onEvent);
+		}
 		initialize () {
 			this._onEvent = utils.bind(this._onEvent, this);
-			if (!this.event) this.event = this.key.match(/on(.+)/)[1].toLowerCase();
-			debug('added event listener %s: %o', this.event, this.value)
-			this.view.addListener(<Element>this.ref, this.event, this._onEvent)
+			//if (!this.event) this.event = this.key.match(/on(.+)/)[1].toLowerCase();
+			//debug('added event listener %s: %o', this.event, this.value)
+			//this.view.addListener(<Element>this.ref, this.event, this._onEvent)
 
 		}
 
 		_onEvent (e:any) {
 			var self = this;
 			let fn;
-			if (this.value instanceof templ.Assignment) {
+			if (this.value instanceof Assignment) {
 				fn = this.value.assign;
 			} else {
 				fn = this.value;
@@ -35,15 +41,16 @@ module templ.attributes {
 
 		destroy () {
 			debug('removed event listener %s: %o', this.event, this.value);
-			this.view.removeListener(<Element>this.ref, this.event, this._onEvent)
+			this.view.removeListener(<Element>this.ref, this._event, this._onEvent)
 		}
 	}
 
 	export class KeyCodeAttribute extends EventAttribute {
-		keyCodes:number[]
-		constructor (ref:Node, key:string, value:any, view:vnode.IView) {
-			this.event = "keydown"
-			this.keyCodes = []
+		keyCodes:number[] = []
+		event = "keydown"
+		constructor (ref:Node, key:string, value:any, view:IView) {
+			//this.event = "keydown"
+			//this.keyCodes = []
 			super(ref,key,value,view)
 		}
   	_onEvent (event) {
@@ -54,8 +61,11 @@ module templ.attributes {
   	}
 	}
 
-	export class ClickAttribute extends EventAttribute { }
-
+	export class ClickAttribute extends EventAttribute { 
+		event = "click"
+	}
+	
+	
 	export class OnEnterAttribute extends KeyCodeAttribute {
 		keyCodes = [13]
 	}
@@ -63,6 +73,3 @@ module templ.attributes {
 	export class OnEscapeAttribute extends KeyCodeAttribute {
 		KeyCodes = [27]
 	}
-
-
-}

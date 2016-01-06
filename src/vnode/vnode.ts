@@ -1,10 +1,7 @@
-/// <reference path="template" />
-/// <reference path="../index" />
-
-
-module templ.vnode {
-
-  export enum NodeType {
+import {IRepository} from '../repository'
+import {Template} from './template'
+import {IDelegator} from '../view';
+export const enum NodeType {
     Element=1, Fragment=11, Comment=8, Dynamic=-200, Text=-201
   }
 
@@ -14,8 +11,8 @@ module templ.vnode {
 
   export interface VNodeOptions {
     document: HTMLDocument
-    attributes: templ.IRepository<vnode.AttributeConstructor>
-		components: templ.IRepository<vnode.ComponentConstructor>
+    attributes: IRepository<AttributeConstructor>
+		components: IRepository<ComponentConstructor>
   }
 
   export interface VNode {
@@ -40,7 +37,7 @@ module templ.vnode {
     createSection(root:Node): Section
   } 
 
-  export interface IView extends templ.IDelegator {
+  export interface IView extends IDelegator {
     bindings:Bindable[]
     section:Section
     template: Template
@@ -65,13 +62,13 @@ module templ.vnode {
     ref: Node
 		key: string
 		value: any
-		view: vnode.IView
+		view: IView
     //update?: () => void
     
   }
   
   export interface AttributeConstructor {
-    new (ref:Node, key:string, value:any, view:vnode.IView): Attribute
+    new (ref:Node, key:string, value:any, view:IView): Attribute
   }
   
   export interface Component extends Bindable {
@@ -131,5 +128,3 @@ module templ.vnode {
   
     return path;
   }
-
-}

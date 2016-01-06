@@ -1,8 +1,6 @@
-/// <reference path="base" />
+import {BaseAttribute} from './base';
 
-module templ.attributes {
-	
-	export class StyleAttribute extends BaseAttribute {
+export class StyleAttribute extends BaseAttribute {
 		_currentStyles: {[key: string]: string}
 		initialize() {
 				this._currentStyles = {}
@@ -28,5 +26,3 @@ module templ.attributes {
     	}
 	}
 	}
-	
-}

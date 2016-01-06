@@ -1,10 +1,7 @@
-/// <reference path="component" />
-/// <reference path="../vnode/vnode" />
+import {BaseComponent} from './component';
+import {VNode} from '../vnode/vnode';
 
-
-module templ.components {
-
-  function _each(target, iterate) {
+function _each(target, iterate) {
 
     if (!target) return;
 
@@ -19,7 +16,7 @@ module templ.components {
   }
 
   export class Repeat extends BaseComponent {
-    _children: vnode.VNode[] = []
+    _children: VNode[] = []
 
     update() {
       
@@ -78,5 +75,5 @@ module templ.components {
     }
 
   }
-
-}
+  
+  export var repeat = Repeat;

@@ -1,13 +1,9 @@
 
-/// <reference path="nodesection" />
-/// <reference path="fragmentsection" />
-/// <reference path="nodesection" />
+import {Section, NodeType} from './vnode';
+import {FragmentSection} from './fragmentsection';
+import {NodeSection} from './nodesection';
 
-/// <reference path="vnode" />
-
-
-module templ.vnode {
-	export function section (document:Document, node:Node) {
+export function section (document:Document, node:Node) {
 		let section: Section
 		if (node.nodeType == NodeType.Fragment) {
 			let frag = new FragmentSection(document)
@@ -19,4 +15,3 @@ module templ.vnode {
 		
 		return section;
 	}
-}

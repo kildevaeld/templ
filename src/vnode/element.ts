@@ -1,12 +1,14 @@
-/// <reference path="nodesection" />
 
-/// <reference path="vnode" />
-/// <reference path="../utils" />
-/// <reference path="../transpiler" />
+import {VNode, NodeType, AttributeMap, VNodeOptions, 
+  Renderer, ComponentConstructor, Marker, Section, DynamicAttributeMap,
+  IView} from './vnode';
+import * as utils from '../utils';
 
-module templ.vnode {
+import {FragmentSection} from './fragmentsection';
+import {NodeSection, NodeSectionMarker} from './nodesection';
+import {ElementCreator} from '../transpiler';
 
-  export class Element implements VNode {
+ export class Element implements VNode {
     nodeType = NodeType.Element
     tagName: string
     attributes: AttributeMap
@@ -106,21 +108,21 @@ module templ.vnode {
   }
 
 
-  export const element: compiler.ElementCreator = function(tagName: string, attributes: AttributeMap, ...children: VNode[]): Element {
+  export const element: ElementCreator = function(tagName: string, attributes: AttributeMap, ...children: VNode[]): Element {
 
     return new Element(tagName, attributes, children);
   }
 
-  class ComponentAttributeRenderer implements vnode.Renderer {
-    _marker: vnode.Marker
-    section: vnode.Section
-    componentClass: vnode.ComponentConstructor
-    attributes: vnode.AttributeMap
-    dynamicAttributes: vnode.DynamicAttributeMap
-    options: vnode.VNodeOptions
-    element: vnode.VNode
+  class ComponentAttributeRenderer implements Renderer {
+    _marker: Marker
+    section: Section
+    componentClass: ComponentConstructor
+    attributes: AttributeMap
+    dynamicAttributes: DynamicAttributeMap
+    options: VNodeOptions
+    element: VNode
 
-    constructor(component: vnode.ComponentConstructor, section: vnode.Section, element: vnode.VNode, attr: any, options: vnode.VNodeOptions) {
+    constructor(component: ComponentConstructor, section: Section, element: VNode, attr: any, options: VNodeOptions) {
       this.section = section
       this.componentClass = component
       this.element = element
@@ -130,7 +132,7 @@ module templ.vnode {
 
     }
 
-    generate(root: Node, view: vnode.IView) {
+    generate(root: Node, view: IView) {
       if (!this._marker) this._marker = this.section.createMarker();
 
       var ref = new this.componentClass(this._marker.createSection(root), this.element, this.attributes, view);
@@ -144,20 +146,20 @@ module templ.vnode {
     }
   }
 
-  class ElementAttributeRenderer implements vnode.Renderer {
-    _marker: vnode.NodeSectionMarker
-    constructor(public section: vnode.NodeSection, public options: any, public attributes: any) {
+  class ElementAttributeRenderer implements Renderer {
+    _marker: NodeSectionMarker
+    constructor(public section: NodeSection, public options: any, public attributes: any) {
 
     }
 
-    generate(root: Node, view: vnode.IView) {
+    generate(root: Node, view: IView) {
       if (!this._marker) this._marker = this.section.createMarker();
 
       _hydrateDynamicAttributes(this._marker.findNode(root), this.options, this.attributes, view)
     }
   }
 
-  function _hydrateDynamicAttributes(ref, options: vnode.VNodeOptions, dynamicAttributes, view: vnode.IView) {
+  function _hydrateDynamicAttributes(ref, options: VNodeOptions, dynamicAttributes, view: IView) {
     for (var key in dynamicAttributes) {
       var clazz = options.attributes.get(key);
       var attr = new clazz(ref, key, dynamicAttributes[key], view);
@@ -165,5 +167,4 @@ module templ.vnode {
     }
   }
 
-}
 

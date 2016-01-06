@@ -1,9 +1,8 @@
-/// <reference path="vnode" />
-/// <reference path="template" />
 
-module templ.vnode {
+import {Bindable, Section, IView} from './vnode'
+import {Template} from './template';
 
-	export class View implements IView {
+export class View implements IView {
 		bindings: Bindable[] = []
 		constructor(public section:Section, public template:Template,public context:any,options?:any) {
 
@@ -37,5 +36,3 @@ module templ.vnode {
 		}
 
 	}
-
-}

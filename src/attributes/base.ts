@@ -1,32 +1,27 @@
-/// <reference path="../vnode/vnode" />
+import {Attribute, IView} from '../vnode/vnode'
 
-module templ.attributes {
-
-	export class BaseAttribute implements vnode.Attribute {
+export class BaseAttribute implements Attribute {
 		ref: Node
 		key: string
 		value: any
-		view: vnode.IView
+		view: IView
 
-		constructor(ref:Node, key:string, value:any, view:vnode.IView) {
-			this.ref = ref
-			this.key = key
-			this.value = value
-			this.view = view
+		constructor(ref: Node, key: string, value: any, view: IView) {
+		this.ref = ref
+		this.key = key
+		this.value = value
+		this.view = view
 
-			this.initialize()
+		this.initialize()
 		}
 
-		initialize () { }
+		initialize() { }
 
-		update () { }
+		update() { }
 
 		destroy() { }
-		
+
 		static test() {
-			
+
 		}
-	}
-
-
 }

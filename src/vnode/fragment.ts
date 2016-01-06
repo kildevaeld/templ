@@ -1,10 +1,8 @@
 
-/// <reference path="vnode" />
-/// <reference path="../transpiler" />
+import {VNode, NodeType, VNodeOptions, Renderer} from './vnode';
+import {FragmentCreator} from '../transpiler';
 
-module templ.vnode {
-
-  export class Fragment implements VNode {
+export class Fragment implements VNode {
     nodeType = NodeType.Fragment
     childNodes: VNode[]
     constructor(children: VNode[]) {
@@ -30,10 +28,8 @@ module templ.vnode {
   }
   
   
-  export const fragment: compiler.FragmentCreator = function (children: VNode[]): Fragment {
+  export const fragment: FragmentCreator = function (children: VNode[]): Fragment {
     return new Fragment(children);
   }
-  
-}
 
 

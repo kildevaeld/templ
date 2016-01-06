@@ -1,9 +1,8 @@
-/// <reference path="vnode" />
-/// <reference path="../transpiler" />
 
-module templ.vnode {
-	
-	export class Text implements VNode {
+import {VNode, NodeType, VNodeOptions} from './vnode';
+import {TextCreator} from '../transpiler';
+
+export class Text implements VNode {
 		nodeType = NodeType.Text
 		nodeValue: string
 		constructor (nodeValue:string) {
@@ -14,8 +13,6 @@ module templ.vnode {
 		}
 	}
 	
-	export var text: compiler.TextCreator = function text (nodeValue:string): Text {
+	export var text: TextCreator = function text (nodeValue:string): Text {
 		return new Text(nodeValue)
 	} 
-	
-}

@@ -1,12 +1,11 @@
-/// <reference path="base" />
-/// <reference path="../utils" />
-/// <reference path="../view" />
+import {BaseAttribute} from './base';
+import {Reference} from '../view';
+import * as utils from '../utils';
 
-module templ.attributes {
-	const _events = ['change', 'keyup', 'input']
+const _events = ['change', 'keyup', 'input']
 	export class ValueAttribute extends BaseAttribute {
 
-		model: templ.Reference
+		model: Reference
 		_autocompleteCheckInterval: number
 		initialize() {
 			(<any>this)._onInput = utils.bind(this._onInput, this, null)
@@ -22,7 +21,7 @@ module templ.attributes {
 
 			if (!model) return;
 
-			if (!model || !(model instanceof templ.Reference)) {
+			if (!model || !(model instanceof Reference)) {
 				throw new Error("input value must be a reference. Make sure you have <~> defined");
 			}
 
@@ -97,5 +96,3 @@ module templ.attributes {
 
 
 	}
-
-}

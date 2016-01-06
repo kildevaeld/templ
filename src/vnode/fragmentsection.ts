@@ -1,9 +1,7 @@
-/// <reference path="vnode" />
+import {Section, getNodeByPath, getNodePath, Marker} from './vnode'
+import {NodeSection} from './nodesection'
 
-
-module templ.vnode {
-	
-	export class FragmentSection implements Section {
+export class FragmentSection implements Section {
 		document: Document
 		start: Node
 		end: Node
@@ -94,7 +92,7 @@ module templ.vnode {
 
 	}
 	
-	export class FragmentSectionMarker implements vnode.Marker {
+	export class FragmentSectionMarker implements Marker {
 	document: Document
 	startPath: string[]
 	endPath: string[]
@@ -104,9 +102,8 @@ module templ.vnode {
 		this.endPath = endPath	
 	}
 	
-	createSection (root:Node): vnode.FragmentSection {
-		return new vnode.FragmentSection(this.document, vnode.getNodeByPath(root,this.startPath),vnode.getNodeByPath(root,this.endPath))
+	createSection (root:Node): FragmentSection {
+		return new FragmentSection(this.document, getNodeByPath(root,this.startPath),getNodeByPath(root,this.endPath))
 	}
-}
 }
 
