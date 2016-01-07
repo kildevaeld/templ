@@ -2,7 +2,7 @@
 /* jshint node:true */
 'use strict';
 const fs = require('fs');
-const templ = require('../lib/index');
+const templ = require('../lib/transpiler');
 
 const argv = process.argv;
 
@@ -13,7 +13,7 @@ if (argv.length < 3) {
 
 
 var str = fs.readFileSync(argv[2], 'utf8');
-var result = templ.compile(str)
+var result = templ.transpile(str)
 
 console.log(result.toString())
 

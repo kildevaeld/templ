@@ -1,4 +1,7 @@
 'use strict';
+declare var global:any
+declare var require:any
+
 
 import {IRepository, Repository} from './repository';
 import * as vnode from './vnode';
@@ -20,6 +23,8 @@ export interface TemplateOptions {
 	viewClass?: vnode.IViewConstructor,
 	modifiers?: (value: any) => any
 }
+
+
 
 export function attribute(name: string, attr: vnode.AttributeConstructor | vnode.Attribute) {
 		if (typeof attr !== 'function') {
@@ -50,10 +55,10 @@ export function compile(str: string, options?: TemplateOptions): vnode.Template 
 		let n = fn(vn.fragment, vn.element, vn.text, vn.comment, vn.dynamic, binding);
 
 		return vn.template(n, utils.extend({
-		document: document,
-		viewClass: View,
-		attributes: new Repository(<any>attributes),
-		components: new Repository(<any>components),
-		modifiers: modifiers
+			document: document,
+			viewClass: View,
+			attributes: new Repository(<any>attributes),
+			components: new Repository(<any>components),
+			modifiers: modifiers
 		}, options || {}))
 }

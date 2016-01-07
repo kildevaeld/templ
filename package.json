@@ -30,5 +30,8 @@
     "requiredir": "^1.0.7",
     "typescript": "^1.8.0-dev.20160106"
   },
-  "typings": "lib/index.d.ts"
+  "typings": "lib/index.d.ts",
+  "dependencies": {
+    "nofactor": "^4.0.2"
+  }
 }
