@@ -5,7 +5,7 @@ const gulp = require('gulp'),
   
   
 gulp.task('bundle', ['build'], () => {
-  gulp.src('./lib/index.js')
+  return gulp.src('./lib/index.js')
   .pipe(webpack({
     output: {
       filename: 'templ.js',
