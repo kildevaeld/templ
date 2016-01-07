@@ -1444,6 +1444,21 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	exports.Assignment = Assignment;
 
+	var Call = function () {
+	    function Call(view, path) {
+	        _classCallCheck(this, Call);
+
+	        this.view = view;
+	        this.path = path;
+	    }
+
+	    Call.prototype.call = function call() {};
+
+	    return Call;
+	}();
+
+	exports.Call = Call;
+
 	var View = function (_vnode$View) {
 	    _inherits(View, _vnode$View);
 
@@ -1551,6 +1566,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	            ctxPath.pop();
 	            caller = this._callers[keypath] = new Function("params", "return this." + keypath + ".apply(" + ctxPath.join(".") + ", params);");
 	        }
+	        console.log(caller.toString());
 	        try {
 	            v = caller.call(this.context, params);
 	        } catch (e) {
@@ -1917,6 +1933,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	        var fragment = "fragment([" + this._children(elements) + "])";
 	        buffer += "'use strict';return " + fragment;
 	        buffer += "})";
+	        console.log(buffer);
 	        return buffer;
 	    };
 	    /**

@@ -49,17 +49,17 @@ class DynamicComponentRenderer implements Renderer {
 		bindingClass: BindingContructor
 		options: VNodeOptions
 		constructor(renderer: Renderer, bindingClass: BindingContructor, options: VNodeOptions) {
-		this.renderer = renderer
-		this.bindingClass = bindingClass
-		this.options = options
+			this.renderer = renderer
+			this.bindingClass = bindingClass
+			this.options = options
 		}
 
 		generate(root: Node, view: IView) {
 
-		this.renderer.generate(root, view)
-		let component = view.bindings[view.bindings.length - 1]
+			this.renderer.generate(root, view)
+			let component = view.bindings[view.bindings.length - 1]
 
-		view.bindings.splice(view.bindings.indexOf(component), 0, new this.bindingClass(<any>component, view))
+			view.bindings.splice(view.bindings.indexOf(component), 0, new this.bindingClass(<any>component, view))
 
 		}
 }
@@ -70,9 +70,9 @@ class DynamicRenderer implements Renderer {
 		bindingClass
 		_refPath: string[]
 		constructor(node: Node, bindingClass: BindingContructor, options?: any) {
-		this.ref = node
-		this.bindingClass = bindingClass
-		this.options = options
+			this.ref = node
+			this.bindingClass = bindingClass
+			this.options = options
 		}
 
 		generate(root: Node, view: IView) {

@@ -73,6 +73,19 @@ export class Assignment {
 	}
 }
 
+export class Call {
+	view: View
+	path: string
+	constructor(view: View, path: string) {
+		this.view = view;
+		this.path = path;
+	}
+	
+	call () {
+		
+	}
+}
+
 export interface IDelegator {
 	addListener(elm: Element, eventName: string, callback: string | EventListener, capture?: boolean): Function
 	removeListener(elm: Element, eventName: string, callback: string | EventListener, capture?: boolean)
@@ -207,7 +220,7 @@ export class View extends vnode.View {
 			ctxPath.pop();
 			caller = this._callers[<string>keypath] = new Function("params", "return this." + keypath + ".apply(" + ctxPath.join(".") + ", params);");
 		}
-
+		console.log(caller.toString())
 		try {
 			v = caller.call(this.context, params);
 		} catch (e) {

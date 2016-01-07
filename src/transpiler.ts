@@ -76,7 +76,7 @@ class Transpiler {
     var fragment = "fragment([" + this._children(elements) + "])";
     buffer += "'use strict';return " + fragment;
     buffer += "})";
-
+    console.log(buffer)
     return buffer;
   }
 

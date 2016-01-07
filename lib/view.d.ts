@@ -16,6 +16,12 @@ export declare class Assignment {
     assign(value?: (any)): void;
     toString(): string;
 }
+export declare class Call {
+    view: View;
+    path: string;
+    constructor(view: View, path: string);
+    call(): void;
+}
 export interface IDelegator {
     addListener(elm: Element, eventName: string, callback: string | EventListener, capture?: boolean): Function;
     removeListener(elm: Element, eventName: string, callback: string | EventListener, capture?: boolean): any;
