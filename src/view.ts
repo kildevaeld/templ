@@ -79,7 +79,7 @@ export interface IDelegator {
 }
 
 export class View extends vnode.View {
-	_delegator: IDelegator
+	protected _delegator: IDelegator
 	_callers: { [key: string]: Function } = {}
 	_getters: any = {}
 	parent: View
@@ -120,7 +120,7 @@ export class View extends vnode.View {
 	}
 
 	removeListener(elm: Element, eventName: string, callback: EventListener | string, capture: boolean = false) {
-		let delegator = null// this.getDelegator();
+		let delegator = this.getDelegator();
 		if (delegator) {
 			delegator.removeListener(elm, eventName, callback, capture)
 		} else if (typeof callback === 'function') {

@@ -22,7 +22,7 @@ export interface IDelegator {
 }
 export declare class View extends vnode.View {
     context: any;
-    _delegator: IDelegator;
+    protected _delegator: IDelegator;
     _callers: {
         [key: string]: Function;
     };

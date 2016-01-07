@@ -6,7 +6,8 @@ const gulp = require('gulp'),
   gutil = require('gulp-util'),
   tsc = require('gulp-typescript'),
   merge = require('merge2'),
-  babel = require('gulp-babel');
+  babel = require('gulp-babel'),
+  pegjs = require('pegjs');
 
 
 gulp.task('addfiles', (done) => {
@@ -37,13 +38,14 @@ const project = tsc.createProject('./tsconfig.json', {
   preserveConstEnums: false
 });
 
-gulp.task('build', () => {
+gulp.task('build', ['parser'], () => {
   
   let result = project.src()
   .pipe(tsc(project));
   
   let js = result.js
   .pipe(babel({
+    compact: false,
     "plugins": ["transform-decorators"],
     presets: ["es2015-loose", 'stage-0'],    
   }))
@@ -52,5 +54,18 @@ gulp.task('build', () => {
   return merge([
     js, result.dts.pipe(gulp.dest('./lib'))
   ])
+  
+});
+
+gulp.task('parser', () => {
+  return jetpack.readAsync('./grammar/parser.pegjs')
+  .then((source) => {
+    let parser = pegjs.buildParser(source, {
+      output: 'source',
+      optimize: 'speed'
+    });
+    parser = "export var parser = " + parser
+    return jetpack.writeAsync('./src/parser.ts', parser)  
+  })
   
 });
