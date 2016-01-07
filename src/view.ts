@@ -75,14 +75,26 @@ export class Assignment {
 
 export class Call {
 	view: View
-	path: string
-	constructor(view: View, path: string) {
+	keypath: string
+	params: any[]
+	constructor(view: View, keypath: string, params:any[]) {
 		this.view = view;
-		this.path = path;
+		this.keypath = keypath;
+		this.params = params;
 	}
 	
 	call () {
+		let fn = this.view.get(this.keypath)
+		if (fn == null || typeof fn !== 'function') {
+			throw new Error("not exists or not function");
+		}
 		
+		return fn.apply(this.view, this.params)
+	}
+	
+	toString (): string {
+		let val = this.call();
+		return val ? String(val) : '';
 	}
 }
 
@@ -220,14 +232,16 @@ export class View extends vnode.View {
 			ctxPath.pop();
 			caller = this._callers[<string>keypath] = new Function("params", "return this." + keypath + ".apply(" + ctxPath.join(".") + ", params);");
 		}
-		console.log(caller.toString())
-		try {
+		
+		
+		/*try {
 			v = caller.call(this.context, params);
 		} catch (e) {
 			console.error('could not call', e)
 		}
 
-		return v != void 0 ? v : this.parent ? this.parent.call(keypath, params) : void 0;
+		return v != void 0 ? v : this.parent ? this.parent.call(keypath, params) : void 0;*/
+		return new Call(this, <string>keypath, params);
 	}
 
 }

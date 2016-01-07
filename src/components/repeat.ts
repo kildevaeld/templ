@@ -1,6 +1,6 @@
 import {BaseComponent} from './component';
-import {VNode} from '../vnode/vnode';
-
+import {VNode} from '../vnode';
+import {Call} from '../view'
 function _each(target, iterate) {
 
     if (!target) return;
@@ -29,6 +29,10 @@ function _each(target, iterate) {
       var parent = this.view;
 
       var properties;
+    
+      if (each instanceof Call) {
+        each = each.call();
+      }
       
       _each(each, function(model, k) {
 
@@ -41,7 +45,7 @@ function _each(target, iterate) {
         } else {
           properties = model;
         }
-
+        properties.parent = self.view.context;
         // TODO - provide SAME context here for speed and stability
         if (n >= self._children.length) {
           

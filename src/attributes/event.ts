@@ -1,5 +1,5 @@
 import {BaseAttribute} from './base';
-import {Assignment} from '../view';
+import {Assignment, Call} from '../view';
 import * as utils from '../utils';
 import {IView} from '../vnode/vnode';
 
@@ -37,12 +37,17 @@ const debug = utils.debug('attributes:event')
 			} else {
 				fn = this.value;
 			}
-
-			if (typeof fn !== 'function') {
-				throw new Error('[event] value is not a function')
+			
+			if (typeof fn !== 'function' && !(fn instanceof Call)) {
+				throw new Error('[event] value is not a function or a Callable')
 			}
 			debug('fired event: %s', this._event)
-			fn(e);
+			if (fn instanceof Call) {
+				fn.call()
+			} else {
+				fn(e);	
+			}
+			
 		}
 
 		destroy () {

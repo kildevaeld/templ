@@ -18,9 +18,11 @@ export declare class Assignment {
 }
 export declare class Call {
     view: View;
-    path: string;
-    constructor(view: View, path: string);
-    call(): void;
+    keypath: string;
+    params: any[];
+    constructor(view: View, keypath: string, params: any[]);
+    call(): any;
+    toString(): string;
 }
 export interface IDelegator {
     addListener(elm: Element, eventName: string, callback: string | EventListener, capture?: boolean): Function;
@@ -44,5 +46,5 @@ export declare class View extends vnode.View {
     render(): Node;
     ref(path: string, gettable: boolean, settable: boolean): Reference;
     assign(path: string, value: any): Assignment;
-    call(keypath: string | string[], params: any): any;
+    call(keypath: string | string[], params: any): Call;
 }

@@ -17,17 +17,19 @@
 		<br /> {{~numItems}}
 		<repeat each="{{ range(numItems) }}" as='number'>
 			{{~number}}
+			<button onclick="{{onClick(number)}}">Click {{number}}</button>
 			<br />
+			
 		</repeat>
 		{{title}}
 		</div>
-
+		
 	</script>
 	<button id="remove">Remove</button>
 	
 	<script>
 		'use strict';
-		templ.debugging(true)
+		//templ.debugging(true)
 		
 		var range = function(start, stop, step) {
 			if (stop == null) {
@@ -55,11 +57,14 @@
 			let view = template.view({
 				count: 0,
 				title: 'test',
-  			numItems: 1,
+  			numItems: 100,
   			range: function (count) {
 
     			return range(Math.min(count, 10000)).reverse();
-  			}
+  			},
+				onClick: function (title) {
+					console.log(title);
+				}
 			})
 			let elm = view.render();
 			

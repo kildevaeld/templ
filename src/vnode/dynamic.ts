@@ -76,9 +76,9 @@ class DynamicRenderer implements Renderer {
 		}
 
 		generate(root: Node, view: IView) {
-		if (!this._refPath) this._refPath = getNodePath(this.ref);
+			if (!this._refPath) this._refPath = getNodePath(this.ref);
 
-		view.bindings.push(new this.bindingClass(getNodeByPath(root, this._refPath), view));
+			view.bindings.push(new this.bindingClass(getNodeByPath(root, this._refPath), view));
 		}
 }
 
