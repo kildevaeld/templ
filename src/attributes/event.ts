@@ -43,7 +43,7 @@ const debug = utils.debug('attributes:event')
 			}
 			debug('fired event: %s', this._event)
 			if (fn instanceof Call) {
-				fn.call()
+				fn.call();
 			} else {
 				fn(e);	
 			}
@@ -72,15 +72,19 @@ const debug = utils.debug('attributes:event')
   	}
 	}
 
+  export class ChangeAttribute extends EventAttribute {
+    event = "change";
+  }
+
 	export class ClickAttribute extends EventAttribute { 
-		event = "click"
+		event = "click";
 	}
 	
 	
 	export class OnEnterAttribute extends KeyCodeAttribute {
-		keyCodes = [13]
+		keyCodes = [13];
 	}
 
 	export class OnEscapeAttribute extends KeyCodeAttribute {
-		KeyCodes = [27]
+		KeyCodes = [27];
 	}
