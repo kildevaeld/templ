@@ -13,6 +13,9 @@ export declare class KeyCodeAttribute extends EventAttribute {
     constructor(ref: Node, key: string, value: any, view: IView);
     _onEvent(event: any): void;
 }
+export declare class ChangeAttribute extends EventAttribute {
+    event: string;
+}
 export declare class ClickAttribute extends EventAttribute {
     event: string;
 }

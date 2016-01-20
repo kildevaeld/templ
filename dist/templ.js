@@ -1718,11 +1718,11 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	exports.KeyCodeAttribute = KeyCodeAttribute;
 
-	var ClickAttribute = function (_EventAttribute2) {
-	    _inherits(ClickAttribute, _EventAttribute2);
+	var ChangeAttribute = function (_EventAttribute2) {
+	    _inherits(ChangeAttribute, _EventAttribute2);
 
-	    function ClickAttribute() {
-	        _classCallCheck(this, ClickAttribute);
+	    function ChangeAttribute() {
+	        _classCallCheck(this, ChangeAttribute);
 
 	        for (var _len = arguments.length, args = Array(_len), _key = 0; _key < _len; _key++) {
 	            args[_key] = arguments[_key];
@@ -1730,8 +1730,29 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	        var _this3 = _possibleConstructorReturn(this, _EventAttribute2.call.apply(_EventAttribute2, [this].concat(args)));
 
-	        _this3.event = "click";
+	        _this3.event = "change";
 	        return _this3;
+	    }
+
+	    return ChangeAttribute;
+	}(EventAttribute);
+
+	exports.ChangeAttribute = ChangeAttribute;
+
+	var ClickAttribute = function (_EventAttribute3) {
+	    _inherits(ClickAttribute, _EventAttribute3);
+
+	    function ClickAttribute() {
+	        _classCallCheck(this, ClickAttribute);
+
+	        for (var _len2 = arguments.length, args = Array(_len2), _key2 = 0; _key2 < _len2; _key2++) {
+	            args[_key2] = arguments[_key2];
+	        }
+
+	        var _this4 = _possibleConstructorReturn(this, _EventAttribute3.call.apply(_EventAttribute3, [this].concat(args)));
+
+	        _this4.event = "click";
+	        return _this4;
 	    }
 
 	    return ClickAttribute;
@@ -1745,14 +1766,14 @@ return /******/ (function(modules) { // webpackBootstrap
 	    function OnEnterAttribute() {
 	        _classCallCheck(this, OnEnterAttribute);
 
-	        for (var _len2 = arguments.length, args = Array(_len2), _key2 = 0; _key2 < _len2; _key2++) {
-	            args[_key2] = arguments[_key2];
+	        for (var _len3 = arguments.length, args = Array(_len3), _key3 = 0; _key3 < _len3; _key3++) {
+	            args[_key3] = arguments[_key3];
 	        }
 
-	        var _this4 = _possibleConstructorReturn(this, _KeyCodeAttribute.call.apply(_KeyCodeAttribute, [this].concat(args)));
+	        var _this5 = _possibleConstructorReturn(this, _KeyCodeAttribute.call.apply(_KeyCodeAttribute, [this].concat(args)));
 
-	        _this4.keyCodes = [13];
-	        return _this4;
+	        _this5.keyCodes = [13];
+	        return _this5;
 	    }
 
 	    return OnEnterAttribute;
@@ -1766,14 +1787,14 @@ return /******/ (function(modules) { // webpackBootstrap
 	    function OnEscapeAttribute() {
 	        _classCallCheck(this, OnEscapeAttribute);
 
-	        for (var _len3 = arguments.length, args = Array(_len3), _key3 = 0; _key3 < _len3; _key3++) {
-	            args[_key3] = arguments[_key3];
+	        for (var _len4 = arguments.length, args = Array(_len4), _key4 = 0; _key4 < _len4; _key4++) {
+	            args[_key4] = arguments[_key4];
 	        }
 
-	        var _this5 = _possibleConstructorReturn(this, _KeyCodeAttribute2.call.apply(_KeyCodeAttribute2, [this].concat(args)));
+	        var _this6 = _possibleConstructorReturn(this, _KeyCodeAttribute2.call.apply(_KeyCodeAttribute2, [this].concat(args)));
 
-	        _this5.KeyCodes = [27];
-	        return _this5;
+	        _this6.KeyCodes = [27];
+	        return _this6;
 	    }
 
 	    return OnEscapeAttribute;
