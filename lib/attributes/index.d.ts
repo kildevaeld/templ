@@ -1,5 +1,5 @@
 import { ValueAttribute } from './value';
-import { ClickAttribute, OnEnterAttribute, OnEscapeAttribute } from './event';
+import { ClickAttribute, OnEnterAttribute, OnEscapeAttribute, ChangeAttribute } from './event';
 import { StyleAttribute } from './style';
 import { FocusAttribute } from './focus';
 export * from './base';
@@ -7,6 +7,7 @@ export declare var value: typeof ValueAttribute;
 export declare var onclick: typeof ClickAttribute;
 export declare var onenter: typeof OnEnterAttribute;
 export declare var onescape: typeof OnEscapeAttribute;
+export declare var onchange: typeof ChangeAttribute;
 export declare var checked: typeof ValueAttribute;
 export declare var style: typeof StyleAttribute;
 export declare var focus: typeof FocusAttribute;

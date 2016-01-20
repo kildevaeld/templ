@@ -23,13 +23,13 @@
 		</repeat>
 		{{title}}
 		</div>
-		
+		<input type="file" onchange="{{onChange}}"/>
 	</script>
 	<button id="remove">Remove</button>
 	
 	<script>
 		'use strict';
-		//templ.debugging(true)
+		templ.debugging(true)
 		
 		var range = function(start, stop, step) {
 			if (stop == null) {
@@ -64,8 +64,12 @@
   			},
 				onClick: function (title) {
 					console.log(title);
-				}
-			})
+				},
+        onChange: function () {
+          alert('ch-ch-changes!');
+        }
+			});
+      
 			let elm = view.render();
 			
 			document.body.appendChild(elm)
@@ -76,9 +80,6 @@
 				
 			})
 			
-			setTimeout(function () {
-				//view.set('numItems', 2000)
-			}, 1000)
 	</script>
 </body>
 
