@@ -4,6 +4,7 @@ export declare class FragmentSection implements Section {
     start: Node;
     end: Node;
     node: Node;
+    __parent: Node;
     constructor(document: Document, start?: Node, end?: Node);
     appendChild(node: Node): void;
     render(): Node;

@@ -670,6 +670,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	            var parent = document.createDocumentFragment();
 	            parent.appendChild(this.start);
 	            parent.appendChild(this.end);
+	            // Chrome bug. If the reference to the newly created dparent
+	            // Chrome (v8?) will release it, and the parent will become null;
+	            this.__parent = parent;
 	        }
 	    }
 

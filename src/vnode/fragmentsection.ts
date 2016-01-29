@@ -6,6 +6,7 @@ export class FragmentSection implements Section {
 		start: Node
 		end: Node
 		node: Node
+		__parent: Node // chrome bug
 		constructor(document: Document, start?: Node, end?: Node) {
 			this.document = document
 
@@ -16,6 +17,9 @@ export class FragmentSection implements Section {
 				let parent = document.createDocumentFragment();
 				parent.appendChild(this.start);
 				parent.appendChild(this.end)
+				// Chrome bug. If the reference to the newly created dparent
+				// Chrome (v8?) will release it, and the parent will become null;
+        this.__parent = parent;
 			}
 
 		}
