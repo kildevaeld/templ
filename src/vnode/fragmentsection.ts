@@ -11,9 +11,8 @@ export class FragmentSection implements Section {
 
 			this.start = start || document.createTextNode('')
 			this.end = end || document.createTextNode('')
-			
+
 			if (!this.start.parentNode) {
-				
 				let parent = document.createDocumentFragment();
 				parent.appendChild(this.start);
 				parent.appendChild(this.end)
@@ -22,7 +21,6 @@ export class FragmentSection implements Section {
 		}
 
 		appendChild(node: Node) {
-			//console.log(document.body.appendChild(node))
 			this.end.parentNode.insertBefore(node, this.end)
 		}
 
@@ -91,7 +89,7 @@ export class FragmentSection implements Section {
 		}
 
 	}
-	
+
 	export class FragmentSectionMarker implements Marker {
 	document: Document
 	startPath: string[]
@@ -99,9 +97,9 @@ export class FragmentSection implements Section {
 	constructor(document:Document, startPath:string[],endPath:string[]) {
 		this.document = document
 		this.startPath = startPath
-		this.endPath = endPath	
+		this.endPath = endPath
 	}
-	
+
 	createSection (root:Node): FragmentSection {
 		return new FragmentSection(this.document, getNodeByPath(root,this.startPath),getNodeByPath(root,this.endPath))
 	}

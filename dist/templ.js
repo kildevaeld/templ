@@ -674,7 +674,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	    }
 
 	    FragmentSection.prototype.appendChild = function appendChild(node) {
-	        //console.log(document.body.appendChild(node))
 	        this.end.parentNode.insertBefore(node, this.end);
 	    };
 
