@@ -16,12 +16,12 @@ gulp.task('addfiles', (done) => {
   readdir(process.cwd() + '/src', function (e, files) {
     tsconfig.files = files.filter(function (file) {
       var len = file.length;
-      
+
       if (/bower_components/.test(file) || /node_modules/.test(file)) return false;
       //console.log(file.test(/bower_components/))
       return file.substr(len - 3) === '.ts' && file.substr(len - 5) !== ".d.ts";
     }).map(function (file) {
-      
+
       return file.replace(process.cwd() +'/', '');
     });
 
@@ -39,22 +39,22 @@ const project = tsc.createProject('./tsconfig.json', {
 });
 
 gulp.task('build', ['parser'], () => {
-  
+
   let result = project.src()
   .pipe(tsc(project));
-  
+
   let js = result.js
   .pipe(babel({
     compact: false,
     "plugins": ["transform-decorators"],
-    presets: ["es2015-loose", 'stage-0'],    
+    presets: ["es2015-loose", 'stage-0'],
   }))
   .pipe(gulp.dest('./lib'));
-  
+
   return merge([
     js, result.dts.pipe(gulp.dest('./lib'))
   ])
-  
+
 });
 
 gulp.task('parser', () => {
@@ -65,7 +65,7 @@ gulp.task('parser', () => {
       optimize: 'speed'
     });
     parser = "export var parser = " + parser
-    return jetpack.writeAsync('./src/parser.ts', parser)  
+    return jetpack.writeAsync('./src/parser.ts', parser)
   })
-  
+
 });

@@ -1704,6 +1704,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	        //this.event = "keydown"
 	        //this.keyCodes = []
 
+
 	        _this2.keyCodes = [];
 	        _this2.event = "keydown";
 	        return _this2;
@@ -1967,11 +1968,13 @@ return /******/ (function(modules) { // webpackBootstrap
 	    /**
 	     */
 
+
 	    Transpiler.prototype.transpile = function transpile(source) {
 	        return this._root(parser_1.parser.parse(source));
 	    };
 	    /**
 	     */
+
 
 	    Transpiler.prototype._root = function _root(elements) {
 	        var buffer = "(function(fragment, element, text, comment, dynamic, createBindingClass) {";
@@ -1983,12 +1986,14 @@ return /******/ (function(modules) { // webpackBootstrap
 	    /**
 	     */
 
+
 	    Transpiler.prototype._expression = function _expression(expression) {
 	        return this["_" + expression[0]](expression);
 	    };
 	    /**
 	     * check for stuff like <li repeat.each={{items}}></li>
 	     */
+
 
 	    Transpiler.prototype._element = function _element(expression) {
 	        var exprs = {};
@@ -2013,11 +2018,13 @@ return /******/ (function(modules) { // webpackBootstrap
 	    /**
 	     */
 
+
 	    Transpiler.prototype._doctype = function _doctype(expression) {
 	        return "text('<!DOCTYPE " + expression[1] + ">')";
 	    };
 	    /**
 	     */
+
 
 	    Transpiler.prototype._children = function _children(children) {
 	        var items = [];
@@ -2036,6 +2043,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    };
 	    /**
 	     */
+
 
 	    Transpiler.prototype._element2 = function _element2(expression) {
 	        var buffer = "element('" + expression[1] + "'";
@@ -2095,6 +2103,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    /**
 	     */
 
+
 	    Transpiler.prototype.__addReference = function __addReference(expression) {
 	        var name = "_" + ++this._refCounter;
 	        this._refs[name] = expression;
@@ -2102,6 +2111,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    };
 	    /**
 	     */
+
 
 	    Transpiler.prototype._block = function _block(expression) {
 	        // TODO - check for unbound expressions here
@@ -2112,17 +2122,20 @@ return /******/ (function(modules) { // webpackBootstrap
 	    /**
 	     */
 
+
 	    Transpiler.prototype._text = function _text(expression) {
 	        return "text('" + expression[1] + "')";
 	    };
 	    /**
 	     */
 
+
 	    Transpiler.prototype._comment = function _comment(expression) {
 	        return "comment('" + expression[1] + "')";
 	    };
 	    /**
 	     */
+
 
 	    Transpiler.prototype._hash = function _hash(expression) {
 	        var items = expression[1];
@@ -2135,11 +2148,13 @@ return /******/ (function(modules) { // webpackBootstrap
 	    /**
 	     */
 
+
 	    Transpiler.prototype._script = function _script(expression) {
 	        return this._expression(expression[1]);
 	    };
 	    /**
 	     */
+
 
 	    Transpiler.prototype._referenceKeyPath = function _referenceKeyPath(expression) {
 	        var keypath = [];
@@ -2161,6 +2176,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    /**
 	     */
 
+
 	    Transpiler.prototype._reference = function _reference(expression) {
 	        var keypath = this._referenceKeyPath(expression[1]);
 	        if (expression[2]) {
@@ -2173,11 +2189,13 @@ return /******/ (function(modules) { // webpackBootstrap
 	    /**
 	     */
 
+
 	    Transpiler.prototype._string = function _string(expression) {
 	        return "'" + expression[1] + "'";
 	    };
 	    /**
 	     */
+
 
 	    Transpiler.prototype._operator = function _operator(expression) {
 	        return this._expression(expression[2]) + expression[1] + this._expression(expression[3]);
@@ -2185,11 +2203,13 @@ return /******/ (function(modules) { // webpackBootstrap
 	    /**
 	     */
 
+
 	    Transpiler.prototype._condition = function _condition(expression) {
 	        return this._expression(expression[1]) + "?" + this._expression(expression[2]) + ":" + this._expression(expression[3]);
 	    };
 	    /**
 	     */
+
 
 	    Transpiler.prototype._literal = function _literal(expression) {
 	        return expression[1];
@@ -2197,17 +2217,20 @@ return /******/ (function(modules) { // webpackBootstrap
 	    /**
 	     */
 
+
 	    Transpiler.prototype._not = function _not(expression) {
 	        return "!" + this._expression(expression[1]);
 	    };
 	    /**
 	     */
 
+
 	    Transpiler.prototype._negative = function _negative(expression) {
 	        return "-" + this._expression(expression[1]);
 	    };
 	    /**
 	     */
+
 
 	    Transpiler.prototype._call = function _call(expression) {
 	        var buffer = "this.view.call(" + this._referenceKeyPath(expression[1][1]) + ", [";
@@ -2216,6 +2239,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    };
 	    /**
 	     */
+
 
 	    Transpiler.prototype._modifier = function _modifier(expression) {
 	        return "this.options.modifiers." + expression[1] + "(" + expression[2].map(this._expression).join(",") + ")";
@@ -2227,11 +2251,13 @@ return /******/ (function(modules) { // webpackBootstrap
 	    /**
 	     */
 
+
 	    Transpiler.prototype._group = function _group(expression) {
 	        return "(" + this._expression(expression[1]) + ")";
 	    };
 	    /**
 	     */
+
 
 	    Transpiler.prototype.__findExpressions = function __findExpressions(type, expr) {
 	        var exprs = [];
@@ -2242,6 +2268,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    };
 	    /**
 	     */
+
 
 	    Transpiler.prototype.__traverse = function __traverse(expr, iterator) {
 	        iterator(expr);
@@ -2256,6 +2283,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	}();
 	/**
 	 */
+
 
 	function _dashToCamelCase(string) {
 	    return string.split("-").map(function (part, i) {
