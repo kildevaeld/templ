@@ -12,7 +12,8 @@
     "suppressImplicitAnyIndexErrors": true,
     "outDir": "./lib",
     "rootDir": "./src",
-    "preserveConstEnums": false
+    "preserveConstEnums": false,
+    "allowJs": true
   },
   "filesGlob": [
     "./src/*.ts",
@@ -22,7 +23,7 @@
   "files": [
     "src/binding.ts",
     "src/index.ts",
-    "src/parser.ts",
+    "src/parser.js",
     "src/repository.ts",
     "src/transpiler.ts",
     "src/utils.ts",

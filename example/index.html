@@ -1,35 +1,38 @@
+<!DOCTYPE html>
 <html>
 
 <head>
 
-	<script src "../node_modules/underscore/underscore.js"></script>
-	<script src="../dist/templ.js"></script>
+    <script src "../node_modules/underscore/underscore.js"></script>
+    <script src="../dist/templ.js"></script>
 
 </head>
 
 <body>
-	<script type="text/html" id="template">
-		<!-- speed demo for rendering a dynamic list of items -->
-		<button onclick="{{count = count + 1}}">Click {{count}}, onEnter: {{onEnter ? 'Entered' : ''}}</button>
-		<div>
-				Generate {{title = count}}
-		<input type="text" class="form-control" style="width:60px;display:inline-block;" value="{{<~>numItems}}" onenter="{{onEnter = true}}"></input> items:
-		<br /> {{~numItems}}
-		<repeat each="{{ range(numItems) }}" as='number'>
-			{{~number}}
-			<button onclick="{{onClick(number)}}">Click {{number}}</button>
-			<br />
-			
-		</repeat>
-		{{title}}
-		</div>
-		<input type="file" onchange="{{onChange}}"/>
-	</script>
-	<button id="remove">Remove</button>
-	
-	<script>
-		'use strict';
-		
+    <script type="text/html" id="template">
+        <!-- speed demo for rendering a dynamic list of items -->
+        <button onclick="{{count = count + 1}}">Click {{count}}, onEnter: {{onEnter ? 'Entered' : ''}}</button>
+        <h4>Has focus {{focus}}</h4>
+        <div style="overflow:auto" onscroll="{{onScroll}}">
+            Generate {{title = count}}
+            <input type="text" class="form-control" style="width:60px;display:inline-block;" value="{{<~>numItems}}" onenter="{{onEnter = true}}"
+            onblur="{{focus = false}}" onfocus="{{focus = true}}"></input> items:
+            <br /> {{~numItems}}
+            <repeat each="{{ range(numItems) }}" as='number'>
+                {{~number}}
+                <button onclick="{{onClick(number)}}">Click {{number}}</button>
+                <br />
+
+            </repeat>
+            {{title}}
+        </div>
+        <input type="file" onchange="{{onChange}}" />
+    </script>
+    <button id="remove">Remove</button>
+
+    <script>
+        'use strict';
+		templ.debugging(false)
 		var range = function(start, stop, step) {
 			if (stop == null) {
 				stop = start || 0;
@@ -49,11 +52,11 @@
 			
 			
 			
-			let t = document.getElementById('template')
+			var t = document.getElementById('template')
 		
-			let template = templ.compile(t.innerHTML);
+			var template = templ.compile(t.innerHTML);
 			
-			let view = template.view({
+			var view = template.view({
 				count: 0,
 				title: 'test',
   			numItems: 100,
@@ -64,12 +67,15 @@
 				onClick: function (title) {
 					console.log(title);
 				},
+                onScroll: function () {
+                    console.log('on scroll')
+                },
         onChange: function () {
           alert('ch-ch-changes!');
         }
 			});
       
-			let elm = view.render();
+			var elm = view.render();
 			
 			document.body.appendChild(elm)
 			
@@ -78,8 +84,7 @@
 				view.remove()
 				
 			})
-			
-	</script>
+    </script>
 </body>
 
 </html>

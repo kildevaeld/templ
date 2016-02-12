@@ -19,6 +19,15 @@ export declare class ChangeAttribute extends EventAttribute {
 export declare class ClickAttribute extends EventAttribute {
     event: string;
 }
+export declare class ScrollAttribute extends EventAttribute {
+    event: string;
+}
+export declare class OnFocusAttribute extends EventAttribute {
+    event: string;
+}
+export declare class BlurAttribute extends EventAttribute {
+    event: string;
+}
 export declare class OnEnterAttribute extends KeyCodeAttribute {
     keyCodes: number[];
 }

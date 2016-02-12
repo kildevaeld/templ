@@ -1461,6 +1461,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	exports.onenter = event_1.OnEnterAttribute;
 	exports.onescape = event_1.OnEscapeAttribute;
 	exports.onchange = event_1.ChangeAttribute;
+	exports.onscroll = event_1.ScrollAttribute;
+	exports.onfocus = event_1.OnFocusAttribute;
+	exports.onblur = event_1.BlurAttribute;
 	exports.checked = value_1.ValueAttribute;
 	exports.style = style_1.StyleAttribute;
 	exports.focus = focus_1.FocusAttribute;
@@ -1764,20 +1767,83 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	exports.ClickAttribute = ClickAttribute;
 
+	var ScrollAttribute = function (_EventAttribute4) {
+	    _inherits(ScrollAttribute, _EventAttribute4);
+
+	    function ScrollAttribute() {
+	        _classCallCheck(this, ScrollAttribute);
+
+	        for (var _len3 = arguments.length, args = Array(_len3), _key3 = 0; _key3 < _len3; _key3++) {
+	            args[_key3] = arguments[_key3];
+	        }
+
+	        var _this5 = _possibleConstructorReturn(this, _EventAttribute4.call.apply(_EventAttribute4, [this].concat(args)));
+
+	        _this5.event = "scroll";
+	        return _this5;
+	    }
+
+	    return ScrollAttribute;
+	}(EventAttribute);
+
+	exports.ScrollAttribute = ScrollAttribute;
+
+	var OnFocusAttribute = function (_EventAttribute5) {
+	    _inherits(OnFocusAttribute, _EventAttribute5);
+
+	    function OnFocusAttribute() {
+	        _classCallCheck(this, OnFocusAttribute);
+
+	        for (var _len4 = arguments.length, args = Array(_len4), _key4 = 0; _key4 < _len4; _key4++) {
+	            args[_key4] = arguments[_key4];
+	        }
+
+	        var _this6 = _possibleConstructorReturn(this, _EventAttribute5.call.apply(_EventAttribute5, [this].concat(args)));
+
+	        _this6.event = "focus";
+	        return _this6;
+	    }
+
+	    return OnFocusAttribute;
+	}(EventAttribute);
+
+	exports.OnFocusAttribute = OnFocusAttribute;
+
+	var BlurAttribute = function (_EventAttribute6) {
+	    _inherits(BlurAttribute, _EventAttribute6);
+
+	    function BlurAttribute() {
+	        _classCallCheck(this, BlurAttribute);
+
+	        for (var _len5 = arguments.length, args = Array(_len5), _key5 = 0; _key5 < _len5; _key5++) {
+	            args[_key5] = arguments[_key5];
+	        }
+
+	        var _this7 = _possibleConstructorReturn(this, _EventAttribute6.call.apply(_EventAttribute6, [this].concat(args)));
+
+	        _this7.event = "blur";
+	        return _this7;
+	    }
+
+	    return BlurAttribute;
+	}(EventAttribute);
+
+	exports.BlurAttribute = BlurAttribute;
+
 	var OnEnterAttribute = function (_KeyCodeAttribute) {
 	    _inherits(OnEnterAttribute, _KeyCodeAttribute);
 
 	    function OnEnterAttribute() {
 	        _classCallCheck(this, OnEnterAttribute);
 
-	        for (var _len3 = arguments.length, args = Array(_len3), _key3 = 0; _key3 < _len3; _key3++) {
-	            args[_key3] = arguments[_key3];
+	        for (var _len6 = arguments.length, args = Array(_len6), _key6 = 0; _key6 < _len6; _key6++) {
+	            args[_key6] = arguments[_key6];
 	        }
 
-	        var _this5 = _possibleConstructorReturn(this, _KeyCodeAttribute.call.apply(_KeyCodeAttribute, [this].concat(args)));
+	        var _this8 = _possibleConstructorReturn(this, _KeyCodeAttribute.call.apply(_KeyCodeAttribute, [this].concat(args)));
 
-	        _this5.keyCodes = [13];
-	        return _this5;
+	        _this8.keyCodes = [13];
+	        return _this8;
 	    }
 
 	    return OnEnterAttribute;
@@ -1791,14 +1857,14 @@ return /******/ (function(modules) { // webpackBootstrap
 	    function OnEscapeAttribute() {
 	        _classCallCheck(this, OnEscapeAttribute);
 
-	        for (var _len4 = arguments.length, args = Array(_len4), _key4 = 0; _key4 < _len4; _key4++) {
-	            args[_key4] = arguments[_key4];
+	        for (var _len7 = arguments.length, args = Array(_len7), _key7 = 0; _key7 < _len7; _key7++) {
+	            args[_key7] = arguments[_key7];
 	        }
 
-	        var _this6 = _possibleConstructorReturn(this, _KeyCodeAttribute2.call.apply(_KeyCodeAttribute2, [this].concat(args)));
+	        var _this9 = _possibleConstructorReturn(this, _KeyCodeAttribute2.call.apply(_KeyCodeAttribute2, [this].concat(args)));
 
-	        _this6.KeyCodes = [27];
-	        return _this6;
+	        _this9.KeyCodes = [27];
+	        return _this9;
 	    }
 
 	    return OnEscapeAttribute;

@@ -1,4 +1,4 @@
-export var parser = (function() {
+exports.parser = (function() {
   "use strict";
 
   /*

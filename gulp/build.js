@@ -64,8 +64,8 @@ gulp.task('parser', () => {
       output: 'source',
       optimize: 'speed'
     });
-    parser = "export var parser = " + parser
-    return jetpack.writeAsync('./src/parser.ts', parser)
+    parser = "exports.parser = " + parser
+    return jetpack.writeAsync('./src/parser.js', parser)
   })
 
 });
