@@ -1549,10 +1549,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	        var isRadioOrCheckbox = isCheckbox || isRadio;
 	        var hasValue = Object.prototype.hasOwnProperty.call(node, "value");
 	        var isInput = hasValue || /input|textarea|checkbox/.test(node.nodeName.toLowerCase());
+	        var isSelect = /select/i.test(node.nodeName);
 	        if (!arguments.length) {
 	            if (isCheckbox) {
 	                return Boolean(node.checked);
-	            } else if (isInput) {
+	            } else if (isInput || isSelect) {
 	                return node.value || "";
 	            } else {
 	                return node.innerHTML || "";
@@ -1572,7 +1573,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	                node.checked = value;
 	            }
 	        } else if (String(value) !== this._elementValue()) {
-	            if (isInput) {
+	            if (isInput || isSelect) {
 	                node.value = value;
 	            } else {
 	                node.innerHTML = value;

@@ -56,19 +56,22 @@ const _events = ['change', 'keyup', 'input']
 			var node = <HTMLInputElement>this.ref
 			var isCheckbox = /checkbox/.test(node.type);
 			var isRadio = /radio/.test(node.type);
+
 			var isRadioOrCheckbox = isCheckbox || isRadio;
 			var hasValue = Object.prototype.hasOwnProperty.call(node, "value");
 			var isInput = hasValue || /input|textarea|checkbox/.test(node.nodeName.toLowerCase());
+			var isSelect = /select/i.test(node.nodeName)
 
 			if (!arguments.length) {
 				if (isCheckbox) {
 					return Boolean(node.checked);
-				} else if (isInput) {
+				} else if (isInput || isSelect) {
 					return node.value || "";
 				} else {
 					return node.innerHTML || "";
 				}
 			}
+
 
 			if (value == null) {
 				value = "";
@@ -86,7 +89,7 @@ const _events = ['change', 'keyup', 'input']
 				}
 			} else if (String(value) !== this._elementValue()) {
 
-				if (isInput) {
+				if (isInput || isSelect) {
 					node.value = value;
 				} else {
 					node.innerHTML = value;

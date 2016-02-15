@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+    <script src "../node_modules/underscore/underscore.js"></script>
+    <script src="../dist/templ.js"></script>
+
+</head>
+
+<body>
+    <script type="text/html" id="template">
+        <form>
+          <label>Input text</label>
+          <input type="text" value="{{<~>text}}"/>
+          <label>Input checkbox</label>
+          <input type="checkbox" value="{{<~>checkbox}}"/>
+          <label>Input radio</label>
+          <input type="radio" value="{{<~>radio}}"/>
+          <label>Textarea</label>
+          <textarea value="{{<~>textarea}}"></textarea>
+          <select value="{{<~>select}}">
+            <option value="opt1">Option 1</option>
+            <option value="opt2">Option 2</option>
+          </select>
+        </form>
+    </script>
+    <button id="remove">Show</button>
+    <textarea id="result"></textarea>
+    <script>
+        'use strict';
+
+
+      var t = document.getElementById('template')
+
+      var template = templ.compile(t.innerHTML);
+
+      let data = {
+        text: "Some text",
+        checkbox: true,
+        select: "opt2"
+      }
+      var view = template.view(data);
+
+      var elm = view.render();
+
+      document.body.appendChild(elm)
+
+
+      document.getElementById('remove').addEventListener('click', function () {
+        document.querySelector("#result").innerText = JSON.stringify(data, null, 2);
+
+      })
+    </script>
+</body>
+
+</html>
