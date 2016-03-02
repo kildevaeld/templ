@@ -90,7 +90,7 @@ export class Debug {
   static create(namespace: string): (...args: any[]) => void {
     let logger
     if (this.loggers[namespace]) {
-      logger = this.loggers[namespace].debug
+      logger = this.loggers[namespace]; //.debug
     } else {
       logger = new Debug(namespace);
       this.loggers[namespace] = logger
@@ -127,7 +127,7 @@ export class Debug {
       if ('function' === typeof formatter) {
         var val = args[index];
         match = formatter.call(self, val);
-  
+
         // now we need to remove `args[index]` since it's inlined in the `format`
         args.splice(index, 1);
         index--;

@@ -579,11 +579,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	    Debug.create = function create(namespace) {
 	        var logger = undefined;
 	        if (this.loggers[namespace]) {
-	            logger = this.loggers[namespace].debug;
+	            logger = this.loggers[namespace]; //.debug
 	        } else {
-	            logger = new Debug(namespace);
-	            this.loggers[namespace] = logger;
-	        }
+	                logger = new Debug(namespace);
+	                this.loggers[namespace] = logger;
+	            }
 	        return bind(logger.debug, logger);
 	    };
 
