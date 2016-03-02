@@ -215,7 +215,7 @@ export class View extends vnode.View {
         return section;
     }
 
-    private updateLater () {
+    protected updateLater () {
         this._runloop.deferOnce(this);
     }
 
