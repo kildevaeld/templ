@@ -193,7 +193,7 @@ export class View extends vnode.View {
         }
         
         this._runloop = options.runloop;
-        console.log('run loop', options)
+
     }
 
 

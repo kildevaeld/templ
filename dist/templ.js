@@ -1332,7 +1332,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	            _this._delegator = options.delegator;
 	        }
 	        _this._runloop = options.runloop;
-	        console.log('run loop', options);
 	        return _this;
 	    }
 
