@@ -65,6 +65,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	var view_1 = __webpack_require__(18);
 	var compiler = __webpack_require__(26);
 	var binding_1 = __webpack_require__(28);
+	var runloop_1 = __webpack_require__(29);
 	exports.version = "$$version$$";
 	function attribute(name, attr) {
 	    if (typeof attr !== 'function') {
@@ -97,7 +98,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	        viewClass: view_1.View,
 	        attributes: new repository_1.Repository(attributes),
 	        components: new repository_1.Repository(components),
-	        modifiers: modifiers
+	        modifiers: modifiers,
+	        runloop: new runloop_1.RunLoop()
 	    }, options || {}));
 	}
 	exports.compile = compile;
@@ -907,9 +909,14 @@ return /******/ (function(modules) { // webpackBootstrap
 	        this.options = options;
 	    }
 
-	    Template.prototype.view = function view(context, options) {
+	    Template.prototype.view = function view(context) {
+	        var options = arguments.length <= 1 || arguments[1] === undefined ? {} : arguments[1];
+
 	        var sec = this.section.clone();
 	        var DestView = this.options.viewClass || view_1.View;
+	        for (var k in this.options) {
+	            if (!options[k]) options[k] = this.options[k];
+	        }
 	        var view = new DestView(sec, this, context, options);
 	        for (var _iterator = this._renderers, _isArray = Array.isArray(_iterator), _i = 0, _iterator = _isArray ? _iterator : _iterator[Symbol.iterator]();;) {
 	            var _ref;
@@ -1264,7 +1271,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	        this.toString = utils.bind(this.toString, this);
 	    }
 
-	    Assignment.prototype.assign = function assign(value) {
+	    Assignment.prototype.assign = function assign() {
 	        this.view.set(this.path, this.value.call(this));
 	    };
 
@@ -1324,6 +1331,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	        if (options.delegator) {
 	            _this._delegator = options.delegator;
 	        }
+	        _this._runloop = options.runloop;
+	        console.log('run loop', options);
 	        return _this;
 	    }
 
@@ -1382,7 +1391,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	        if (!this.context) return void 0;
 	        if (typeof path === "string") path = path.split(".");
 	        var ret = _set(this.context, path, value);
-	        this.update();
+	        this.updateLater();
 	    };
 
 	    View.prototype.render = function render() {
@@ -1390,6 +1399,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	        var section = _vnode$View.prototype.render.call(this);
 	        //this.transitions.enter();
 	        return section;
+	    };
+
+	    View.prototype.updateLater = function updateLater() {
+	        this._runloop.deferOnce(this);
 	    };
 
 	    View.prototype.ref = function ref(path, gettable, settable) {
@@ -6582,6 +6595,101 @@ return /******/ (function(modules) { // webpackBootstrap
 	    });
 	}
 	exports.binding = binding;
+
+/***/ },
+/* 29 */
+/***/ function(module, exports) {
+
+	"use strict";
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+	var rAF = window.requestAnimationFrame || window['webkitRequestAnimationFrame'] || window['mozRequestAnimationFrame'];
+	var defaultTick = function defaultTick(next) {
+	    if (!rAF) {
+	        rAF(next);
+	    } else {
+	        setTimeout(next);
+	    }
+	};
+
+	var RunLoop = function () {
+	    function RunLoop() {
+	        var options = arguments.length <= 0 || arguments[0] === undefined ? {} : arguments[0];
+
+	        _classCallCheck(this, RunLoop);
+
+	        if (!options) options = {};
+	        this._animationQueue = [];
+	        this.tick = options.tick || defaultTick;
+	        this._id = options._id || 2;
+	    }
+	    /**
+	    * child runloop in-case we get into recursive loops
+	    */
+
+
+	    RunLoop.prototype.child = function child() {
+	        return this.__child || (this.__child = new RunLoop({ tick: this.tick, _id: this._id << 2 }));
+	    };
+	    /**
+	     * Runs animatable object on requestAnimationFrame. This gets
+	     * called whenever the UI state changes.
+	     *
+	     * @method animate
+	     * @param {Object} animatable object. Must have `update()`
+	     */
+
+
+	    RunLoop.prototype.deferOnce = function deferOnce(context) {
+	        var _this = this;
+
+	        if (!context.__running) context.__running = 1;
+	        if (context.__running & this._id) {
+	            if (this._running) {
+	                this.child().deferOnce(context);
+	            }
+	            return;
+	        }
+	        context.__running |= this._id;
+	        // push on the animatable object
+	        this._animationQueue.push(context);
+	        // if animating, don't continue
+	        if (this._requestingFrame) return;
+	        this._requestingFrame = true;
+	        // run the animation frame, and callback all the animatable objects
+	        this.tick(function () {
+	            _this.runNow();
+	            _this._requestingFrame = false;
+	        });
+	    };
+	    /**
+	     */
+
+
+	    RunLoop.prototype.runNow = function runNow() {
+	        var queue = this._animationQueue;
+	        this._animationQueue = [];
+	        this._running = true;
+	        // queue.length is important here, because animate() can be
+	        // called again immediately after an update
+	        for (var i = 0; i < queue.length; i++) {
+	            var item = queue[i];
+	            item.update();
+	            item.__running &= ~this._id;
+	            // check for anymore animations - need to run
+	            // them in order
+	            if (this._animationQueue.length) {
+	                this.runNow();
+	            }
+	        }
+	        this._running = false;
+	    };
+
+	    return RunLoop;
+	}();
+
+	exports.RunLoop = RunLoop;
 
 /***/ }
 /******/ ])

@@ -1,4 +1,5 @@
 import * as vnode from './vnode';
+import { RunLoop } from './runloop';
 export declare class Reference {
     gettable: boolean;
     settable: boolean;
@@ -13,7 +14,7 @@ export declare class Assignment {
     path: string;
     value: () => any;
     constructor(view: View, path: string, value: () => any);
-    assign(value?: (any)): void;
+    assign(): void;
     toString(): string;
 }
 export declare class Call {
@@ -35,6 +36,7 @@ export declare class View extends vnode.View {
         [key: string]: Function;
     };
     _getters: any;
+    _runloop: RunLoop;
     parent: View;
     root: View;
     getDelegator(): IDelegator;
@@ -44,6 +46,7 @@ export declare class View extends vnode.View {
     constructor(section: vnode.Section, template: vnode.Template, context: any, options?: any);
     set(path: string | string[], value: any): any;
     render(): Node;
+    private updateLater();
     ref(path: string, gettable: boolean, settable: boolean): Reference;
     assign(path: string, value: any): Assignment;
     call(keypath: string | string[], params: any): Call;

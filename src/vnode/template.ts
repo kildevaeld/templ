@@ -24,12 +24,16 @@ export interface TemplateOptions extends VNodeOptions {
 			
 		}
 		
-		view (context:any, options): IView {
+		view (context:any, options:any = {}): IView {
 			
 			let sec = this.section.clone();
 			let DestView = this.options.viewClass || View
+            
+            for (let k in this.options) {
+                if (!options[k]) options[k] = this.options[k];
+            }
 			
-			var view = new DestView(sec,this,context,options)
+			var view = new DestView(sec, this, context, options)
 			
 			for (let renderer of this._renderers) {
 				renderer.generate(sec.node||sec.start.parentNode,view)

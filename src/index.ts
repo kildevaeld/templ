@@ -13,6 +13,7 @@ import * as utils from './utils';
 import {View} from './view';
 import * as compiler from './transpiler';
 import {binding} from './binding';
+import {RunLoop} from './runloop';
 
 export var version = "$$version$$"
 
@@ -59,6 +60,7 @@ export function compile(str: string, options?: TemplateOptions): vnode.Template 
 			viewClass: View,
 			attributes: new Repository(<any>attributes),
 			components: new Repository(<any>components),
-			modifiers: modifiers
+			modifiers: modifiers,
+            runloop: new RunLoop()
 		}, options || {}))
 }
