@@ -80,16 +80,17 @@ export class Call {
     constructor(view: View, keypath: string, params: any[]) {
         this.view = view;
         this.keypath = keypath;
-        this.params = params;
+        this.params = params||[];
     }
 
-    call() {
+    call(...args:any[]) {
+        args = args||[];
         let fn = this.view.get(this.keypath)
         if (fn == null || typeof fn !== 'function') {
             throw new Error("not exists or not function");
         }
 
-        return fn.apply(this.view, this.params)
+        return fn.apply(this.view, this.params.concat(args))
     }
 
     toString(): string {
@@ -191,7 +192,7 @@ export class View extends vnode.View {
         if (options.delegator) {
             this._delegator = options.delegator
         }
-        
+
         this._runloop = options.runloop;
 
     }
@@ -213,7 +214,7 @@ export class View extends vnode.View {
 
         return section;
     }
-    
+
     private updateLater () {
         this._runloop.deferOnce(this);
     }

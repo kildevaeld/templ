@@ -1291,15 +1291,20 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	        this.view = view;
 	        this.keypath = keypath;
-	        this.params = params;
+	        this.params = params || [];
 	    }
 
 	    Call.prototype.call = function call() {
+	        for (var _len = arguments.length, args = Array(_len), _key = 0; _key < _len; _key++) {
+	            args[_key] = arguments[_key];
+	        }
+
+	        args = args || [];
 	        var fn = this.view.get(this.keypath);
 	        if (fn == null || typeof fn !== 'function') {
 	            throw new Error("not exists or not function");
 	        }
-	        return fn.apply(this.view, this.params);
+	        return fn.apply(this.view, this.params.concat(args));
 	    };
 
 	    Call.prototype.toString = function toString() {

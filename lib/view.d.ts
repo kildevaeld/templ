@@ -22,7 +22,7 @@ export declare class Call {
     keypath: string;
     params: any[];
     constructor(view: View, keypath: string, params: any[]);
-    call(): any;
+    call(...args: any[]): any;
     toString(): string;
 }
 export interface IDelegator {
