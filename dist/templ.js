@@ -960,8 +960,9 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	        this.section = section;
 	        this.template = template;
-	        this.context = context;
 	        this.bindings = [];
+	        this._runloop = options.runloop;
+	        this.context = context;
 	    }
 
 	    View.prototype.update = function update() {
@@ -1218,6 +1219,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var utils = __webpack_require__(7);
 	var vnode = __webpack_require__(2);
+	//import {RunLoop} from './runloop';
 	var debug = utils.debug('view');
 	function _set(target, keypath, value) {
 	    var keys = typeof keypath === "string" ? keypath.split(".") : keypath;
@@ -1336,7 +1338,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	        if (options.delegator) {
 	            _this._delegator = options.delegator;
 	        }
-	        _this._runloop = options.runloop;
+	        //this._runloop = options.runloop;
 	        return _this;
 	    }
 

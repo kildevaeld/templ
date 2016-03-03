@@ -2,7 +2,7 @@
 
 import * as utils from './utils'
 import * as vnode from './vnode';
-import {RunLoop} from './runloop';
+//import {RunLoop} from './runloop';
 const debug = utils.debug('view')
 
 function _set(target, keypath, value) {
@@ -108,7 +108,7 @@ export class View extends vnode.View {
     protected _delegator: IDelegator
     _callers: { [key: string]: Function } = {}
     _getters: any = {}
-    _runloop: RunLoop;
+    //_runloop: RunLoop;
     parent: View
 
 
@@ -193,7 +193,7 @@ export class View extends vnode.View {
             this._delegator = options.delegator
         }
 
-        this._runloop = options.runloop;
+        //this._runloop = options.runloop;
 
     }
 

@@ -1,5 +1,4 @@
 import * as vnode from './vnode';
-import { RunLoop } from './runloop';
 export declare class Reference {
     gettable: boolean;
     settable: boolean;
@@ -36,7 +35,6 @@ export declare class View extends vnode.View {
         [key: string]: Function;
     };
     _getters: any;
-    _runloop: RunLoop;
     parent: View;
     root: View;
     getDelegator(): IDelegator;

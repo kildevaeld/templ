@@ -1,11 +1,14 @@
 
 import {Bindable, Section, IView} from './vnode'
 import {Template} from './template';
-
+import {RunLoop} from '../runloop'
 export class View implements IView {
 		bindings: Bindable[] = []
-		constructor(public section:Section, public template:Template,public context:any,options?:any) {
-
+		_runloop: RunLoop;
+		context: any;
+		constructor(public section:Section, public template:Template, context:any,options?:any) {
+			this._runloop = options.runloop;
+			this.context = context;
 		}
 
 		update () {
