@@ -1476,7 +1476,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	        var fn = this.view.get(this.keypath);
 	        if (fn == null || typeof fn !== 'function') {
 	            //throw new Error("not exists or not function");
-	            this.view.trigger('error', this, new Error("function does not exists or is not a function"));
+	            return this.view.trigger('error', this, new Error("function does not exists or is not a function"));
 	        }
 	        return fn.apply(this.view, this.params.concat(args));
 	    };
