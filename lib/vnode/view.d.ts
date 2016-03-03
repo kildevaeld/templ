@@ -1,7 +1,8 @@
 import { Bindable, Section, IView } from './vnode';
 import { Template } from './template';
 import { RunLoop } from '../runloop';
-export declare class View implements IView {
+import { EventEmitter } from 'eventsjs';
+export declare class View extends EventEmitter implements IView {
     section: Section;
     template: Template;
     bindings: Bindable[];

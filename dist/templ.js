@@ -58,14 +58,14 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var repository_1 = __webpack_require__(1);
 	var vnode = __webpack_require__(2);
-	var components = __webpack_require__(15);
-	var attributes = __webpack_require__(19);
-	var modifiers = __webpack_require__(25);
+	var components = __webpack_require__(16);
+	var attributes = __webpack_require__(20);
+	var modifiers = __webpack_require__(26);
 	var utils = __webpack_require__(7);
-	var view_1 = __webpack_require__(18);
-	var compiler = __webpack_require__(26);
-	var binding_1 = __webpack_require__(28);
-	var runloop_1 = __webpack_require__(29);
+	var view_1 = __webpack_require__(19);
+	var compiler = __webpack_require__(27);
+	var binding_1 = __webpack_require__(29);
+	var runloop_1 = __webpack_require__(30);
 	exports.version = "$$version$$";
 	function attribute(name, attr) {
 	    if (typeof attr !== 'function') {
@@ -157,7 +157,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	__export(__webpack_require__(10));
 	__export(__webpack_require__(11));
 	__export(__webpack_require__(12));
-	__export(__webpack_require__(14));
+	__export(__webpack_require__(15));
 	__export(__webpack_require__(13));
 	__export(__webpack_require__(5));
 
@@ -948,21 +948,32 @@ return /******/ (function(modules) { // webpackBootstrap
 
 /***/ },
 /* 13 */
-/***/ function(module, exports) {
+/***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
 
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-	var View = function () {
+	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+	var eventsjs_1 = __webpack_require__(14);
+
+	var View = function (_eventsjs_1$EventEmit) {
+	    _inherits(View, _eventsjs_1$EventEmit);
+
 	    function View(section, template, context, options) {
 	        _classCallCheck(this, View);
 
-	        this.section = section;
-	        this.template = template;
-	        this.bindings = [];
-	        this._runloop = options.runloop;
-	        this.context = context;
+	        var _this = _possibleConstructorReturn(this, _eventsjs_1$EventEmit.call(this));
+
+	        _this.section = section;
+	        _this.template = template;
+	        _this.bindings = [];
+	        _this._runloop = options.runloop;
+	        _this.context = context;
+	        return _this;
 	    }
 
 	    View.prototype.update = function update() {
@@ -1022,12 +1033,172 @@ return /******/ (function(modules) { // webpackBootstrap
 	    };
 
 	    return View;
-	}();
+	}(eventsjs_1.EventEmitter);
 
 	exports.View = View;
 
 /***/ },
 /* 14 */
+/***/ function(module, exports) {
+
+	"use strict";
+	var idCounter = 0;
+	function getID() {
+	    return "" + (++idCounter);
+	}
+	function callFunc(fn, args) {
+	    if (args === void 0) { args = []; }
+	    var l = fn.length, i = -1, a1 = args[0], a2 = args[1], a3 = args[2], a4 = args[3];
+	    switch (args.length) {
+	        case 0:
+	            while (++i < l)
+	                fn[i].handler.call(fn[i].ctx);
+	            return;
+	        case 1:
+	            while (++i < l)
+	                fn[i].handler.call(fn[i].ctx, a1);
+	            return;
+	        case 2:
+	            while (++i < l)
+	                fn[i].handler.call(fn[i].ctx, a1, a2);
+	            return;
+	        case 3:
+	            while (++i < l)
+	                fn[i].handler.call(fn[i].ctx, a1, a2, a3);
+	            return;
+	        case 4:
+	            while (++i < l)
+	                fn[i].handler.call(fn[i].ctx, a1, a2, a3, a4);
+	            return;
+	        default:
+	            while (++i < l)
+	                fn[i].handler.apply(fn[i].ctx, args);
+	            return;
+	    }
+	}
+	exports.callFunc = callFunc;
+	var EventEmitter = (function () {
+	    function EventEmitter() {
+	    }
+	    Object.defineProperty(EventEmitter.prototype, "listeners", {
+	        get: function () {
+	            return this._listeners;
+	        },
+	        enumerable: true,
+	        configurable: true
+	    });
+	    EventEmitter.prototype.on = function (event, fn, ctx, once) {
+	        if (once === void 0) { once = false; }
+	        var events = (this._listeners || (this._listeners = {}))[event] || (this._listeners[event] = []);
+	        events.push({
+	            name: event,
+	            once: once,
+	            handler: fn,
+	            ctx: ctx || this
+	        });
+	        return this;
+	    };
+	    EventEmitter.prototype.once = function (event, fn, ctx) {
+	        return this.on(event, fn, ctx, true);
+	    };
+	    EventEmitter.prototype.off = function (eventName, fn) {
+	        this._listeners = this._listeners || {};
+	        if (eventName == null) {
+	            this._listeners = {};
+	        }
+	        else if (this._listeners[eventName]) {
+	            var events = this._listeners[eventName];
+	            if (fn == null) {
+	                this._listeners[eventName] = [];
+	            }
+	            else {
+	                for (var i = 0; i < events.length; i++) {
+	                    var event_1 = events[i];
+	                    if (events[i].handler == fn) {
+	                        this._listeners[eventName].splice(i, 1);
+	                    }
+	                }
+	            }
+	        }
+	    };
+	    EventEmitter.prototype.trigger = function (eventName) {
+	        var args = [];
+	        for (var _i = 1; _i < arguments.length; _i++) {
+	            args[_i - 1] = arguments[_i];
+	        }
+	        var events = (this._listeners || (this._listeners = {}))[eventName] || (this._listeners[eventName] = [])
+	            .concat(this._listeners['all'] || []);
+	        if (EventEmitter.debugCallback)
+	            EventEmitter.debugCallback(this.constructor.name, this.name, eventName, args);
+	        var event, a, len = events.length, index;
+	        var calls = [];
+	        for (var i = 0, ii = events.length; i < ii; i++) {
+	            event = events[i];
+	            a = args;
+	            if (event.name == 'all') {
+	                a = [eventName].concat(args);
+	                callFunc([event], a);
+	            }
+	            else {
+	                calls.push(event);
+	            }
+	            if (event.once === true) {
+	                index = this._listeners[event.name].indexOf(event);
+	                this._listeners[event.name].splice(index, 1);
+	            }
+	        }
+	        if (calls.length)
+	            this._executeListener(calls, args);
+	        return this;
+	    };
+	    EventEmitter.prototype._executeListener = function (func, args) {
+	        var executor = callFunc;
+	        if (this.constructor.executeListenerFunction) {
+	            executor = this.constructor.executeListenerFunction;
+	        }
+	        executor(func, args);
+	    };
+	    EventEmitter.prototype.listenTo = function (obj, event, fn, ctx, once) {
+	        if (once === void 0) { once = false; }
+	        var listeningTo, id, meth;
+	        listeningTo = this._listeningTo || (this._listeningTo = {});
+	        id = obj.listenId || (obj.listenId = getID());
+	        listeningTo[id] = obj;
+	        meth = once ? 'once' : 'on';
+	        obj[meth](event, fn, this);
+	        return this;
+	    };
+	    EventEmitter.prototype.listenToOnce = function (obj, event, fn, ctx) {
+	        return this.listenTo(obj, event, fn, ctx, true);
+	    };
+	    EventEmitter.prototype.stopListening = function (obj, event, callback) {
+	        var listeningTo = this._listeningTo;
+	        if (!listeningTo)
+	            return this;
+	        var remove = !event && !callback;
+	        if (!callback && typeof event === 'object')
+	            callback = this;
+	        if (obj)
+	            (listeningTo = {})[obj.listenId] = obj;
+	        for (var id in listeningTo) {
+	            obj = listeningTo[id];
+	            obj.off(event, callback, this);
+	            if (remove || !Object.keys(obj.listeners).length)
+	                delete this._listeningTo[id];
+	        }
+	        return this;
+	    };
+	    EventEmitter.prototype.destroy = function () {
+	        this.stopListening();
+	        this.off();
+	    };
+	    return EventEmitter;
+	}());
+	exports.EventEmitter = EventEmitter;
+
+
+/***/ },
+/* 15 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -1055,7 +1226,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	};
 
 /***/ },
-/* 15 */
+/* 16 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -1065,11 +1236,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	        if (!exports.hasOwnProperty(p)) exports[p] = m[p];
 	    }
 	}
-	__export(__webpack_require__(16));
 	__export(__webpack_require__(17));
+	__export(__webpack_require__(18));
 
 /***/ },
-/* 16 */
+/* 17 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -1112,7 +1283,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	exports.BaseComponent = BaseComponent;
 
 /***/ },
-/* 17 */
+/* 18 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -1123,8 +1294,8 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
-	var component_1 = __webpack_require__(16);
-	var view_1 = __webpack_require__(18);
+	var component_1 = __webpack_require__(17);
+	var view_1 = __webpack_require__(19);
 	function _each(target, iterate) {
 	    if (!target) return;
 	    if (target.forEach) {
@@ -1204,7 +1375,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	exports.repeat = Repeat;
 
 /***/ },
-/* 18 */
+/* 19 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -1304,7 +1475,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	        args = args || [];
 	        var fn = this.view.get(this.keypath);
 	        if (fn == null || typeof fn !== 'function') {
-	            throw new Error("not exists or not function");
+	            //throw new Error("not exists or not function");
+	            this.view.trigger('error', this, new Error("function does not exists or is not a function"));
 	        }
 	        return fn.apply(this.view, this.params.concat(args));
 	    };
@@ -1460,7 +1632,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	exports.View = View;
 
 /***/ },
-/* 19 */
+/* 20 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -1470,11 +1642,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	        if (!exports.hasOwnProperty(p)) exports[p] = m[p];
 	    }
 	}
-	var value_1 = __webpack_require__(20);
-	var event_1 = __webpack_require__(22);
-	var style_1 = __webpack_require__(23);
-	var focus_1 = __webpack_require__(24);
-	__export(__webpack_require__(21));
+	var value_1 = __webpack_require__(21);
+	var event_1 = __webpack_require__(23);
+	var style_1 = __webpack_require__(24);
+	var focus_1 = __webpack_require__(25);
+	__export(__webpack_require__(22));
 	exports.value = value_1.ValueAttribute;
 	exports.onclick = event_1.ClickAttribute;
 	exports.onenter = event_1.OnEnterAttribute;
@@ -1488,7 +1660,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	exports.focus = focus_1.FocusAttribute;
 
 /***/ },
-/* 20 */
+/* 21 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -1499,8 +1671,8 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
-	var base_1 = __webpack_require__(21);
-	var view_1 = __webpack_require__(18);
+	var base_1 = __webpack_require__(22);
+	var view_1 = __webpack_require__(19);
 	var utils = __webpack_require__(7);
 	var _events = ['change', 'keyup', 'input'];
 
@@ -1606,7 +1778,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	exports.ValueAttribute = ValueAttribute;
 
 /***/ },
-/* 21 */
+/* 22 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -1638,7 +1810,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	exports.BaseAttribute = BaseAttribute;
 
 /***/ },
-/* 22 */
+/* 23 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -1651,8 +1823,8 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
-	var base_1 = __webpack_require__(21);
-	var view_1 = __webpack_require__(18);
+	var base_1 = __webpack_require__(22);
+	var view_1 = __webpack_require__(19);
 	var utils = __webpack_require__(7);
 	var debug = utils.debug('attributes:event');
 
@@ -1893,7 +2065,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	exports.OnEscapeAttribute = OnEscapeAttribute;
 
 /***/ },
-/* 23 */
+/* 24 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -1904,7 +2076,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
-	var base_1 = __webpack_require__(21);
+	var base_1 = __webpack_require__(22);
 
 	var StyleAttribute = function (_base_1$BaseAttribute) {
 	    _inherits(StyleAttribute, _base_1$BaseAttribute);
@@ -1943,7 +2115,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	exports.StyleAttribute = StyleAttribute;
 
 /***/ },
-/* 24 */
+/* 25 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -1954,7 +2126,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
-	var base_1 = __webpack_require__(21);
+	var base_1 = __webpack_require__(22);
 
 	var FocusAttribute = function (_base_1$BaseAttribute) {
 	    _inherits(FocusAttribute, _base_1$BaseAttribute);
@@ -1986,7 +2158,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	exports.FocusAttribute = FocusAttribute;
 
 /***/ },
-/* 25 */
+/* 26 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -2016,7 +2188,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	exports.round = Math.round;
 
 /***/ },
-/* 26 */
+/* 27 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -2025,7 +2197,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-	var parser_1 = __webpack_require__(27);
+	var parser_1 = __webpack_require__(28);
 	function compile(src, options) {
 	    var str = transpile(src);
 	    return new Function("return " + str)();
@@ -2381,7 +2553,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	 */
 
 /***/ },
-/* 27 */
+/* 28 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -6524,7 +6696,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	}();
 
 /***/ },
-/* 28 */
+/* 29 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -6603,7 +6775,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	exports.binding = binding;
 
 /***/ },
-/* 29 */
+/* 30 */
 /***/ function(module, exports) {
 
 	"use strict";

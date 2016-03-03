@@ -1,12 +1,14 @@
 
-import {Bindable, Section, IView} from './vnode'
+import {Bindable, Section, IView} from './vnode';
 import {Template} from './template';
-import {RunLoop} from '../runloop'
-export class View implements IView {
+import {RunLoop} from '../runloop';
+import {EventEmitter} from 'eventsjs';
+export class View extends EventEmitter implements IView {
 		bindings: Bindable[] = []
 		_runloop: RunLoop;
 		context: any;
 		constructor(public section:Section, public template:Template, context:any,options?:any) {
+			super();
 			this._runloop = options.runloop;
 			this.context = context;
 		}

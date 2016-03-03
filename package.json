@@ -33,6 +33,7 @@
   },
   "typings": "lib/index.d.ts",
   "dependencies": {
-    "nofactor": "^4.0.2"
+    "nofactor": "^4.0.2",
+    "eventsjs": "git+https://github.com/kildevaeld/eventsjs.git"
   }
 }
