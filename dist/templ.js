@@ -1858,9 +1858,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	        debug('fired event: %s', this._event);
 	        if (fn instanceof view_1.Call) {
 	            fn.call();
-	        } else {
-	            fn(e);
+	        } else if (typeof fn === 'function') {
+	            return fn(e);
 	        }
+	        e.preventDefault();
 	    };
 
 	    EventAttribute.prototype.destroy = function destroy() {

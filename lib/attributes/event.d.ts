@@ -4,7 +4,7 @@ export declare class EventAttribute extends BaseAttribute {
     private _event;
     event: string;
     initialize(): void;
-    _onEvent(e: any): void;
+    _onEvent(e: any): any;
     destroy(): void;
 }
 export declare class KeyCodeAttribute extends EventAttribute {

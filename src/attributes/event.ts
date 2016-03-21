@@ -14,7 +14,7 @@ export class EventAttribute extends BaseAttribute {
         }
         this._event = event;
         debug('added event listener %s: %o', this._event, this.value)
-        
+
         this.view.addListener(<Element>this.ref, this._event, this._onEvent);
     }
 
@@ -45,9 +45,11 @@ export class EventAttribute extends BaseAttribute {
         debug('fired event: %s', this._event)
         if (fn instanceof Call) {
             fn.call();
-        } else {
-            fn(e);
+        } else if (typeof fn === 'function') {
+            return fn(e);
         }
+
+        e.preventDefault();
 
     }
 
