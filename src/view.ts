@@ -1,7 +1,7 @@
 'use strict';
 
 import * as utils from './utils'
-import * as vnode from './vnode';
+import * as vnode from './vnode/index';
 //import {RunLoop} from './runloop';
 const debug = utils.debug('view')
 

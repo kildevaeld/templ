@@ -1,5 +1,5 @@
 import {BaseComponent} from './component';
-import {VNode} from '../vnode';
+import {VNode} from '../vnode/index';
 import {Call} from '../view'
 function _each(target, iterate) {
 

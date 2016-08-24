@@ -1,5 +1,5 @@
 import { IRepository } from './repository';
-import * as vnode from './vnode';
+import * as vnode from './vnode/index';
 export declare var version: string;
 export interface TemplateOptions {
     document?: Document;

@@ -1,5 +1,5 @@
 
-import * as vnode from './vnode'
+import * as vnode from './vnode/index'
 import {parser} from './parser';
 
 export function compile (src:string, options?:any): TranspilerFunc {

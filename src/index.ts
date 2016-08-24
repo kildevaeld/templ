@@ -4,10 +4,10 @@ declare var require:any
 
 
 import {IRepository, Repository} from './repository';
-import * as vnode from './vnode';
-import * as components from './components';
-import * as attributes from './attributes';
-import * as modifiers from './modifiers';
+import * as vnode from './vnode/index';
+import * as components from './components/index';
+import * as attributes from './attributes/index';
+import * as modifiers from './modifiers/index';
 
 import * as utils from './utils';
 import {View} from './view';

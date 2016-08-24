@@ -1,4 +1,4 @@
-import * as vnode from './vnode';
+import * as vnode from './vnode/index';
 export declare function compile(src: string, options?: any): TranspilerFunc;
 export interface BindingCreator {
     (intializer: () => void, update: (context) => void): vnode.BindingContructor;

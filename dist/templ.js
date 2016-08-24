@@ -474,8 +474,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 	function extend(obj) {
-	    var a = undefined,
-	        k = undefined;
+	    var a = void 0,
+	        k = void 0;
 
 	    for (var _len = arguments.length, args = Array(_len > 1 ? _len - 1 : 0), _key = 1; _key < _len; _key++) {
 	        args[_key - 1] = arguments[_key];
@@ -577,13 +577,13 @@ return /******/ (function(modules) { // webpackBootstrap
 	    };
 
 	    Debug.create = function create(namespace) {
-	        var logger = undefined;
+	        var logger = void 0;
 	        if (this.loggers[namespace]) {
 	            logger = this.loggers[namespace]; //.debug
 	        } else {
-	                logger = new Debug(namespace);
-	                this.loggers[namespace] = logger;
-	            }
+	            logger = new Debug(namespace);
+	            this.loggers[namespace] = logger;
+	        }
 	        return bind(logger.debug, logger);
 	    };
 
@@ -875,7 +875,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	var fragmentsection_1 = __webpack_require__(8);
 	var nodesection_1 = __webpack_require__(9);
 	function section(document, node) {
-	    var section = undefined;
+	    var section = void 0;
 	    if (node.nodeType == 11 /* Fragment */) {
 	            var frag = new fragmentsection_1.FragmentSection(document);
 	            frag.appendChild(node);
@@ -1077,6 +1077,14 @@ return /******/ (function(modules) { // webpackBootstrap
 	    }
 	}
 	exports.callFunc = callFunc;
+	function isFunction(a) {
+	    return typeof a === 'function';
+	}
+	exports.isFunction = isFunction;
+	function isEventEmitter(a) {
+	    return a instanceof EventEmitter || (isFunction(a.on) && isFunction(a.off) && isFunction(a.trigger));
+	}
+	exports.isEventEmitter = isEventEmitter;
 	var EventEmitter = (function () {
 	    function EventEmitter() {
 	    }
@@ -1126,10 +1134,12 @@ return /******/ (function(modules) { // webpackBootstrap
 	        for (var _i = 1; _i < arguments.length; _i++) {
 	            args[_i - 1] = arguments[_i];
 	        }
-	        var events = (this._listeners || (this._listeners = {}))[eventName] || (this._listeners[eventName] = [])
-	            .concat(this._listeners['all'] || []);
+	        //let events = (this._listeners|| (this._listeners = {}))[eventName]||(this._listeners[eventName]=[])
+	        //.concat(this._listeners['all']||[])
+	        this._listeners = this._listeners || {};
+	        var events = (this._listeners[eventName] || []).concat(this._listeners['all'] || []);
 	        if (EventEmitter.debugCallback)
-	            EventEmitter.debugCallback(this.constructor.name, this.name, eventName, args);
+	            EventEmitter.debugCallback(this.constructor.name, this.name, eventName, args, events);
 	        var event, a, len = events.length, index;
 	        var calls = [];
 	        for (var i = 0, ii = events.length; i < ii; i++) {
@@ -1724,7 +1734,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    ValueAttribute.prototype._onInput = function _onInput(event) {
 	        clearInterval(this._autocompleteCheckInterval);
 	        // ignore some keys
-	        if (event && (!event.keyCode || ! ~[27].indexOf(event.keyCode))) {
+	        if (event && (!event.keyCode || !~[27].indexOf(event.keyCode))) {
 	            event.stopPropagation();
 	        }
 	        var value = this._parseValue(this._elementValue());
@@ -1846,7 +1856,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	    EventAttribute.prototype._onEvent = function _onEvent(e) {
 	        var self = this;
-	        var fn = undefined;
+	        var fn = void 0;
 	        if (this.value instanceof view_1.Assignment) {
 	            fn = this.value.assign;
 	        } else {
@@ -1907,7 +1917,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    }
 
 	    KeyCodeAttribute.prototype._onEvent = function _onEvent(event) {
-	        if (! ~this.keyCodes.indexOf(event.keyCode)) {
+	        if (!~this.keyCodes.indexOf(event.keyCode)) {
 	            return;
 	        }
 	        _EventAttribute.prototype._onEvent.call(this, event);
@@ -2439,8 +2449,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	    Transpiler.prototype._reference = function _reference(expression) {
 	        var keypath = this._referenceKeyPath(expression[1]);
 	        if (expression[2]) {
-	            var gettable = !! ~expression[2].indexOf("<~");
-	            var settable = !! ~expression[2].indexOf("~>");
+	            var gettable = !!~expression[2].indexOf("<~");
+	            var settable = !!~expression[2].indexOf("~>");
 	            return "this.view.ref(" + keypath + ", " + gettable + ", " + settable + ")";
 	        }
 	        return "this.view.get(" + keypath + ")";

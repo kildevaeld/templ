@@ -1,4 +1,4 @@
-import * as vnode from './vnode';
+import * as vnode from './vnode/index';
 export declare class Reference {
     gettable: boolean;
     settable: boolean;

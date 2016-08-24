@@ -1,5 +1,5 @@
 import { BaseComponent } from './component';
-import { VNode } from '../vnode';
+import { VNode } from '../vnode/index';
 export declare class Repeat extends BaseComponent {
     _children: VNode[];
     update(): void;
