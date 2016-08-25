@@ -178,7 +178,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    }
 
 	    Comment.prototype.render = function render(options) {
-	        return options.document.createComment(this.nodeValue);
+	        return Promise.resolve(options.document.createComment(this.nodeValue));
 	    };
 
 	    return Comment;
@@ -218,16 +218,22 @@ return /******/ (function(modules) { // webpackBootstrap
 	    };
 
 	    Dynamic.prototype._renderElement = function _renderElement(options, renderers) {
-	        var node = this.vnode.render(options, renderers);
-	        renderers.push(new DynamicRenderer(node, this.bindingClass, options));
-	        return node;
+	        var _this = this;
+
+	        return this.vnode.render(options, renderers).then(function (node) {
+	            renderers.push(new DynamicRenderer(node, _this.bindingClass, options));
+	            return node;
+	        });
 	    };
 
 	    Dynamic.prototype._renderComponent = function _renderComponent(options, renderers) {
+	        var _this2 = this;
+
 	        var _r = [];
-	        var element = this.vnode.render(options, _r);
-	        renderers.push(new DynamicComponentRenderer(_r[0], this.bindingClass, options));
-	        return element;
+	        return this.vnode.render(options, _r).then(function (element) {
+	            renderers.push(new DynamicComponentRenderer(_r[0], _this2.bindingClass, options));
+	            return element;
+	        });
 	    };
 
 	    return Dynamic;
@@ -248,9 +254,12 @@ return /******/ (function(modules) { // webpackBootstrap
 	    }
 
 	    DynamicComponentRenderer.prototype.generate = function generate(root, view) {
-	        this.renderer.generate(root, view);
-	        var component = view.bindings[view.bindings.length - 1];
-	        view.bindings.splice(view.bindings.indexOf(component), 0, new this.bindingClass(component, view));
+	        var _this3 = this;
+
+	        return this.renderer.generate(root, view).then(function () {
+	            var component = view.bindings[view.bindings.length - 1];
+	            view.bindings.splice(view.bindings.indexOf(component), 0, new _this3.bindingClass(component, view));
+	        });
 	    };
 
 	    return DynamicComponentRenderer;
@@ -268,6 +277,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    DynamicRenderer.prototype.generate = function generate(root, view) {
 	        if (!this._refPath) this._refPath = vnode_1.getNodePath(this.ref);
 	        view.bindings.push(new this.bindingClass(vnode_1.getNodeByPath(root, this._refPath), view));
+	        return Promise.resolve();
 	    };
 
 	    return DynamicRenderer;
@@ -348,7 +358,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    Element.prototype._renderComponent = function _renderComponent(component, options, renderers) {
 	        var section = new fragmentsection_1.FragmentSection(options.document);
 	        renderers.push(new ComponentAttributeRenderer(component, section, this, this._splitAttributes(options), options));
-	        return section.render();
+	        return Promise.resolve(section.render());
 	    };
 
 	    Element.prototype._renderElement = function _renderElement(options, renderers) {
@@ -358,27 +368,27 @@ return /******/ (function(modules) { // webpackBootstrap
 	        for (var attrKey in _attr.staticAttributes) {
 	            element.setAttribute(attrKey, _attr.staticAttributes[attrKey]);
 	        }
-	        for (var _iterator = this.childNodes, _isArray = Array.isArray(_iterator), _i = 0, _iterator = _isArray ? _iterator : _iterator[Symbol.iterator]();;) {
-	            var _ref;
-
-	            if (_isArray) {
-	                if (_i >= _iterator.length) break;
-	                _ref = _iterator[_i++];
-	            } else {
-	                _i = _iterator.next();
-	                if (_i.done) break;
-	                _ref = _i.value;
+	        var r = this.childNodes.map(function (m) {
+	            return m.render(options, renderers);
+	        });
+	        return Promise.all(r).then(function (children) {
+	            children.forEach(function (child) {
+	                element.appendChild(child);
+	            });
+	            if (Object.keys(_attr.dynamicAttributes).length) {
+	                renderers.push(new ElementAttributeRenderer(new nodesection_1.NodeSection(options.document, element), options, _attr.dynamicAttributes));
 	            }
-
-	            var child = _ref;
-
-	            element.appendChild(child.render(options, renderers));
+	            return element;
+	        });
+	        /*for (let child of this.childNodes) {
+	          element.appendChild(child.render(options, renderers));
 	        }
+	        
 	        // Set dynamic attributes
 	        if (Object.keys(_attr.dynamicAttributes).length) {
-	            renderers.push(new ElementAttributeRenderer(new nodesection_1.NodeSection(options.document, element), options, _attr.dynamicAttributes));
+	               renderers.push(new ElementAttributeRenderer(new NodeSection(options.document, element), options, _attr.dynamicAttributes))
 	        }
-	        return element;
+	             return element;*/
 	    };
 
 	    Element.prototype._splitAttributes = function _splitAttributes(options) {
@@ -433,6 +443,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	            _hydrateDynamicAttributes(ref, this.options, this.dynamicAttributes, view);
 	        }
 	        if (ref.update) view.bindings.push(ref);
+	        return ref.initialize();
 	    };
 
 	    return ComponentAttributeRenderer;
@@ -450,6 +461,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    ElementAttributeRenderer.prototype.generate = function generate(root, view) {
 	        if (!this._marker) this._marker = this.section.createMarker();
 	        _hydrateDynamicAttributes(this._marker.findNode(root), this.options, this.attributes, view);
+	        return Promise.resolve();
 	    };
 
 	    return ElementAttributeRenderer;
@@ -839,6 +851,31 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
+	var __awaiter = undefined && undefined.__awaiter || function (thisArg, _arguments, P, generator) {
+	    return new (P || (P = Promise))(function (resolve, reject) {
+	        function fulfilled(value) {
+	            try {
+	                step(generator.next(value));
+	            } catch (e) {
+	                reject(e);
+	            }
+	        }
+	        function rejected(value) {
+	            try {
+	                step(generator.throw(value));
+	            } catch (e) {
+	                reject(e);
+	            }
+	        }
+	        function step(result) {
+	            result.done ? resolve(result.value) : new P(function (resolve) {
+	                resolve(result.value);
+	            }).then(fulfilled, rejected);
+	        }
+	        step((generator = generator.apply(thisArg, _arguments)).next());
+	    });
+	};
+
 	var Fragment = function () {
 	    function Fragment(children) {
 	        _classCallCheck(this, Fragment);
@@ -851,11 +888,53 @@ return /******/ (function(modules) { // webpackBootstrap
 	    }
 
 	    Fragment.prototype.render = function render(options, renderers) {
-	        var fragment = options.document.createDocumentFragment();
-	        for (var i = 0, n = this.childNodes.length; i < n; i++) {
-	            fragment.appendChild(this.childNodes[i].render(options, renderers));
-	        }
-	        return fragment;
+	        return __awaiter(this, void 0, Promise, regeneratorRuntime.mark(function _callee() {
+	            var fragment, i, n, child;
+	            return regeneratorRuntime.wrap(function _callee$(_context) {
+	                while (1) {
+	                    switch (_context.prev = _context.next) {
+	                        case 0:
+	                            fragment = options.document.createDocumentFragment();
+	                            /*let r = this.childNodes.map( c => {
+	                              return c.render(options, renderers);
+	                            });
+	                                   return Promise.all(r)
+	                            .then( childs => {
+	                              childs.forEach( m => fragment.appendChild(<any>m));
+	                              return fragment;
+	                            });*/
+
+	                            i = 0, n = this.childNodes.length;
+
+	                        case 2:
+	                            if (!(i < n)) {
+	                                _context.next = 10;
+	                                break;
+	                            }
+
+	                            _context.next = 5;
+	                            return this.childNodes[i].render(options, renderers);
+
+	                        case 5:
+	                            child = _context.sent;
+
+	                            fragment.appendChild(child);
+
+	                        case 7:
+	                            i++;
+	                            _context.next = 2;
+	                            break;
+
+	                        case 10:
+	                            return _context.abrupt("return", fragment);
+
+	                        case 11:
+	                        case "end":
+	                            return _context.stop();
+	                    }
+	                }
+	            }, _callee, this);
+	        }));
 	    };
 
 	    return Fragment;
@@ -895,6 +974,30 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
+	var __awaiter = undefined && undefined.__awaiter || function (thisArg, _arguments, P, generator) {
+	    return new (P || (P = Promise))(function (resolve, reject) {
+	        function fulfilled(value) {
+	            try {
+	                step(generator.next(value));
+	            } catch (e) {
+	                reject(e);
+	            }
+	        }
+	        function rejected(value) {
+	            try {
+	                step(generator.throw(value));
+	            } catch (e) {
+	                reject(e);
+	            }
+	        }
+	        function step(result) {
+	            result.done ? resolve(result.value) : new P(function (resolve) {
+	                resolve(result.value);
+	            }).then(fulfilled, rejected);
+	        }
+	        step((generator = generator.apply(thisArg, _arguments)).next());
+	    });
+	};
 	var section_1 = __webpack_require__(11);
 	var view_1 = __webpack_require__(13);
 
@@ -904,37 +1007,80 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	        this._renderers = [];
 	        this.vnode = vnode;
-	        var node = vnode.render(options, this._renderers);
-	        this.section = section_1.section(options.document, node);
+	        /*let node = vnode.render(<any>options, this._renderers);
+	        
+	        this.section = section(options.document, node)*/
 	        this.options = options;
 	    }
+
+	    Template.prototype.render = function render(context, options) {
+	        var _this = this;
+
+	        return this.vnode.render(this.options, this._renderers).then(function (node) {
+	            _this.section = section_1.section(_this.options.document, node);
+	            return _this.view(context, options);
+	        });
+	    };
 
 	    Template.prototype.view = function view(context) {
 	        var options = arguments.length <= 1 || arguments[1] === undefined ? {} : arguments[1];
 
-	        var sec = this.section.clone();
-	        var DestView = this.options.viewClass || view_1.View;
-	        for (var k in this.options) {
-	            if (!options[k]) options[k] = this.options[k];
-	        }
-	        var view = new DestView(sec, this, context, options);
-	        for (var _iterator = this._renderers, _isArray = Array.isArray(_iterator), _i = 0, _iterator = _isArray ? _iterator : _iterator[Symbol.iterator]();;) {
-	            var _ref;
+	        return __awaiter(this, void 0, Promise, regeneratorRuntime.mark(function _callee() {
+	            var sec, DestView, k, view, i, ii;
+	            return regeneratorRuntime.wrap(function _callee$(_context) {
+	                while (1) {
+	                    switch (_context.prev = _context.next) {
+	                        case 0:
+	                            if (!(this.section == null)) {
+	                                _context.next = 2;
+	                                break;
+	                            }
 
-	            if (_isArray) {
-	                if (_i >= _iterator.length) break;
-	                _ref = _iterator[_i++];
-	            } else {
-	                _i = _iterator.next();
-	                if (_i.done) break;
-	                _ref = _i.value;
-	            }
+	                            throw new Error('must call render before view');
 
-	            var renderer = _ref;
+	                        case 2:
+	                            sec = this.section.clone();
+	                            DestView = this.options.viewClass || view_1.View;
 
-	            renderer.generate(sec.node || sec.start.parentNode, view);
-	        }
-	        return view;
+	                            for (k in this.options) {
+	                                if (!options[k]) options[k] = this.options[k];
+	                            }
+	                            view = new DestView(sec, this, context, options);
+	                            /*let all = this._renderers.map( r => {
+	                                return r.generate(sec.node||sec.start.parentNode,view);
+	                            });
+	                            
+	                            return Promise.all(all)
+	                            .then( () => {
+	                                return view;
+	                            });*/
+
+	                            i = 0, ii = this._renderers.length;
+
+	                        case 7:
+	                            if (!(i < ii)) {
+	                                _context.next = 13;
+	                                break;
+	                            }
+
+	                            _context.next = 10;
+	                            return this._renderers[i].generate(sec.node || sec.start.parentNode, view);
+
+	                        case 10:
+	                            i++;
+	                            _context.next = 7;
+	                            break;
+
+	                        case 13:
+	                            return _context.abrupt('return', view);
+
+	                        case 14:
+	                        case 'end':
+	                            return _context.stop();
+	                    }
+	                }
+	            }, _callee, this);
+	        }));
 	    };
 
 	    return Template;
@@ -1009,7 +1155,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    };
 
 	    View.prototype.render = function render() {
-	        return this.section.render();
+	        return Promise.resolve(this.section.render());
 	    };
 
 	    View.prototype.remove = function remove() {
@@ -1224,7 +1370,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    }
 
 	    Text.prototype.render = function render(options) {
-	        return options.document.createTextNode(this.nodeValue);
+	        return Promise.resolve(options.document.createTextNode(this.nodeValue));
 	    };
 
 	    return Text;
@@ -1272,10 +1418,12 @@ return /******/ (function(modules) { // webpackBootstrap
 	        if (vvnode.childNodes) this.childTemplate = template_1.template(fragment_1.fragment(vvnode.childNodes), view.template.options);
 	        for (var key in attributes) {
 	            this.setAttribute(key, attributes[key]);
-	        }this.initialize();
+	        } //this.initialize()
 	    }
 
-	    BaseComponent.prototype.initialize = function initialize() {};
+	    BaseComponent.prototype.initialize = function initialize() {
+	        return Promise.resolve();
+	    };
 
 	    BaseComponent.prototype.setAttribute = function setAttribute(key, value) {
 	        this.attributes[key] = value;
@@ -1304,6 +1452,30 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
+	var __awaiter = undefined && undefined.__awaiter || function (thisArg, _arguments, P, generator) {
+	    return new (P || (P = Promise))(function (resolve, reject) {
+	        function fulfilled(value) {
+	            try {
+	                step(generator.next(value));
+	            } catch (e) {
+	                reject(e);
+	            }
+	        }
+	        function rejected(value) {
+	            try {
+	                step(generator.throw(value));
+	            } catch (e) {
+	                reject(e);
+	            }
+	        }
+	        function step(result) {
+	            result.done ? resolve(result.value) : new P(function (resolve) {
+	                resolve(result.value);
+	            }).then(fulfilled, rejected);
+	        }
+	        step((generator = generator.apply(thisArg, _arguments)).next());
+	    });
+	};
 	var component_1 = __webpack_require__(17);
 	var view_1 = __webpack_require__(19);
 	function _each(target, iterate) {
@@ -1334,7 +1506,120 @@ return /******/ (function(modules) { // webpackBootstrap
 	        return _this;
 	    }
 
+	    Repeat.prototype.initialize = function initialize() {
+	        return __awaiter(this, void 0, void 0, regeneratorRuntime.mark(function _callee() {
+	            return regeneratorRuntime.wrap(function _callee$(_context) {
+	                while (1) {
+	                    switch (_context.prev = _context.next) {
+	                        case 0:
+	                            _context.next = 2;
+	                            return this.childTemplate.render({}, {});
+
+	                        case 2:
+	                        case 'end':
+	                            return _context.stop();
+	                    }
+	                }
+	            }, _callee, this);
+	        }));
+	    };
+
 	    Repeat.prototype.update = function update() {
+	        return __awaiter(this, void 0, void 0, regeneratorRuntime.mark(function _callee2() {
+	            var as, each, key, n, self, parent, properties, promises, i, ii, model, child;
+	            return regeneratorRuntime.wrap(function _callee2$(_context2) {
+	                while (1) {
+	                    switch (_context2.prev = _context2.next) {
+	                        case 0:
+	                            as = this['as'];
+	                            each = this['each'];
+	                            key = this['key'] || "key";
+	                            n = 0;
+	                            self = this;
+	                            parent = this.view;
+
+	                            if (each instanceof view_1.Call) {
+	                                each = each.call();
+	                            }
+
+	                            if (!(each == null)) {
+	                                _context2.next = 9;
+	                                break;
+	                            }
+
+	                            return _context2.abrupt('return');
+
+	                        case 9:
+	                            promises = [];
+	                            i = 0, ii = each.length;
+
+	                        case 11:
+	                            if (!(i < ii)) {
+	                                _context2.next = 31;
+	                                break;
+	                            }
+
+	                            model = each[i];
+
+	                            if (as) {
+	                                properties = {};
+	                                properties[key] = i;
+	                                properties[as] = model;
+	                            } else {
+	                                properties = model;
+	                            }
+	                            properties.parent = self.view.context;
+	                            // TODO - provide SAME context here for speed and stability
+
+	                            if (!(n >= self._children.length)) {
+	                                _context2.next = 24;
+	                                break;
+	                            }
+
+	                            _context2.next = 18;
+	                            return this.childTemplate.view(properties, {
+	                                parent: parent
+	                            });
+
+	                        case 18:
+	                            child = _context2.sent;
+
+	                            self._children.push(child);
+	                            self.section.appendChild(child.section.render());
+	                            promises.push(child.render(properties));
+	                            _context2.next = 27;
+	                            break;
+
+	                        case 24:
+	                            child = self._children[n];
+	                            child.context = properties;
+	                            child.update();
+
+	                        case 27:
+	                            n++;
+
+	                        case 28:
+	                            i++;
+	                            _context2.next = 11;
+	                            break;
+
+	                        case 31:
+	                            this._children.splice(n).forEach(function (child) {
+	                                child.remove();
+	                            });
+	                            _context2.next = 34;
+	                            return promises;
+
+	                        case 34:
+	                        case 'end':
+	                            return _context2.stop();
+	                    }
+	                }
+	            }, _callee2, this);
+	        }));
+	    };
+
+	    Repeat.prototype.update2 = function update2() {
 	        var as = this['as'];
 	        var each = this['each'];
 	        var key = this['key'] || "key";
@@ -1345,6 +1630,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	        if (each instanceof view_1.Call) {
 	            each = each.call();
 	        }
+	        console.log(each);
 	        _each(each, function (model, k) {
 	            var child;
 	            if (as) {
@@ -1583,10 +1869,15 @@ return /******/ (function(modules) { // webpackBootstrap
 	    };
 
 	    View.prototype.render = function render() {
-	        this.update();
-	        var section = _vnode$View.prototype.render.call(this);
+	        var _this2 = this;
+
+	        //;
+	        //var section = super.render()
 	        //this.transitions.enter();
-	        return section;
+	        return _vnode$View.prototype.render.call(this).then(function (section) {
+	            _this2.update();
+	            return section;
+	        });
 	    };
 
 	    View.prototype.updateLater = function updateLater() {

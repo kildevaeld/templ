@@ -209,11 +209,14 @@ export class View extends vnode.View {
     }
 
     render() {
-        this.update();
-        var section = super.render()
+        //;
+        //var section = super.render()
         //this.transitions.enter();
 
-        return section;
+        return super.render().then( section => {
+            this.update()
+            return section;
+        }) ;
     }
 
     protected updateLater () {

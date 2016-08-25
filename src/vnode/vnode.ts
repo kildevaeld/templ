@@ -1,6 +1,7 @@
-import {IRepository} from '../repository'
-import {Template} from './template'
+import {IRepository} from '../repository';
+import {Template} from './template';
 import {IDelegator} from '../view';
+
 export const enum NodeType {
     Element=1, Fragment=11, Comment=8, Dynamic=-200, Text=-201
   }
@@ -18,7 +19,7 @@ export const enum NodeType {
   export interface VNode {
     nodeType: NodeType
     parentNode?:VNode
-    render (option:VNodeOptions, renderes:Renderer[]): Node
+    render (option:VNodeOptions, renderes:Renderer[]): Promise<Node>
     childNodes?:VNode[]
   }
 
@@ -42,8 +43,6 @@ export const enum NodeType {
     section:Section
     template: Template
     context:any
-    
-		
   }
   
   export interface IViewConstructor {
@@ -55,7 +54,7 @@ export const enum NodeType {
   }
   
   export interface Renderer {
-    generate(node:Node, view:IView)
+    generate(node:Node, view:IView): Promise<void>
   }
   
   export interface Attribute extends Bindable {
@@ -74,7 +73,7 @@ export const enum NodeType {
   export interface Component extends Bindable {
     setAttribute (key:string, value:any)
     removeAttribute (key:string)
-     
+    initialize(): Promise<void>
   }
   
   export interface ComponentConstructor {

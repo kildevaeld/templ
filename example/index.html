@@ -3,35 +3,35 @@
 
 <head>
 
-    <script src "../node_modules/underscore/underscore.js"></script>
-    <script src="../dist/templ.js"></script>
+	<script src "../node_modules/underscore/underscore.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/babel-polyfill/6.13.0/polyfill.js"></script>
+	<script src="../dist/templ.js"></script>
 
 </head>
 
 <body>
-    <script type="text/html" id="template">
-        <!-- speed demo for rendering a dynamic list of items -->
-        <button onclick="{{count = count + 1}}">Click {{count}}, onEnter: {{onEnter ? 'Entered' : ''}}</button>
-        <h4>Has focus {{focus}}</h4>
-        <div style="overflow:auto" onscroll="{{onScroll}}">
-            Generate {{title = count}}
-            <input type="text" class="form-control" style="width:60px;display:inline-block;" value="{{<~>numItems}}" onenter="{{onEnter = true}}"
-            onblur="{{focus = false}}" onfocus="{{focus = true}}"></input> items:
-            <br /> {{~numItems}}
-            <repeat each="{{ range(numItems) }}" as='number'>
-                {{~number}}
-                <button onclick="{{onClick(number)}}">Click {{number}}</button>
-                <br />
+	<script type="text/html" id="template">
+		<!-- speed demo for rendering a dynamic list of items -->
+		<button onclick="{{count = count + 1}}">Click {{count}}, onEnter: {{onEnter ? 'Entered' : ''}}</button>
+		<h4>Has focus {{focus}}</h4>
+		<div style="overflow:auto" onscroll="{{onScroll}}">
+			Generate {{title = count}}
+			<input type="text" class="form-control" style="width:60px;display:inline-block;" value="{{<~>numItems}}" onenter="{{onEnter = true}}" onblur="{{focus = false}}" onfocus="{{focus = true}}"></input> items:
+			<br /> {{~numItems}}
+			<repeat each="{{ range(numItems) }}" as='number'>
+				{{~number}}
+				<button onclick="{{onClick(number)}}">Click {{number}}</button>
+				<br />
 
-            </repeat>
-            {{title}}
-        </div>
-        <input type="file" onchange="{{onChange}}" />
-    </script>
-    <button id="remove">Remove</button>
+			</repeat>
+			{{title}}
+		</div>
+		<input type="file" onchange="{{onChange}}" />
+	</script>
+	<button id="remove">Remove</button>
 
-    <script>
-        'use strict';
+	<script>
+		'use strict';
 		templ.debugging(false)
 		var range = function(start, stop, step) {
 			if (stop == null) {
@@ -39,52 +39,58 @@
 				start = 0;
 			}
 			step = step || 1;
-	
+
 			var length = Math.max(Math.ceil((stop - start) / step), 0);
 			var range = Array(length);
-	
+
 			for (var idx = 0; idx < length; idx++, start += step) {
 				range[idx] = start;
 			}
-	
-			return range;
-			}
-			
-			
-			
-			var t = document.getElementById('template')
-		
-			var template = templ.compile(t.innerHTML);
-			
-			var view = template.view({
-				count: 0,
-				title: 'test',
-  			numItems: 100,
-  			range: function (count) {
 
-    			return range(Math.min(count, 10000)).reverse();
-  			},
-				onClick: function (title) {
-					console.log(title);
-				},
-                onScroll: function () {
-                    console.log('on scroll')
-                },
-        onChange: function () {
-          alert('ch-ch-changes!');
-        }
+			return range;
+		}
+
+
+
+		var t = document.getElementById('template')
+
+		var template = templ.compile(t.innerHTML);
+
+		template.render({
+			count: 0,
+			title: 'test',
+			numItems: 100,
+			range: function(count) {
+
+				return range(Math.min(count, 10000)).reverse();
+			},
+			onClick: function(title) {
+				console.log(title);
+			},
+			onScroll: function() {
+				console.log('on scroll')
+			},
+			onChange: function() {
+				alert('ch-ch-changes!');
+			}
+		}).then(function (view) {
+			return view.render().then( function (e) {
+				return { view:view, elm:e };
 			});
-      
-			var elm = view.render();
 			
-			document.body.appendChild(elm)
-			
-			
-			document.getElementById('remove').addEventListener('click', function () {
-				view.remove()
-				
+		}).then( function (o) {
+				document.body.appendChild(o.elm)
+				console.log(o.view)
+
+			document.getElementById('remove').addEventListener('click', function() {
+				o.view.remove()
+
+				})
+				o.view.update()
 			})
-    </script>
+
+		
+	</script>
 </body>
 
 </html>

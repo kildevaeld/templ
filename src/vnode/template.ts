@@ -17,15 +17,27 @@ export interface TemplateOptions extends VNodeOptions {
 			
 			this.vnode = vnode
 			
-			let node = vnode.render(<any>options, this._renderers);
+			/*let node = vnode.render(<any>options, this._renderers);
 			
-			this.section = section(options.document, node)
+			this.section = section(options.document, node)*/
 			this.options = options
 			
 		}
 		
-		view (context:any, options:any = {}): IView {
+		render(context:any, options:any): Promise<IView> {
+			return this.vnode.render(this.options, this._renderers)
+			.then((node) => {
+				this.section = section(this.options.document, node);
+				
+				return this.view(context, options);
+			});
+		}
+
+		async view (context:any, options:any = {}): Promise<IView> {
 			
+			if (this.section == null) {
+				throw new Error('must call render before view');
+			}
 			let sec = this.section.clone();
 			let DestView = this.options.viewClass || View
             
@@ -35,11 +47,19 @@ export interface TemplateOptions extends VNodeOptions {
 			
 			var view = new DestView(sec, this, context, options)
 			
-			for (let renderer of this._renderers) {
-				renderer.generate(sec.node||sec.start.parentNode,view)
+			/*let all = this._renderers.map( r => {
+				return r.generate(sec.node||sec.start.parentNode,view);
+			});
+			
+			return Promise.all(all)
+			.then( () => {
+				return view;
+			});*/
+			for (let i = 0, ii = this._renderers.length; i < ii; i++ ) {
+				await this._renderers[i].generate(sec.node||sec.start.parentNode,view);
 			}
-		
-			return view
+			return view;
+			
 		}
 	}
 	

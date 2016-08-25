@@ -43,7 +43,7 @@ export declare class View extends vnode.View {
     get(keypath: any): any;
     constructor(section: vnode.Section, template: vnode.Template, context: any, options?: any);
     set(path: string | string[], value: any): any;
-    render(): Node;
+    render(): Promise<Node>;
     protected updateLater(): void;
     ref(path: string, gettable: boolean, settable: boolean): Reference;
     assign(path: string, value: any): Assignment;

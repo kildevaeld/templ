@@ -4,6 +4,6 @@ export declare class Fragment implements VNode {
     nodeType: NodeType;
     childNodes: VNode[];
     constructor(children: VNode[]);
-    render(options: VNodeOptions, renderers: Renderer[]): DocumentFragment;
+    render(options: VNodeOptions, renderers: Renderer[]): Promise<DocumentFragment>;
 }
 export declare const fragment: FragmentCreator;

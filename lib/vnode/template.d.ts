@@ -8,6 +8,7 @@ export declare class Template {
     private _renderers;
     options: TemplateOptions;
     constructor(vnode: VNode, options: TemplateOptions);
-    view(context: any, options?: any): IView;
+    render(context: any, options: any): Promise<IView>;
+    view(context: any, options?: any): Promise<IView>;
 }
 export declare function template(vnode: VNode, options: TemplateOptions): Template;

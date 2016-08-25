@@ -4,6 +4,6 @@ export declare class Comment implements VNode {
     nodeType: NodeType;
     nodeValue: string;
     constructor(nodeValue: string);
-    render(options: VNodeOptions): Node;
+    render(options: VNodeOptions): Promise<Node>;
 }
 export declare const comment: compiler.CommentCreator;

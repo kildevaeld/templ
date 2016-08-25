@@ -4,6 +4,6 @@ export declare class Text implements VNode {
     nodeType: NodeType;
     nodeValue: string;
     constructor(nodeValue: string);
-    render(options: VNodeOptions): Node;
+    render(options: VNodeOptions): Promise<Node>;
 }
 export declare var text: TextCreator;

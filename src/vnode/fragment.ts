@@ -13,15 +13,31 @@ export class Fragment implements VNode {
 
     }
 
-    render(options: VNodeOptions, renderers:Renderer[]): DocumentFragment {
+    async render(options: VNodeOptions, renderers:Renderer[]): Promise<DocumentFragment> {
 
       let fragment = options.document.createDocumentFragment()
       
-      for (var i = 0, n = this.childNodes.length; i < n; i++) {
-        fragment.appendChild(this.childNodes[i].render(options, renderers));
-      }
+      /*let r = this.childNodes.map( c => {
+        return c.render(options, renderers);
+      });
 
+      return Promise.all(r)
+      .then( childs => {
+        childs.forEach( m => fragment.appendChild(<any>m));
+        return fragment;
+      });*/
+
+      for (var i = 0, n = this.childNodes.length; i < n; i++) {
+        let child = await this.childNodes[i].render(options, renderers);
+        fragment.appendChild(child);
+        //fragment.appendChild(this.childNodes[i].render(options, renderers));
+      }
       return fragment;
+      /*for (var i = 0, n = this.childNodes.length; i < n; i++) {
+        fragment.appendChild(this.childNodes[i].render(options, renderers));
+      }*/
+
+      //return fragment;
 
     }
 

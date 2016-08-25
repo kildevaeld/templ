@@ -19,7 +19,7 @@ export interface VNodeOptions {
 export interface VNode {
     nodeType: NodeType;
     parentNode?: VNode;
-    render(option: VNodeOptions, renderes: Renderer[]): Node;
+    render(option: VNodeOptions, renderes: Renderer[]): Promise<Node>;
     childNodes?: VNode[];
 }
 export interface Section {
@@ -48,7 +48,7 @@ export interface Destroyable {
     destroy(): any;
 }
 export interface Renderer {
-    generate(node: Node, view: IView): any;
+    generate(node: Node, view: IView): Promise<void>;
 }
 export interface Attribute extends Bindable {
     ref: Node;
@@ -62,6 +62,7 @@ export interface AttributeConstructor {
 export interface Component extends Bindable {
     setAttribute(key: string, value: any): any;
     removeAttribute(key: string): any;
+    initialize(): Promise<void>;
 }
 export interface ComponentConstructor {
     new (section: Section, vnode: VNode, attributes: AttributeMap, view: IView): Component;

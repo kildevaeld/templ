@@ -8,8 +8,8 @@ export class Comment implements VNode {
 		constructor (nodeValue:string) {
 			this.nodeValue = nodeValue;
 		}
-		render(options:VNodeOptions): Node {
-			return options.document.createComment(this.nodeValue);
+		render(options:VNodeOptions): Promise<Node> {
+			return Promise.resolve(options.document.createComment(this.nodeValue));
 		}
 	}
 	

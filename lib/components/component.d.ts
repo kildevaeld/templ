@@ -1,6 +1,6 @@
 import { Component, Section, VNode, AttributeMap, IView } from '../vnode/vnode';
 import { Template } from '../vnode/template';
-export declare class BaseComponent implements Component {
+export declare abstract class BaseComponent implements Component {
     section: Section;
     vnode: VNode;
     attributes: AttributeMap;
@@ -8,7 +8,7 @@ export declare class BaseComponent implements Component {
     document: Document;
     childTemplate: Template;
     constructor(section: Section, vvnode: VNode, attributes: AttributeMap, view: IView);
-    initialize(): void;
+    initialize(): Promise<void>;
     setAttribute(key: string, value: any): void;
     removeAttribute(key: string): void;
     destroy(): void;

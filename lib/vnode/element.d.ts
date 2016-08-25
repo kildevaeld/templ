@@ -6,10 +6,10 @@ export declare class Element implements VNode {
     attributes: AttributeMap;
     childNodes: VNode[];
     constructor(tagName: string, attributes: AttributeMap, children: VNode[]);
-    render(options: VNodeOptions, renderers: Renderer[]): HTMLElement;
+    render(options: VNodeOptions, renderers: Renderer[]): Promise<HTMLElement>;
     setAttributes(key: AttributeMap | string, value?: string): void;
-    _renderComponent(component: ComponentConstructor, options: VNodeOptions, renderers: Renderer[]): HTMLElement;
-    _renderElement(options: VNodeOptions, renderers: Renderer[]): HTMLElement;
+    _renderComponent(component: ComponentConstructor, options: VNodeOptions, renderers: Renderer[]): Promise<HTMLElement>;
+    _renderElement(options: VNodeOptions, renderers: Renderer[]): Promise<HTMLElement>;
     _splitAttributes(options: VNodeOptions): {
         dynamicAttributes: {};
         staticAttributes: {};

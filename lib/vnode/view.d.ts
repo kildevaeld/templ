@@ -12,6 +12,6 @@ export declare class View extends EventEmitter implements IView {
     update(): void;
     addListener(elm: Node, eventName: string, callback: EventListener, capture?: boolean): Function;
     removeListener(elm: Node, eventName: string, callback: EventListener, capture?: boolean): void;
-    render(): Node;
+    render(): Promise<Node>;
     remove(): any;
 }

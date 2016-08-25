@@ -8,8 +8,8 @@ export class Text implements VNode {
 		constructor (nodeValue:string) {
 			this.nodeValue = nodeValue;
 		}
-		render(options:VNodeOptions): Node {
-			return options.document.createTextNode(this.nodeValue);
+		render(options:VNodeOptions): Promise<Node> {
+			return Promise.resolve(options.document.createTextNode(this.nodeValue));
 		}
 	}
 	
