@@ -2,6 +2,24 @@
 import {VNode, NodeType, VNodeOptions, Renderer} from './vnode';
 import {FragmentCreator} from '../transpiler';
 
+/*function iterateSync(list:any[], fn:(child:any) => Promise<any>): Promise<any[]> {
+  return new Promise((resolve, reject) => {
+    var current = 0, length = list.length;
+    var out = [];
+    const next = (err, value) => {
+      if (current == length - 1) {
+        return resolve(out);
+      } else if (err != null) {
+        return reject(err)
+      } else if (err == null && value == null) {
+
+      }
+    };
+
+    next(null, null);
+  });
+}*/
+
 export class Fragment implements VNode {
     nodeType = NodeType.Fragment
     childNodes: VNode[]

@@ -22,7 +22,7 @@ const _events = ['change', 'keyup', 'input']
 			if (!model) return Promise.resolve();
 
 			if (!model || !(model instanceof Reference)) {
-				throw new Error("input value must be a reference. Make sure you have <~> defined");
+				return Promise.reject(new Error("input value must be a reference. Make sure you have <~> defined"));
 			}
 
 			if (model.gettable) {

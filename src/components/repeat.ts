@@ -76,7 +76,6 @@ export class Repeat extends BaseComponent {
     }
 
     this._children.splice(n).forEach(function (child) {
-
       (<any>child).remove();
     });
     await promises;

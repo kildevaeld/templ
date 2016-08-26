@@ -875,6 +875,23 @@ return /******/ (function(modules) { // webpackBootstrap
 	        step((generator = generator.apply(thisArg, _arguments)).next());
 	    });
 	};
+	/*function iterateSync(list:any[], fn:(child:any) => Promise<any>): Promise<any[]> {
+	  return new Promise((resolve, reject) => {
+	    var current = 0, length = list.length;
+	    var out = [];
+	    const next = (err, value) => {
+	      if (current == length - 1) {
+	        return resolve(out);
+	      } else if (err != null) {
+	        return reject(err)
+	      } else if (err == null && value == null) {
+
+	      }
+	    };
+
+	    next(null, null);
+	  });
+	}*/
 
 	var Fragment = function () {
 	    function Fragment(children) {
@@ -2000,7 +2017,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	        var model = this.model = this.value;
 	        if (!model) return Promise.resolve();
 	        if (!model || !(model instanceof view_1.Reference)) {
-	            throw new Error("input value must be a reference. Make sure you have <~> defined");
+	            return Promise.reject(new Error("input value must be a reference. Make sure you have <~> defined"));
 	        }
 	        if (model.gettable) {
 	            this._elementValue(this._parseValue(model.value()));
