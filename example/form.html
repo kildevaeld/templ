@@ -4,7 +4,10 @@
 <head>
 
     <script src "../node_modules/underscore/underscore.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-polyfill/6.13.0/polyfill.js"></script>
+
     <script src="../dist/templ.js"></script>
+
 
 </head>
 
@@ -40,16 +43,22 @@
         checkbox: true,
         select: "opt2"
       }
-      var view = template.view(data);
+      template.render(data).then( function (view) {
+        return view.render().then(function (e){
+          return {view:view, elm: e}
+        })
+      }).then( function (o) {
+        
 
-      var elm = view.render();
-
-      document.body.appendChild(elm)
+      document.body.appendChild(o.elm)
 
 
       document.getElementById('remove').addEventListener('click', function () {
         document.querySelector("#result").innerText = JSON.stringify(data, null, 2);
 
+      })
+
+      
       })
     </script>
 </body>

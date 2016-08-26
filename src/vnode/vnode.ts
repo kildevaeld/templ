@@ -82,7 +82,7 @@ export const enum NodeType {
   }
   
   export interface Bindable extends Destroyable {
-    update?:(context?:any) => void
+    update?:(context?:any) => Promise<void>
   }
 
   export interface Binding extends Bindable {

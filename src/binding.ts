@@ -55,11 +55,11 @@ export class Binding implements vnode.Binding {
         return true;
     }
 
-    update(context: any) {
+    async update(context: any) {
 
-        this._update()
+        await this._update()
         for (let key in this._attrBindings) {
-            this._attrBindings[key].update()
+            await this._attrBindings[key].update()
         }
     }
 
@@ -71,9 +71,9 @@ export class Binding implements vnode.Binding {
 }
 
 
-export function binding(initialize: () => void, update: (context) => void): vnode.BindingContructor {
+export function binding(initialize: () => void, update: (context) => Promise<void>): vnode.BindingContructor {
     return utils.extendClass<vnode.BindingContructor>(Binding, {
         initialize: initialize || function () { },
-        _update: update || function () { }
+        _update: update || function () { return Promise.resolve() }
     });
 }

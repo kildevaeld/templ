@@ -4,5 +4,5 @@ export declare class StyleAttribute extends BaseAttribute {
         [key: string]: string;
     };
     initialize(): void;
-    update(): void;
+    update(): Promise<void>;
 }

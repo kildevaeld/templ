@@ -14,7 +14,7 @@ export declare class Binding implements vnode.Binding {
     setAttribute(key: string, value: string): void;
     setProperty(key: string, value: string): void;
     private setAsRegisteredAttribute(key, value);
-    update(context: any): void;
+    update(context: any): Promise<void>;
     destroy(): void;
 }
-export declare function binding(initialize: () => void, update: (context) => void): vnode.BindingContructor;
+export declare function binding(initialize: () => void, update: (context) => Promise<void>): vnode.BindingContructor;

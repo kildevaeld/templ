@@ -68,7 +68,7 @@ export interface ComponentConstructor {
     new (section: Section, vnode: VNode, attributes: AttributeMap, view: IView): Component;
 }
 export interface Bindable extends Destroyable {
-    update?: (context?: any) => void;
+    update?: (context?: any) => Promise<void>;
 }
 export interface Binding extends Bindable {
     setAttribute(key: string, value: string): any;

@@ -16,10 +16,10 @@ const _events = ['change', 'keyup', 'input']
 			}
 		}
 
-		update() {
+		update(): Promise<void> {
 			var model = this.model = this.value;
 
-			if (!model) return;
+			if (!model) return Promise.resolve();
 
 			if (!model || !(model instanceof Reference)) {
 				throw new Error("input value must be a reference. Make sure you have <~> defined");
@@ -28,6 +28,8 @@ const _events = ['change', 'keyup', 'input']
 			if (model.gettable) {
 				this._elementValue(this._parseValue(model.value()));
 			}
+
+			return Promise.resolve();
 		}
 
 		_parseValue(value) {

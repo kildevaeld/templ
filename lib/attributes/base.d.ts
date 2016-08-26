@@ -6,7 +6,7 @@ export declare class BaseAttribute implements Attribute {
     view: IView;
     constructor(ref: Node, key: string, value: any, view: IView);
     initialize(): void;
-    update(): void;
+    update(): Promise<void>;
     destroy(): void;
     static test(): void;
 }

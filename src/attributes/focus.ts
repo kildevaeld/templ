@@ -5,8 +5,8 @@ export class FocusAttribute extends BaseAttribute {
         initialize() {
 
         }
-        update() {
-            if (!this.value) return;
+        update(): Promise<void> {
+            if (!this.value) return Promise.resolve();
             if ((<any>this.ref).focus) {
                 var self = this;
 
@@ -18,5 +18,6 @@ export class FocusAttribute extends BaseAttribute {
                     (<any>self.ref).focus();
                 }, 1);
             }
+            return Promise.resolve();
         }
     }

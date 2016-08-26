@@ -15,10 +15,7 @@ export class View extends EventEmitter implements IView {
 	}
 
 	update() {
-		for (let binding of this.bindings) {
-			binding.update()
-		}
-
+		return Promise.all(this.bindings.map(m => m.update()));
 	}
 
 	addListener(elm: Node, eventName: string, callback: EventListener, capture: boolean = false): Function {

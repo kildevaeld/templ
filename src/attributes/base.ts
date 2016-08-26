@@ -17,7 +17,7 @@ export class BaseAttribute implements Attribute {
 
 		initialize() { }
 
-		update() { }
+		update(): Promise<void> { return Promise.resolve(); }
 
 		destroy() { }
 
