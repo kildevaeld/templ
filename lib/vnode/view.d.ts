@@ -9,7 +9,7 @@ export declare class View extends EventEmitter implements IView {
     _runloop: RunLoop;
     context: any;
     constructor(section: Section, template: Template, context: any, options?: any);
-    update(): Promise<Promise<void>[]>;
+    update(): Promise<void>;
     addListener(elm: Node, eventName: string, callback: EventListener, capture?: boolean): Function;
     removeListener(elm: Node, eventName: string, callback: EventListener, capture?: boolean): void;
     render(): Promise<Node>;

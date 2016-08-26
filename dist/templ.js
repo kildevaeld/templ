@@ -1125,7 +1125,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	    View.prototype.update = function update() {
 	        return Promise.all(this.bindings.map(function (m) {
 	            return m.update();
-	        }));
+	        })).then(function (v) {
+	            return void 0;
+	        });
 	    };
 
 	    View.prototype.addListener = function addListener(elm, eventName, callback) {

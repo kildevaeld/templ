@@ -14,8 +14,9 @@ export class View extends EventEmitter implements IView {
 		this.context = context;
 	}
 
-	update() {
-		return Promise.all(this.bindings.map(m => m.update()));
+	update(): Promise<void> {
+		return Promise.all(this.bindings.map(m => m.update()))
+		.then( v => void 0);
 	}
 
 	addListener(elm: Node, eventName: string, callback: EventListener, capture: boolean = false): Function {
