@@ -1,6 +1,7 @@
 import { IRepository } from '../repository';
 import { Template } from './template';
 import { IDelegator } from '../view';
+import { IEventEmitter } from 'eventsjs';
 export declare const enum NodeType {
     Element = 1,
     Fragment = 11,
@@ -40,6 +41,10 @@ export interface IView extends IDelegator {
     section: Section;
     template: Template;
     context: any;
+}
+export interface IContextView extends IEventEmitter {
+    set(keypath: string | string[], value: any): any;
+    get(keypath: string | string[]): any;
 }
 export interface IViewConstructor {
     new (section: Section, template: Template, context: any, options?: any): IView;

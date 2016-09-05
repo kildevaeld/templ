@@ -1,6 +1,8 @@
 
 import * as vnode from './vnode/index'
 import {parser} from './parser';
+import {bind} from 'orange';
+
 
 export function compile (src:string, options?:any): TranspilerFunc {
 	var str = transpile(src);
@@ -54,10 +56,11 @@ class Transpiler {
       
       if (k.charAt(0) === "_") {
         
-        this[k] = this[k].bind(this);
+        //this[k] = this[k].bind(this);
+        this[k] = bind(this[k], this);
       }
     }
-    this.transpile = this.transpile.bind(this);
+    this.transpile = bind(this.transpile, this);
   }
 
   /**

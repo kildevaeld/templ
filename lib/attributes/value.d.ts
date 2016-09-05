@@ -1,5 +1,5 @@
 import { BaseAttribute } from './base';
-import { Reference } from '../view';
+import { Reference } from '../action';
 export declare class ValueAttribute extends BaseAttribute {
     model: Reference;
     _autocompleteCheckInterval: number;

@@ -1,6 +1,6 @@
 import {BaseComponent} from './component';
 import {VNode} from '../vnode/index';
-import {Call} from '../view'
+import {Call} from '../action'
 function _each(target, iterate) {
 
   if (!target) return;

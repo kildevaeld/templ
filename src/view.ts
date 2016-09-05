@@ -2,8 +2,10 @@
 
 import * as utils from './utils'
 import * as vnode from './vnode/index';
+import {Reference, Call, Assignment} from './action';
 //import {RunLoop} from './runloop';
-const debug = utils.debug('view')
+import * as Debug from 'debug';
+const debug = Debug('templ:view');
 
 function _set(target, keypath, value) {
 
@@ -23,7 +25,8 @@ function _set(target, keypath, value) {
     return value;
 }
 
-export class Reference {
+/*export class Reference {
+    get __classType() { return "Reference"; }
     gettable: boolean
     settable: boolean
     view: View
@@ -52,6 +55,7 @@ export class Reference {
 }
 
 export class Assignment {
+    get __classType() { return "Assignment"; }
     view: View
     path: string
     value: () => any
@@ -74,6 +78,7 @@ export class Assignment {
 }
 
 export class Call {
+    get __classType() { return "Call"; }
     view: View
     keypath: string
     params: any[]
@@ -98,14 +103,14 @@ export class Call {
         let val = this.call();
         return val ? String(val) : '';
     }
-}
+}*/
 
 export interface IDelegator {
     addListener(elm: Element, eventName: string, callback: string | EventListener, capture?: boolean): Function
     removeListener(elm: Element, eventName: string, callback: string | EventListener, capture?: boolean)
 }
 
-export class View extends vnode.View {
+export class View extends vnode.View implements vnode.IContextView {
     protected _delegator: IDelegator
     _callers: { [key: string]: Function } = {}
     _getters: any = {}

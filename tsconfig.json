@@ -21,6 +21,7 @@
     "!./node_modules/**/*"
   ],
   "files": [
+    "src/action.ts",
     "src/binding.ts",
     "src/index.ts",
     "src/repository.ts",
@@ -28,8 +29,8 @@
     "src/transpiler.ts",
     "src/utils.ts",
     "src/view.ts",
-    "src/attributes/event.ts",
     "src/attributes/base.ts",
+    "src/attributes/event.ts",
     "src/attributes/focus.ts",
     "src/attributes/index.ts",
     "src/attributes/style.ts",
@@ -49,6 +50,7 @@
     "src/vnode/template.ts",
     "src/vnode/text.ts",
     "src/vnode/view.ts",
-    "src/vnode/vnode.ts"
+    "src/vnode/vnode.ts",
+    "typings/index.d.ts"
   ]
 }

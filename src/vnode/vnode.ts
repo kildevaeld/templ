@@ -1,6 +1,7 @@
 import {IRepository} from '../repository';
 import {Template} from './template';
 import {IDelegator} from '../view';
+import {IEventEmitter} from 'eventsjs';
 
 export const enum NodeType {
     Element=1, Fragment=11, Comment=8, Dynamic=-200, Text=-201
@@ -43,6 +44,11 @@ export const enum NodeType {
     section:Section
     template: Template
     context:any
+  }
+
+  export interface IContextView extends IEventEmitter {
+    set(keypath: string|string[], value:any);
+    get(keypath: string|string[]): any;
   }
   
   export interface IViewConstructor {

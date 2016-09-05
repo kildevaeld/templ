@@ -11,5 +11,4 @@ export interface TemplateOptions {
 export declare function attribute(name: string, attr: vnode.AttributeConstructor | vnode.Attribute): void;
 export declare function component(name: string, cmp: vnode.ComponentConstructor | vnode.ComponentConstructor): void;
 export declare function modifier(name: string, func: (value: any) => any): void;
-export declare function debugging(enabled: boolean): void;
 export declare function compile(str: string, options?: TemplateOptions): vnode.Template;

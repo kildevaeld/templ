@@ -1,34 +1,10 @@
 import * as vnode from './vnode/index';
-export declare class Reference {
-    gettable: boolean;
-    settable: boolean;
-    view: View;
-    path: string;
-    value(value?: any): any;
-    constructor(view: View, path: string, gettable: boolean, settable: boolean);
-    toString(): string;
-}
-export declare class Assignment {
-    view: View;
-    path: string;
-    value: () => any;
-    constructor(view: View, path: string, value: () => any);
-    assign(): void;
-    toString(): string;
-}
-export declare class Call {
-    view: View;
-    keypath: string;
-    params: any[];
-    constructor(view: View, keypath: string, params: any[]);
-    call(...args: any[]): any;
-    toString(): string;
-}
+import { Reference, Call, Assignment } from './action';
 export interface IDelegator {
     addListener(elm: Element, eventName: string, callback: string | EventListener, capture?: boolean): Function;
     removeListener(elm: Element, eventName: string, callback: string | EventListener, capture?: boolean): any;
 }
-export declare class View extends vnode.View {
+export declare class View extends vnode.View implements vnode.IContextView {
     context: any;
     protected _delegator: IDelegator;
     _callers: {

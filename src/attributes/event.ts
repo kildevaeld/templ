@@ -1,9 +1,9 @@
 import {BaseAttribute} from './base';
-import {Assignment, Call} from '../view';
-import * as utils from '../utils';
+import {Assignment, Call, isCall, isAssignment} from '../action';
 import {IView} from '../vnode/vnode';
-
-const debug = utils.debug('attributes:event')
+import {bind} from 'orange';
+import * as Debug from 'debug';
+const debug = Debug('attributes:event');
 
 export class EventAttribute extends BaseAttribute {
     private _event: string
@@ -23,7 +23,7 @@ export class EventAttribute extends BaseAttribute {
     }
 
     initialize() {
-        this._onEvent = utils.bind(this._onEvent, this);
+        this._onEvent = bind(this._onEvent, this);
         //if (!this.event) this.event = this.key.match(/on(.+)/)[1].toLowerCase();
         //debug('added event listener %s: %o', this.event, this.value)
         //this.view.addListener(<Element>this.ref, this.event, this._onEvent)
@@ -33,17 +33,18 @@ export class EventAttribute extends BaseAttribute {
     _onEvent(e: any) {
         var self = this;
         let fn;
-        if (this.value instanceof Assignment) {
+
+        if (isAssignment(this.value)) {
             fn = this.value.assign;
         } else {
             fn = this.value;
         }
 
-        if (typeof fn !== 'function' && !(fn instanceof Call)) {
+        if (typeof fn !== 'function' && !isCall(fn)) {
             throw new Error('[event] value is not a function or a Callable')
         }
         debug('fired event: %s', this._event)
-        if (fn instanceof Call) {
+        if (isCall(fn)) {
             fn.call();
         } else if (typeof fn === 'function') {
             return fn(e);

@@ -1,8 +1,10 @@
 'use strict';
 
+import {extend} from 'orange';
 
 
-export function extend(obj: any, ...args: any[]): any {
+
+/*export function extend(obj: any, ...args: any[]): any {
   let a, k;
   for (a of args) {
     if (a !== Object(a)) continue;
@@ -14,7 +16,7 @@ export function extend(obj: any, ...args: any[]): any {
 
 export function slice(obj, ...args): any {
   return Array.prototype.slice.apply(obj, args)
-}
+}*/
 
 export function extendClass<T>(parent: any, protoProps: any, staticProps?: any): T {
   var child;
@@ -48,9 +50,8 @@ export function extendClass<T>(parent: any, protoProps: any, staticProps?: any):
   return child;
 };
 
-const nativeBind = Function.prototype.bind
 
-export function bind<T extends Function>(method: T, context: any, ...args: any[]): T {
+/*export function bind<T extends Function>(method: T, context: any, ...args: any[]): T {
   if (typeof method !== 'function') throw new Error('method not at function')
 
   if (nativeBind != null) return nativeBind.call(method, context, ...args)
@@ -68,9 +69,9 @@ export function bind<T extends Function>(method: T, context: any, ...args: any[]
   fBound.prototype = new fnoop()
 
   return <any>fBound
-}
+}*/
 
-export class Debug {
+/*export class Debug {
   static enable(enabled: boolean, namespace?: string) {
     for (let k in this.loggers) {
       if (namespace && k === namespace) {
@@ -160,4 +161,4 @@ export class Debug {
 
 export function debug(namespace: string): (...args: any[]) => void {
   return Debug.create(namespace)
-}
+}*/

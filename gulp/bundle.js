@@ -1,7 +1,7 @@
 'use strict';
 
 const gulp = require('gulp'),
-  webpack = require('gulp-webpack');
+  webpack = require('webpack-stream');
   
   
 gulp.task('bundle', ['build'], () => {
@@ -11,6 +11,10 @@ gulp.task('bundle', ['build'], () => {
       filename: 'templ.js',
       library: 'templ',
       libraryTarget: 'umd'
+    },
+    externals: {
+      orange: "orange",
+      eventsjs: "eventsjs"
     }
   }))
   .pipe(gulp.dest('./dist'));

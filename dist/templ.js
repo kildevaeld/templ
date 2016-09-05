@@ -1,13 +1,13 @@
 (function webpackUniversalModuleDefinition(root, factory) {
 	if(typeof exports === 'object' && typeof module === 'object')
-		module.exports = factory();
+		module.exports = factory(require("orange"), require("eventsjs"));
 	else if(typeof define === 'function' && define.amd)
-		define([], factory);
+		define(["orange", "eventsjs"], factory);
 	else if(typeof exports === 'object')
-		exports["templ"] = factory();
+		exports["templ"] = factory(require("orange"), require("eventsjs"));
 	else
-		root["templ"] = factory();
-})(this, function() {
+		root["templ"] = factory(root["orange"], root["eventsjs"]);
+})(this, function(__WEBPACK_EXTERNAL_MODULE_1__, __WEBPACK_EXTERNAL_MODULE_14__) {
 return /******/ (function(modules) { // webpackBootstrap
 /******/ 	// The module cache
 /******/ 	var installedModules = {};
@@ -56,16 +56,17 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	'use strict';
 
-	var repository_1 = __webpack_require__(1);
-	var vnode = __webpack_require__(2);
+	var orange_1 = __webpack_require__(1);
+	var repository_1 = __webpack_require__(2);
+	var vnode = __webpack_require__(3);
 	var components = __webpack_require__(16);
 	var attributes = __webpack_require__(20);
-	var modifiers = __webpack_require__(26);
-	var utils = __webpack_require__(7);
-	var view_1 = __webpack_require__(19);
-	var compiler = __webpack_require__(27);
-	var binding_1 = __webpack_require__(29);
-	var runloop_1 = __webpack_require__(30);
+	var modifiers = __webpack_require__(29);
+	var utils = __webpack_require__(30);
+	var view_1 = __webpack_require__(31);
+	var compiler = __webpack_require__(32);
+	var binding_1 = __webpack_require__(34);
+	var runloop_1 = __webpack_require__(35);
 	exports.version = "$$version$$";
 	function attribute(name, attr) {
 	    if (typeof attr !== 'function') {
@@ -85,15 +86,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	    modifiers[name] = func;
 	}
 	exports.modifier = modifier;
-	function debugging(enabled) {
-	    utils.Debug.enable(enabled);
-	}
-	exports.debugging = debugging;
 	function compile(str, options) {
 	    var vn = vnode,
 	        fn = compiler.compile(str);
 	    var n = fn(vn.fragment, vn.element, vn.text, vn.comment, vn.dynamic, binding_1.binding);
-	    return vn.template(n, utils.extend({
+	    return vn.template(n, orange_1.extend({
 	        document: document,
 	        viewClass: view_1.View,
 	        attributes: new repository_1.Repository(attributes),
@@ -106,6 +103,12 @@ return /******/ (function(modules) { // webpackBootstrap
 
 /***/ },
 /* 1 */
+/***/ function(module, exports) {
+
+	module.exports = __WEBPACK_EXTERNAL_MODULE_1__;
+
+/***/ },
+/* 2 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -141,7 +144,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	exports.Repository = Repository;
 
 /***/ },
-/* 2 */
+/* 3 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -151,18 +154,18 @@ return /******/ (function(modules) { // webpackBootstrap
 	        if (!exports.hasOwnProperty(p)) exports[p] = m[p];
 	    }
 	}
-	__export(__webpack_require__(3));
 	__export(__webpack_require__(4));
-	__export(__webpack_require__(6));
+	__export(__webpack_require__(5));
+	__export(__webpack_require__(7));
 	__export(__webpack_require__(10));
 	__export(__webpack_require__(11));
 	__export(__webpack_require__(12));
 	__export(__webpack_require__(15));
 	__export(__webpack_require__(13));
-	__export(__webpack_require__(5));
+	__export(__webpack_require__(6));
 
 /***/ },
-/* 3 */
+/* 4 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -190,14 +193,14 @@ return /******/ (function(modules) { // webpackBootstrap
 	};
 
 /***/ },
-/* 4 */
+/* 5 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
 
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-	var vnode_1 = __webpack_require__(5);
+	var vnode_1 = __webpack_require__(6);
 
 	var Dynamic = function () {
 	    function Dynamic(vnode, bindingClass) {
@@ -284,7 +287,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	}();
 
 /***/ },
-/* 5 */
+/* 6 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -315,14 +318,14 @@ return /******/ (function(modules) { // webpackBootstrap
 	exports.getNodePath = getNodePath;
 
 /***/ },
-/* 6 */
+/* 7 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
 
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-	var utils = __webpack_require__(7);
+	var orange_1 = __webpack_require__(1);
 	var fragmentsection_1 = __webpack_require__(8);
 	var nodesection_1 = __webpack_require__(9);
 
@@ -351,7 +354,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	        if (typeof key === 'string') {
 	            this.attributes[key] = value;
 	        } else {
-	            utils.extend(this.attributes, key);
+	            orange_1.extend(this.attributes, key);
 	        }
 	    };
 
@@ -476,194 +479,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	}
 
 /***/ },
-/* 7 */
-/***/ function(module, exports) {
-
-	'use strict';
-
-	var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
-
-	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-	function extend(obj) {
-	    var a = void 0,
-	        k = void 0;
-
-	    for (var _len = arguments.length, args = Array(_len > 1 ? _len - 1 : 0), _key = 1; _key < _len; _key++) {
-	        args[_key - 1] = arguments[_key];
-	    }
-
-	    for (var _iterator = args, _isArray = Array.isArray(_iterator), _i = 0, _iterator = _isArray ? _iterator : _iterator[Symbol.iterator]();;) {
-	        if (_isArray) {
-	            if (_i >= _iterator.length) break;
-	            a = _iterator[_i++];
-	        } else {
-	            _i = _iterator.next();
-	            if (_i.done) break;
-	            a = _i.value;
-	        }
-
-	        if (a !== Object(a)) continue;
-	        for (k in a) {
-	            obj[k] = a[k];
-	        }
-	    }
-	    return obj;
-	}
-	exports.extend = extend;
-	function slice(obj) {
-	    for (var _len2 = arguments.length, args = Array(_len2 > 1 ? _len2 - 1 : 0), _key2 = 1; _key2 < _len2; _key2++) {
-	        args[_key2 - 1] = arguments[_key2];
-	    }
-
-	    return Array.prototype.slice.apply(obj, args);
-	}
-	exports.slice = slice;
-	function extendClass(parent, protoProps, staticProps) {
-	    var child;
-	    // The constructor function for the new subclass is either defined by you
-	    // (the "constructor" property in your `extend` definition), or defaulted
-	    // by us to simply call the parent constructor.
-	    if (protoProps && Object.prototype.hasOwnProperty.call(protoProps, 'constructor')) {
-	        child = protoProps.constructor;
-	    } else {
-	        child = function child() {
-	            return parent.apply(this, arguments);
-	        };
-	    }
-	    // Add static properties to the constructor function, if supplied.
-	    extend(child, parent, staticProps);
-	    // Set the prototype chain to inherit from `parent`, without calling
-	    // `parent` constructor function.
-	    var Surrogate = function Surrogate() {
-	        this.constructor = child;
-	    };
-	    Surrogate.prototype = parent.prototype;
-	    child.prototype = new Surrogate();
-	    // Add prototype properties (instance properties) to the subclass,
-	    // if supplied.
-	    if (protoProps) extend(child.prototype, protoProps);
-	    // Set a convenience property in case the parent's prototype is needed
-	    // later.
-	    child.__super__ = parent.prototype;
-	    return child;
-	}
-	exports.extendClass = extendClass;
-	;
-	var nativeBind = Function.prototype.bind;
-	function bind(method, context) {
-	    for (var _len3 = arguments.length, args = Array(_len3 > 2 ? _len3 - 2 : 0), _key3 = 2; _key3 < _len3; _key3++) {
-	        args[_key3 - 2] = arguments[_key3];
-	    }
-
-	    if (typeof method !== 'function') throw new Error('method not at function');
-	    if (nativeBind != null) return nativeBind.call.apply(nativeBind, [method, context].concat(args));
-	    args = args || [];
-	    var fnoop = function fnoop() {};
-	    var fBound = function fBound() {
-	        var ctx = this instanceof fnoop ? this : context;
-	        return method.apply(ctx, args.concat(slice(arguments)));
-	    };
-	    fnoop.prototype = this.prototype;
-	    fBound.prototype = new fnoop();
-	    return fBound;
-	}
-	exports.bind = bind;
-
-	var Debug = function () {
-	    function Debug(namespace) {
-	        _classCallCheck(this, Debug);
-
-	        this.enabled = false;
-	        this.namespace = namespace;
-	    }
-
-	    Debug.enable = function enable(enabled, namespace) {
-	        for (var k in this.loggers) {
-	            if (namespace && k === namespace) {
-	                this.loggers[k].enabled = enabled;
-	            } else if (!namespace) {
-	                this.loggers[k].enabled = enabled;
-	            }
-	        }
-	    };
-
-	    Debug.create = function create(namespace) {
-	        var logger = void 0;
-	        if (this.loggers[namespace]) {
-	            logger = this.loggers[namespace]; //.debug
-	        } else {
-	            logger = new Debug(namespace);
-	            this.loggers[namespace] = logger;
-	        }
-	        return bind(logger.debug, logger);
-	    };
-
-	    Debug.prototype.debug = function debug() {
-	        for (var _len4 = arguments.length, args = Array(_len4), _key4 = 0; _key4 < _len4; _key4++) {
-	            args[_key4] = arguments[_key4];
-	        }
-
-	        if (!this.enabled) return;
-	        args[0] = this._coerce(args[0]);
-	        if ('string' !== typeof args[0]) {
-	            // anything else let's inspect with %o
-	            args = ['%o'].concat(args);
-	        }
-	        // apply any `formatters` transformations
-	        var index = 0;
-	        args[0] = args[0].replace(/%([a-z%])/g, function (match, format) {
-	            // if we encounter an escaped % then don't increase the array index
-	            if (match === '%%') return match;
-	            index++;
-	            var formatter = Debug.formatters[format];
-	            if ('function' === typeof formatter) {
-	                var val = args[index];
-	                match = formatter.call(self, val);
-	                // now we need to remove `args[index]` since it's inlined in the `format`
-	                args.splice(index, 1);
-	                index--;
-	            }
-	            return match;
-	        });
-	        args = this._formatArgs(args);
-	        this._log.apply(this, args);
-	    };
-
-	    Debug.prototype._log = function _log() {
-	        for (var _len5 = arguments.length, args = Array(_len5), _key5 = 0; _key5 < _len5; _key5++) {
-	            args[_key5] = arguments[_key5];
-	        }
-
-	        return 'object' === (typeof console === 'undefined' ? 'undefined' : _typeof(console)) && console.log && Function.prototype.apply.call(console.log, console, arguments);
-	    };
-
-	    Debug.prototype._coerce = function _coerce(val) {
-	        if (val instanceof Error) return val.stack || val.message;
-	        return val;
-	    };
-
-	    Debug.prototype._formatArgs = function _formatArgs(args) {
-	        args[0] = '[templ:' + this.namespace + '] ' + args[0];
-	        return args;
-	    };
-
-	    return Debug;
-	}();
-
-	Debug.loggers = {};
-	Debug.formatters = {
-	    j: function j(args) {
-	        return JSON.stringify(args);
-	    }
-	};
-	exports.Debug = Debug;
-	function debug(namespace) {
-	    return Debug.create(namespace);
-	}
-	exports.debug = debug;
-
-/***/ },
 /* 8 */
 /***/ function(module, exports, __webpack_require__) {
 
@@ -671,7 +486,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-	var vnode_1 = __webpack_require__(5);
+	var vnode_1 = __webpack_require__(6);
 
 	var FragmentSection = function () {
 	    function FragmentSection(document, start, end) {
@@ -781,7 +596,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-	var vnode_1 = __webpack_require__(5);
+	var vnode_1 = __webpack_require__(6);
 
 	var NodeSection = function () {
 	    function NodeSection(document, node) {
@@ -1193,171 +1008,7 @@ return /******/ (function(modules) { // webpackBootstrap
 /* 14 */
 /***/ function(module, exports) {
 
-	"use strict";
-	var idCounter = 0;
-	function getID() {
-	    return "" + (++idCounter);
-	}
-	function callFunc(fn, args) {
-	    if (args === void 0) { args = []; }
-	    var l = fn.length, i = -1, a1 = args[0], a2 = args[1], a3 = args[2], a4 = args[3];
-	    switch (args.length) {
-	        case 0:
-	            while (++i < l)
-	                fn[i].handler.call(fn[i].ctx);
-	            return;
-	        case 1:
-	            while (++i < l)
-	                fn[i].handler.call(fn[i].ctx, a1);
-	            return;
-	        case 2:
-	            while (++i < l)
-	                fn[i].handler.call(fn[i].ctx, a1, a2);
-	            return;
-	        case 3:
-	            while (++i < l)
-	                fn[i].handler.call(fn[i].ctx, a1, a2, a3);
-	            return;
-	        case 4:
-	            while (++i < l)
-	                fn[i].handler.call(fn[i].ctx, a1, a2, a3, a4);
-	            return;
-	        default:
-	            while (++i < l)
-	                fn[i].handler.apply(fn[i].ctx, args);
-	            return;
-	    }
-	}
-	exports.callFunc = callFunc;
-	function isFunction(a) {
-	    return typeof a === 'function';
-	}
-	exports.isFunction = isFunction;
-	function isEventEmitter(a) {
-	    return a instanceof EventEmitter || (isFunction(a.on) && isFunction(a.off) && isFunction(a.trigger));
-	}
-	exports.isEventEmitter = isEventEmitter;
-	var EventEmitter = (function () {
-	    function EventEmitter() {
-	    }
-	    Object.defineProperty(EventEmitter.prototype, "listeners", {
-	        get: function () {
-	            return this._listeners;
-	        },
-	        enumerable: true,
-	        configurable: true
-	    });
-	    EventEmitter.prototype.on = function (event, fn, ctx, once) {
-	        if (once === void 0) { once = false; }
-	        var events = (this._listeners || (this._listeners = {}))[event] || (this._listeners[event] = []);
-	        events.push({
-	            name: event,
-	            once: once,
-	            handler: fn,
-	            ctx: ctx || this
-	        });
-	        return this;
-	    };
-	    EventEmitter.prototype.once = function (event, fn, ctx) {
-	        return this.on(event, fn, ctx, true);
-	    };
-	    EventEmitter.prototype.off = function (eventName, fn) {
-	        this._listeners = this._listeners || {};
-	        if (eventName == null) {
-	            this._listeners = {};
-	        }
-	        else if (this._listeners[eventName]) {
-	            var events = this._listeners[eventName];
-	            if (fn == null) {
-	                this._listeners[eventName] = [];
-	            }
-	            else {
-	                for (var i = 0; i < events.length; i++) {
-	                    var event_1 = events[i];
-	                    if (events[i].handler == fn) {
-	                        this._listeners[eventName].splice(i, 1);
-	                    }
-	                }
-	            }
-	        }
-	    };
-	    EventEmitter.prototype.trigger = function (eventName) {
-	        var args = [];
-	        for (var _i = 1; _i < arguments.length; _i++) {
-	            args[_i - 1] = arguments[_i];
-	        }
-	        //let events = (this._listeners|| (this._listeners = {}))[eventName]||(this._listeners[eventName]=[])
-	        //.concat(this._listeners['all']||[])
-	        this._listeners = this._listeners || {};
-	        var events = (this._listeners[eventName] || []).concat(this._listeners['all'] || []);
-	        if (EventEmitter.debugCallback)
-	            EventEmitter.debugCallback(this.constructor.name, this.name, eventName, args, events);
-	        var event, a, len = events.length, index;
-	        var calls = [];
-	        for (var i = 0, ii = events.length; i < ii; i++) {
-	            event = events[i];
-	            a = args;
-	            if (event.name == 'all') {
-	                a = [eventName].concat(args);
-	                callFunc([event], a);
-	            }
-	            else {
-	                calls.push(event);
-	            }
-	            if (event.once === true) {
-	                index = this._listeners[event.name].indexOf(event);
-	                this._listeners[event.name].splice(index, 1);
-	            }
-	        }
-	        if (calls.length)
-	            this._executeListener(calls, args);
-	        return this;
-	    };
-	    EventEmitter.prototype._executeListener = function (func, args) {
-	        var executor = callFunc;
-	        if (this.constructor.executeListenerFunction) {
-	            executor = this.constructor.executeListenerFunction;
-	        }
-	        executor(func, args);
-	    };
-	    EventEmitter.prototype.listenTo = function (obj, event, fn, ctx, once) {
-	        if (once === void 0) { once = false; }
-	        var listeningTo, id, meth;
-	        listeningTo = this._listeningTo || (this._listeningTo = {});
-	        id = obj.listenId || (obj.listenId = getID());
-	        listeningTo[id] = obj;
-	        meth = once ? 'once' : 'on';
-	        obj[meth](event, fn, this);
-	        return this;
-	    };
-	    EventEmitter.prototype.listenToOnce = function (obj, event, fn, ctx) {
-	        return this.listenTo(obj, event, fn, ctx, true);
-	    };
-	    EventEmitter.prototype.stopListening = function (obj, event, callback) {
-	        var listeningTo = this._listeningTo;
-	        if (!listeningTo)
-	            return this;
-	        var remove = !event && !callback;
-	        if (!callback && typeof event === 'object')
-	            callback = this;
-	        if (obj)
-	            (listeningTo = {})[obj.listenId] = obj;
-	        for (var id in listeningTo) {
-	            obj = listeningTo[id];
-	            obj.off(event, callback, this);
-	            if (remove || !Object.keys(obj.listeners).length)
-	                delete this._listeningTo[id];
-	        }
-	        return this;
-	    };
-	    EventEmitter.prototype.destroy = function () {
-	        this.stopListening();
-	        this.off();
-	    };
-	    return EventEmitter;
-	}());
-	exports.EventEmitter = EventEmitter;
-
+	module.exports = __WEBPACK_EXTERNAL_MODULE_14__;
 
 /***/ },
 /* 15 */
@@ -1483,7 +1134,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    });
 	};
 	var component_1 = __webpack_require__(17);
-	var view_1 = __webpack_require__(19);
+	var action_1 = __webpack_require__(19);
 	function _each(target, iterate) {
 	    if (!target) return;
 	    if (target.forEach) {
@@ -1544,7 +1195,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	                            self = this;
 	                            parent = this.view;
 
-	                            if (each instanceof view_1.Call) {
+	                            if (each instanceof action_1.Call) {
 	                                each = each.call();
 	                            }
 
@@ -1633,7 +1284,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	        var self = this;
 	        var parent = this.view;
 	        var properties;
-	        if (each instanceof view_1.Call) {
+	        if (each instanceof action_1.Call) {
 	            each = each.call();
 	        }
 	        console.log(each);
@@ -1680,34 +1331,13 @@ return /******/ (function(modules) { // webpackBootstrap
 /* 19 */
 /***/ function(module, exports, __webpack_require__) {
 
-	'use strict';
+	"use strict";
 
 	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
-
-	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-	var utils = __webpack_require__(7);
-	var vnode = __webpack_require__(2);
-	//import {RunLoop} from './runloop';
-	var debug = utils.debug('view');
-	function _set(target, keypath, value) {
-	    var keys = typeof keypath === "string" ? keypath.split(".") : keypath;
-	    var ct = target;
-	    var key;
-	    for (var i = 0, n = keys.length - 1; i < n; i++) {
-	        key = keys[i];
-	        if (!ct[key]) {
-	            ct[key] = {};
-	        }
-	        ct = ct[key];
-	    }
-	    ct[keys[keys.length - 1]] = value;
-	    return value;
-	}
+	var orange_1 = __webpack_require__(1);
 
 	var Reference = function () {
 	    function Reference(view, path, gettable, settable) {
@@ -1730,6 +1360,13 @@ return /******/ (function(modules) { // webpackBootstrap
 	        return this.view.get(this.path) || '';
 	    };
 
+	    _createClass(Reference, [{
+	        key: "__classType",
+	        get: function get() {
+	            return "Reference";
+	        }
+	    }]);
+
 	    return Reference;
 	}();
 
@@ -1742,8 +1379,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	        this.view = view;
 	        this.path = path;
 	        this.value = value;
-	        this.assign = utils.bind(this.assign, this);
-	        this.toString = utils.bind(this.toString, this);
+	        this.assign = orange_1.bind(this.assign, this);
+	        this.toString = orange_1.bind(this.toString, this);
 	    }
 
 	    Assignment.prototype.assign = function assign() {
@@ -1754,6 +1391,13 @@ return /******/ (function(modules) { // webpackBootstrap
 	        var val = this.value.call(this);
 	        return val ? String(val) : '';
 	    };
+
+	    _createClass(Assignment, [{
+	        key: "__classType",
+	        get: function get() {
+	            return "Assignment";
+	        }
+	    }]);
 
 	    return Assignment;
 	}();
@@ -1788,156 +1432,29 @@ return /******/ (function(modules) { // webpackBootstrap
 	        return val ? String(val) : '';
 	    };
 
+	    _createClass(Call, [{
+	        key: "__classType",
+	        get: function get() {
+	            return "Call";
+	        }
+	    }]);
+
 	    return Call;
 	}();
 
 	exports.Call = Call;
-
-	var View = function (_vnode$View) {
-	    _inherits(View, _vnode$View);
-
-	    function View(section, template, context) {
-	        var options = arguments.length <= 3 || arguments[3] === undefined ? {} : arguments[3];
-
-	        _classCallCheck(this, View);
-
-	        var _this = _possibleConstructorReturn(this, _vnode$View.call(this, section, template, context, options));
-
-	        _this.context = context;
-	        _this._callers = {};
-	        _this._getters = {};
-	        if (options.parent) {
-	            _this.parent = options.parent;
-	        }
-	        if (options.delegator) {
-	            _this._delegator = options.delegator;
-	        }
-	        //this._runloop = options.runloop;
-	        return _this;
-	    }
-
-	    View.prototype.getDelegator = function getDelegator() {
-	        if (this._delegator) return this._delegator;
-	        var parent = this.parent;
-	        while (parent != undefined) {
-	            if (parent._delegator) return parent._delegator;
-	            parent = parent.parent;
-	        }
-	        return null;
-	    };
-
-	    View.prototype.addListener = function addListener(elm, eventName, callback) {
-	        var capture = arguments.length <= 3 || arguments[3] === undefined ? false : arguments[3];
-
-	        var delegator = this.getDelegator();
-	        if (delegator) {
-	            return delegator.addListener(elm, eventName, callback, capture);
-	        } else if (typeof callback === 'function') {
-	            return _vnode$View.prototype.addListener.call(this, elm, eventName, callback, capture);
-	        }
-	    };
-
-	    View.prototype.removeListener = function removeListener(elm, eventName, callback) {
-	        var capture = arguments.length <= 3 || arguments[3] === undefined ? false : arguments[3];
-
-	        var delegator = this.getDelegator();
-	        if (delegator) {
-	            delegator.removeListener(elm, eventName, callback, capture);
-	        } else if (typeof callback === 'function') {
-	            _vnode$View.prototype.removeListener.call(this, elm, eventName, callback, capture);
-	        }
-	    };
-
-	    View.prototype.get = function get(keypath) {
-	        if (!this.context) return void 0;
-	        var pt = typeof keypath !== "string" ? keypath.join(".") : keypath;
-	        var v;
-	        try {
-	            var getter;
-	            if (!(getter = this._getters[pt])) {
-	                getter = this._getters[pt] = new Function("return this." + pt);
-	            }
-	            v = getter.call(this.context);
-	        } catch (e) {
-	            v = void 0;
-	        }
-	        v = v != void 0 ? v : this.parent ? this.parent.get(keypath) : void 0;
-	        debug('get value "%s": %s', keypath, v);
-	        return v;
-	    };
-
-	    View.prototype.set = function set(path, value) {
-	        debug('set value %s on context %j', value, this.context);
-	        if (!this.context) return void 0;
-	        if (typeof path === "string") path = path.split(".");
-	        var ret = _set(this.context, path, value);
-	        this.updateLater();
-	    };
-
-	    View.prototype.render = function render() {
-	        var _this2 = this;
-
-	        //;
-	        //var section = super.render()
-	        //this.transitions.enter();
-	        return _vnode$View.prototype.render.call(this).then(function (section) {
-	            return _this2.update();
-	        }).then(function () {
-	            return _this2.section.render();
-	        });
-	    };
-
-	    View.prototype.updateLater = function updateLater() {
-	        this._runloop.deferOnce(this);
-	    };
-
-	    View.prototype.ref = function ref(path, gettable, settable) {
-	        debug('reference %s, gettable: %o, settabble: %o', path, gettable, settable);
-	        return new Reference(this, path, gettable, settable);
-	    };
-
-	    View.prototype.assign = function assign(path, value) {
-	        debug('assignment %s %s', path, value);
-	        return new Assignment(this, path, value);
-	    };
-
-	    View.prototype.call = function call(keypath, params) {
-	        var caller;
-	        var v;
-	        debug('call keypath "%s", args: "%o"', keypath, params);
-	        if (typeof keypath !== "string") keypath = keypath.join(".");
-	        if (!(caller = this._callers[keypath])) {
-	            var ctxPath = ["this"].concat(keypath.split("."));
-	            ctxPath.pop();
-	            caller = this._callers[keypath] = new Function("params", "return this." + keypath + ".apply(" + ctxPath.join(".") + ", params);");
-	        }
-	        /*try {
-	            v = caller.call(this.context, params);
-	        } catch (e) {
-	            console.error('could not call', e)
-	        }
-	         return v != void 0 ? v : this.parent ? this.parent.call(keypath, params) : void 0;*/
-	        return new Call(this, keypath, params);
-	    };
-
-	    _createClass(View, [{
-	        key: 'root',
-	        get: function get() {
-	            if (this.parent == null) return this;
-	            var root = this,
-	                tmp = root;
-	            while (tmp) {
-	                tmp = tmp.parent;
-	                if (tmp) root = tmp;
-	            }
-	            return root;
-	        }
-	    }]);
-
-	    return View;
-	}(vnode.View);
-
-	exports.View = View;
+	function isCall(a) {
+	    return a && (a instanceof Call || a.__classType === 'Call');
+	}
+	exports.isCall = isCall;
+	function isReference(a) {
+	    return a && (a instanceof Reference || a.__classType === 'Reference');
+	}
+	exports.isReference = isReference;
+	function isAssignment(a) {
+	    return a && (a instanceof Assignment || a.__classType === 'Assignment');
+	}
+	exports.isAssignment = isAssignment;
 
 /***/ },
 /* 20 */
@@ -1952,8 +1469,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	}
 	var value_1 = __webpack_require__(21);
 	var event_1 = __webpack_require__(23);
-	var style_1 = __webpack_require__(24);
-	var focus_1 = __webpack_require__(25);
+	var style_1 = __webpack_require__(27);
+	var focus_1 = __webpack_require__(28);
 	__export(__webpack_require__(22));
 	exports.value = value_1.ValueAttribute;
 	exports.onclick = event_1.ClickAttribute;
@@ -1980,8 +1497,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
 	var base_1 = __webpack_require__(22);
-	var view_1 = __webpack_require__(19);
-	var utils = __webpack_require__(7);
+	var action_1 = __webpack_require__(19);
+	var orange_1 = __webpack_require__(1);
 	var _events = ['change', 'keyup', 'input'];
 
 	var ValueAttribute = function (_base_1$BaseAttribute) {
@@ -1994,7 +1511,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    }
 
 	    ValueAttribute.prototype.initialize = function initialize() {
-	        this._onInput = utils.bind(this._onInput, this, null);
+	        this._onInput = orange_1.bind(this._onInput, this, null);
 	        for (var _iterator = _events, _isArray = Array.isArray(_iterator), _i = 0, _iterator = _isArray ? _iterator : _iterator[Symbol.iterator]();;) {
 	            var _ref;
 
@@ -2016,7 +1533,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    ValueAttribute.prototype.update = function update() {
 	        var model = this.model = this.value;
 	        if (!model) return Promise.resolve();
-	        if (!model || !(model instanceof view_1.Reference)) {
+	        if (!model || !action_1.isReference(model)) {
 	            return Promise.reject(new Error("input value must be a reference. Make sure you have <~> defined"));
 	        }
 	        if (model.gettable) {
@@ -2135,9 +1652,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
 	var base_1 = __webpack_require__(22);
-	var view_1 = __webpack_require__(19);
-	var utils = __webpack_require__(7);
-	var debug = utils.debug('attributes:event');
+	var action_1 = __webpack_require__(19);
+	var orange_1 = __webpack_require__(1);
+	var Debug = __webpack_require__(24);
+	var debug = Debug('attributes:event');
 
 	var EventAttribute = function (_base_1$BaseAttribute) {
 	    _inherits(EventAttribute, _base_1$BaseAttribute);
@@ -2149,7 +1667,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    }
 
 	    EventAttribute.prototype.initialize = function initialize() {
-	        this._onEvent = utils.bind(this._onEvent, this);
+	        this._onEvent = orange_1.bind(this._onEvent, this);
 	        //if (!this.event) this.event = this.key.match(/on(.+)/)[1].toLowerCase();
 	        //debug('added event listener %s: %o', this.event, this.value)
 	        //this.view.addListener(<Element>this.ref, this.event, this._onEvent)
@@ -2158,16 +1676,16 @@ return /******/ (function(modules) { // webpackBootstrap
 	    EventAttribute.prototype._onEvent = function _onEvent(e) {
 	        var self = this;
 	        var fn = void 0;
-	        if (this.value instanceof view_1.Assignment) {
+	        if (action_1.isAssignment(this.value)) {
 	            fn = this.value.assign;
 	        } else {
 	            fn = this.value;
 	        }
-	        if (typeof fn !== 'function' && !(fn instanceof view_1.Call)) {
+	        if (typeof fn !== 'function' && !action_1.isCall(fn)) {
 	            throw new Error('[event] value is not a function or a Callable');
 	        }
 	        debug('fired event: %s', this._event);
-	        if (fn instanceof view_1.Call) {
+	        if (action_1.isCall(fn)) {
 	            fn.call();
 	        } else if (typeof fn === 'function') {
 	            return fn(e);
@@ -2380,6 +1898,514 @@ return /******/ (function(modules) { // webpackBootstrap
 /* 24 */
 /***/ function(module, exports, __webpack_require__) {
 
+	
+	/**
+	 * This is the web browser implementation of `debug()`.
+	 *
+	 * Expose `debug()` as the module.
+	 */
+
+	exports = module.exports = __webpack_require__(25);
+	exports.log = log;
+	exports.formatArgs = formatArgs;
+	exports.save = save;
+	exports.load = load;
+	exports.useColors = useColors;
+	exports.storage = 'undefined' != typeof chrome
+	               && 'undefined' != typeof chrome.storage
+	                  ? chrome.storage.local
+	                  : localstorage();
+
+	/**
+	 * Colors.
+	 */
+
+	exports.colors = [
+	  'lightseagreen',
+	  'forestgreen',
+	  'goldenrod',
+	  'dodgerblue',
+	  'darkorchid',
+	  'crimson'
+	];
+
+	/**
+	 * Currently only WebKit-based Web Inspectors, Firefox >= v31,
+	 * and the Firebug extension (any Firefox version) are known
+	 * to support "%c" CSS customizations.
+	 *
+	 * TODO: add a `localStorage` variable to explicitly enable/disable colors
+	 */
+
+	function useColors() {
+	  // is webkit? http://stackoverflow.com/a/16459606/376773
+	  return ('WebkitAppearance' in document.documentElement.style) ||
+	    // is firebug? http://stackoverflow.com/a/398120/376773
+	    (window.console && (console.firebug || (console.exception && console.table))) ||
+	    // is firefox >= v31?
+	    // https://developer.mozilla.org/en-US/docs/Tools/Web_Console#Styling_messages
+	    (navigator.userAgent.toLowerCase().match(/firefox\/(\d+)/) && parseInt(RegExp.$1, 10) >= 31);
+	}
+
+	/**
+	 * Map %j to `JSON.stringify()`, since no Web Inspectors do that by default.
+	 */
+
+	exports.formatters.j = function(v) {
+	  return JSON.stringify(v);
+	};
+
+
+	/**
+	 * Colorize log arguments if enabled.
+	 *
+	 * @api public
+	 */
+
+	function formatArgs() {
+	  var args = arguments;
+	  var useColors = this.useColors;
+
+	  args[0] = (useColors ? '%c' : '')
+	    + this.namespace
+	    + (useColors ? ' %c' : ' ')
+	    + args[0]
+	    + (useColors ? '%c ' : ' ')
+	    + '+' + exports.humanize(this.diff);
+
+	  if (!useColors) return args;
+
+	  var c = 'color: ' + this.color;
+	  args = [args[0], c, 'color: inherit'].concat(Array.prototype.slice.call(args, 1));
+
+	  // the final "%c" is somewhat tricky, because there could be other
+	  // arguments passed either before or after the %c, so we need to
+	  // figure out the correct index to insert the CSS into
+	  var index = 0;
+	  var lastC = 0;
+	  args[0].replace(/%[a-z%]/g, function(match) {
+	    if ('%%' === match) return;
+	    index++;
+	    if ('%c' === match) {
+	      // we only are interested in the *last* %c
+	      // (the user may have provided their own)
+	      lastC = index;
+	    }
+	  });
+
+	  args.splice(lastC, 0, c);
+	  return args;
+	}
+
+	/**
+	 * Invokes `console.log()` when available.
+	 * No-op when `console.log` is not a "function".
+	 *
+	 * @api public
+	 */
+
+	function log() {
+	  // this hackery is required for IE8/9, where
+	  // the `console.log` function doesn't have 'apply'
+	  return 'object' === typeof console
+	    && console.log
+	    && Function.prototype.apply.call(console.log, console, arguments);
+	}
+
+	/**
+	 * Save `namespaces`.
+	 *
+	 * @param {String} namespaces
+	 * @api private
+	 */
+
+	function save(namespaces) {
+	  try {
+	    if (null == namespaces) {
+	      exports.storage.removeItem('debug');
+	    } else {
+	      exports.storage.debug = namespaces;
+	    }
+	  } catch(e) {}
+	}
+
+	/**
+	 * Load `namespaces`.
+	 *
+	 * @return {String} returns the previously persisted debug modes
+	 * @api private
+	 */
+
+	function load() {
+	  var r;
+	  try {
+	    r = exports.storage.debug;
+	  } catch(e) {}
+	  return r;
+	}
+
+	/**
+	 * Enable namespaces listed in `localStorage.debug` initially.
+	 */
+
+	exports.enable(load());
+
+	/**
+	 * Localstorage attempts to return the localstorage.
+	 *
+	 * This is necessary because safari throws
+	 * when a user disables cookies/localstorage
+	 * and you attempt to access it.
+	 *
+	 * @return {LocalStorage}
+	 * @api private
+	 */
+
+	function localstorage(){
+	  try {
+	    return window.localStorage;
+	  } catch (e) {}
+	}
+
+
+/***/ },
+/* 25 */
+/***/ function(module, exports, __webpack_require__) {
+
+	
+	/**
+	 * This is the common logic for both the Node.js and web browser
+	 * implementations of `debug()`.
+	 *
+	 * Expose `debug()` as the module.
+	 */
+
+	exports = module.exports = debug;
+	exports.coerce = coerce;
+	exports.disable = disable;
+	exports.enable = enable;
+	exports.enabled = enabled;
+	exports.humanize = __webpack_require__(26);
+
+	/**
+	 * The currently active debug mode names, and names to skip.
+	 */
+
+	exports.names = [];
+	exports.skips = [];
+
+	/**
+	 * Map of special "%n" handling functions, for the debug "format" argument.
+	 *
+	 * Valid key names are a single, lowercased letter, i.e. "n".
+	 */
+
+	exports.formatters = {};
+
+	/**
+	 * Previously assigned color.
+	 */
+
+	var prevColor = 0;
+
+	/**
+	 * Previous log timestamp.
+	 */
+
+	var prevTime;
+
+	/**
+	 * Select a color.
+	 *
+	 * @return {Number}
+	 * @api private
+	 */
+
+	function selectColor() {
+	  return exports.colors[prevColor++ % exports.colors.length];
+	}
+
+	/**
+	 * Create a debugger with the given `namespace`.
+	 *
+	 * @param {String} namespace
+	 * @return {Function}
+	 * @api public
+	 */
+
+	function debug(namespace) {
+
+	  // define the `disabled` version
+	  function disabled() {
+	  }
+	  disabled.enabled = false;
+
+	  // define the `enabled` version
+	  function enabled() {
+
+	    var self = enabled;
+
+	    // set `diff` timestamp
+	    var curr = +new Date();
+	    var ms = curr - (prevTime || curr);
+	    self.diff = ms;
+	    self.prev = prevTime;
+	    self.curr = curr;
+	    prevTime = curr;
+
+	    // add the `color` if not set
+	    if (null == self.useColors) self.useColors = exports.useColors();
+	    if (null == self.color && self.useColors) self.color = selectColor();
+
+	    var args = Array.prototype.slice.call(arguments);
+
+	    args[0] = exports.coerce(args[0]);
+
+	    if ('string' !== typeof args[0]) {
+	      // anything else let's inspect with %o
+	      args = ['%o'].concat(args);
+	    }
+
+	    // apply any `formatters` transformations
+	    var index = 0;
+	    args[0] = args[0].replace(/%([a-z%])/g, function(match, format) {
+	      // if we encounter an escaped % then don't increase the array index
+	      if (match === '%%') return match;
+	      index++;
+	      var formatter = exports.formatters[format];
+	      if ('function' === typeof formatter) {
+	        var val = args[index];
+	        match = formatter.call(self, val);
+
+	        // now we need to remove `args[index]` since it's inlined in the `format`
+	        args.splice(index, 1);
+	        index--;
+	      }
+	      return match;
+	    });
+
+	    if ('function' === typeof exports.formatArgs) {
+	      args = exports.formatArgs.apply(self, args);
+	    }
+	    var logFn = enabled.log || exports.log || console.log.bind(console);
+	    logFn.apply(self, args);
+	  }
+	  enabled.enabled = true;
+
+	  var fn = exports.enabled(namespace) ? enabled : disabled;
+
+	  fn.namespace = namespace;
+
+	  return fn;
+	}
+
+	/**
+	 * Enables a debug mode by namespaces. This can include modes
+	 * separated by a colon and wildcards.
+	 *
+	 * @param {String} namespaces
+	 * @api public
+	 */
+
+	function enable(namespaces) {
+	  exports.save(namespaces);
+
+	  var split = (namespaces || '').split(/[\s,]+/);
+	  var len = split.length;
+
+	  for (var i = 0; i < len; i++) {
+	    if (!split[i]) continue; // ignore empty strings
+	    namespaces = split[i].replace(/\*/g, '.*?');
+	    if (namespaces[0] === '-') {
+	      exports.skips.push(new RegExp('^' + namespaces.substr(1) + '$'));
+	    } else {
+	      exports.names.push(new RegExp('^' + namespaces + '$'));
+	    }
+	  }
+	}
+
+	/**
+	 * Disable debug output.
+	 *
+	 * @api public
+	 */
+
+	function disable() {
+	  exports.enable('');
+	}
+
+	/**
+	 * Returns true if the given mode name is enabled, false otherwise.
+	 *
+	 * @param {String} name
+	 * @return {Boolean}
+	 * @api public
+	 */
+
+	function enabled(name) {
+	  var i, len;
+	  for (i = 0, len = exports.skips.length; i < len; i++) {
+	    if (exports.skips[i].test(name)) {
+	      return false;
+	    }
+	  }
+	  for (i = 0, len = exports.names.length; i < len; i++) {
+	    if (exports.names[i].test(name)) {
+	      return true;
+	    }
+	  }
+	  return false;
+	}
+
+	/**
+	 * Coerce `val`.
+	 *
+	 * @param {Mixed} val
+	 * @return {Mixed}
+	 * @api private
+	 */
+
+	function coerce(val) {
+	  if (val instanceof Error) return val.stack || val.message;
+	  return val;
+	}
+
+
+/***/ },
+/* 26 */
+/***/ function(module, exports) {
+
+	/**
+	 * Helpers.
+	 */
+
+	var s = 1000;
+	var m = s * 60;
+	var h = m * 60;
+	var d = h * 24;
+	var y = d * 365.25;
+
+	/**
+	 * Parse or format the given `val`.
+	 *
+	 * Options:
+	 *
+	 *  - `long` verbose formatting [false]
+	 *
+	 * @param {String|Number} val
+	 * @param {Object} options
+	 * @return {String|Number}
+	 * @api public
+	 */
+
+	module.exports = function(val, options){
+	  options = options || {};
+	  if ('string' == typeof val) return parse(val);
+	  return options.long
+	    ? long(val)
+	    : short(val);
+	};
+
+	/**
+	 * Parse the given `str` and return milliseconds.
+	 *
+	 * @param {String} str
+	 * @return {Number}
+	 * @api private
+	 */
+
+	function parse(str) {
+	  str = '' + str;
+	  if (str.length > 10000) return;
+	  var match = /^((?:\d+)?\.?\d+) *(milliseconds?|msecs?|ms|seconds?|secs?|s|minutes?|mins?|m|hours?|hrs?|h|days?|d|years?|yrs?|y)?$/i.exec(str);
+	  if (!match) return;
+	  var n = parseFloat(match[1]);
+	  var type = (match[2] || 'ms').toLowerCase();
+	  switch (type) {
+	    case 'years':
+	    case 'year':
+	    case 'yrs':
+	    case 'yr':
+	    case 'y':
+	      return n * y;
+	    case 'days':
+	    case 'day':
+	    case 'd':
+	      return n * d;
+	    case 'hours':
+	    case 'hour':
+	    case 'hrs':
+	    case 'hr':
+	    case 'h':
+	      return n * h;
+	    case 'minutes':
+	    case 'minute':
+	    case 'mins':
+	    case 'min':
+	    case 'm':
+	      return n * m;
+	    case 'seconds':
+	    case 'second':
+	    case 'secs':
+	    case 'sec':
+	    case 's':
+	      return n * s;
+	    case 'milliseconds':
+	    case 'millisecond':
+	    case 'msecs':
+	    case 'msec':
+	    case 'ms':
+	      return n;
+	  }
+	}
+
+	/**
+	 * Short format for `ms`.
+	 *
+	 * @param {Number} ms
+	 * @return {String}
+	 * @api private
+	 */
+
+	function short(ms) {
+	  if (ms >= d) return Math.round(ms / d) + 'd';
+	  if (ms >= h) return Math.round(ms / h) + 'h';
+	  if (ms >= m) return Math.round(ms / m) + 'm';
+	  if (ms >= s) return Math.round(ms / s) + 's';
+	  return ms + 'ms';
+	}
+
+	/**
+	 * Long format for `ms`.
+	 *
+	 * @param {Number} ms
+	 * @return {String}
+	 * @api private
+	 */
+
+	function long(ms) {
+	  return plural(ms, d, 'day')
+	    || plural(ms, h, 'hour')
+	    || plural(ms, m, 'minute')
+	    || plural(ms, s, 'second')
+	    || ms + ' ms';
+	}
+
+	/**
+	 * Pluralization helper.
+	 */
+
+	function plural(ms, n, name) {
+	  if (ms < n) return;
+	  if (ms < n * 1.5) return Math.floor(ms / n) + ' ' + name;
+	  return Math.ceil(ms / n) + ' ' + name + 's';
+	}
+
+
+/***/ },
+/* 27 */
+/***/ function(module, exports, __webpack_require__) {
+
 	"use strict";
 
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -2428,7 +2454,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	exports.StyleAttribute = StyleAttribute;
 
 /***/ },
-/* 25 */
+/* 28 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -2472,7 +2498,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	exports.FocusAttribute = FocusAttribute;
 
 /***/ },
-/* 26 */
+/* 29 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -2502,7 +2528,349 @@ return /******/ (function(modules) { // webpackBootstrap
 	exports.round = Math.round;
 
 /***/ },
-/* 27 */
+/* 30 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	var orange_1 = __webpack_require__(1);
+	/*export function extend(obj: any, ...args: any[]): any {
+	  let a, k;
+	  for (a of args) {
+	    if (a !== Object(a)) continue;
+	    for (k in a) obj[k] = a[k];
+
+	  }
+	  return obj
+	}
+
+	export function slice(obj, ...args): any {
+	  return Array.prototype.slice.apply(obj, args)
+	}*/
+	function extendClass(parent, protoProps, staticProps) {
+	  var child;
+	  // The constructor function for the new subclass is either defined by you
+	  // (the "constructor" property in your `extend` definition), or defaulted
+	  // by us to simply call the parent constructor.
+	  if (protoProps && Object.prototype.hasOwnProperty.call(protoProps, 'constructor')) {
+	    child = protoProps.constructor;
+	  } else {
+	    child = function child() {
+	      return parent.apply(this, arguments);
+	    };
+	  }
+	  // Add static properties to the constructor function, if supplied.
+	  orange_1.extend(child, parent, staticProps);
+	  // Set the prototype chain to inherit from `parent`, without calling
+	  // `parent` constructor function.
+	  var Surrogate = function Surrogate() {
+	    this.constructor = child;
+	  };
+	  Surrogate.prototype = parent.prototype;
+	  child.prototype = new Surrogate();
+	  // Add prototype properties (instance properties) to the subclass,
+	  // if supplied.
+	  if (protoProps) orange_1.extend(child.prototype, protoProps);
+	  // Set a convenience property in case the parent's prototype is needed
+	  // later.
+	  child.__super__ = parent.prototype;
+	  return child;
+	}
+	exports.extendClass = extendClass;
+	;
+	/*export function bind<T extends Function>(method: T, context: any, ...args: any[]): T {
+	  if (typeof method !== 'function') throw new Error('method not at function')
+
+	  if (nativeBind != null) return nativeBind.call(method, context, ...args)
+
+	  args = args || []
+
+	  let fnoop = function() { }
+
+	  let fBound = function() {
+	    let ctx = this instanceof fnoop ? this : context
+	    return method.apply(ctx, args.concat(slice(arguments)))
+	  }
+
+	  fnoop.prototype = this.prototype
+	  fBound.prototype = new fnoop()
+
+	  return <any>fBound
+	}*/
+	/*export class Debug {
+	  static enable(enabled: boolean, namespace?: string) {
+	    for (let k in this.loggers) {
+	      if (namespace && k === namespace) {
+	        this.loggers[k].enabled = enabled
+	      } else if (!namespace) {
+	        this.loggers[k].enabled = enabled
+	      }
+	    }
+	  }
+	  static loggers: { [key: string]: Debug } = {}
+	  static formatters: { [key: string]: (args: any) => string } = {
+	    j: function(args: any) {
+	      return JSON.stringify(args);
+	    }
+	  }
+
+	  static create(namespace: string): (...args: any[]) => void {
+	    let logger
+	    if (this.loggers[namespace]) {
+	      logger = this.loggers[namespace]; //.debug
+	    } else {
+	      logger = new Debug(namespace);
+	      this.loggers[namespace] = logger
+	    }
+
+	    return bind(logger.debug, logger)
+	  }
+
+	  enabled: boolean = false
+
+	  namespace: string
+	  constructor(namespace: string) {
+	    this.namespace = namespace
+	  }
+
+	  debug(...args: any[]) {
+	    if (!this.enabled) return;
+
+
+	    args[0] = this._coerce(args[0]);
+
+	    if ('string' !== typeof args[0]) {
+	      // anything else let's inspect with %o
+	      args = ['%o'].concat(args);
+	    }
+
+	    // apply any `formatters` transformations
+	    var index = 0;
+	    args[0] = args[0].replace(/%([a-z%])/g, function(match, format) {
+	      // if we encounter an escaped % then don't increase the array index
+	      if (match === '%%') return match;
+	      index++;
+	      var formatter = Debug.formatters[format];
+	      if ('function' === typeof formatter) {
+	        var val = args[index];
+	        match = formatter.call(self, val);
+
+	        // now we need to remove `args[index]` since it's inlined in the `format`
+	        args.splice(index, 1);
+	        index--;
+	      }
+	      return match;
+	    });
+
+	    args = this._formatArgs(args);
+
+	    this._log(...args)
+
+	  }
+
+	  private _log(...args: any[]) {
+	    return 'object' === typeof console
+	      && console.log
+	      && Function.prototype.apply.call(console.log, console, arguments);
+	  }
+
+	  private _coerce(val) {
+	    if (val instanceof Error) return val.stack || val.message;
+	    return val;
+	  }
+
+	  private _formatArgs(args): any[] {
+	    args[0] = '[templ:' + this.namespace + '] ' + args[0]
+	    return args;
+	  }
+	}
+
+	export function debug(namespace: string): (...args: any[]) => void {
+	  return Debug.create(namespace)
+	}*/
+
+/***/ },
+/* 31 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+	var vnode = __webpack_require__(3);
+	var action_1 = __webpack_require__(19);
+	//import {RunLoop} from './runloop';
+	var Debug = __webpack_require__(24);
+	var debug = Debug('templ:view');
+	function _set(target, keypath, value) {
+	    var keys = typeof keypath === "string" ? keypath.split(".") : keypath;
+	    var ct = target;
+	    var key;
+	    for (var i = 0, n = keys.length - 1; i < n; i++) {
+	        key = keys[i];
+	        if (!ct[key]) {
+	            ct[key] = {};
+	        }
+	        ct = ct[key];
+	    }
+	    ct[keys[keys.length - 1]] = value;
+	    return value;
+	}
+
+	var View = function (_vnode$View) {
+	    _inherits(View, _vnode$View);
+
+	    function View(section, template, context) {
+	        var options = arguments.length <= 3 || arguments[3] === undefined ? {} : arguments[3];
+
+	        _classCallCheck(this, View);
+
+	        var _this = _possibleConstructorReturn(this, _vnode$View.call(this, section, template, context, options));
+
+	        _this.context = context;
+	        _this._callers = {};
+	        _this._getters = {};
+	        if (options.parent) {
+	            _this.parent = options.parent;
+	        }
+	        if (options.delegator) {
+	            _this._delegator = options.delegator;
+	        }
+	        //this._runloop = options.runloop;
+	        return _this;
+	    }
+
+	    View.prototype.getDelegator = function getDelegator() {
+	        if (this._delegator) return this._delegator;
+	        var parent = this.parent;
+	        while (parent != undefined) {
+	            if (parent._delegator) return parent._delegator;
+	            parent = parent.parent;
+	        }
+	        return null;
+	    };
+
+	    View.prototype.addListener = function addListener(elm, eventName, callback) {
+	        var capture = arguments.length <= 3 || arguments[3] === undefined ? false : arguments[3];
+
+	        var delegator = this.getDelegator();
+	        if (delegator) {
+	            return delegator.addListener(elm, eventName, callback, capture);
+	        } else if (typeof callback === 'function') {
+	            return _vnode$View.prototype.addListener.call(this, elm, eventName, callback, capture);
+	        }
+	    };
+
+	    View.prototype.removeListener = function removeListener(elm, eventName, callback) {
+	        var capture = arguments.length <= 3 || arguments[3] === undefined ? false : arguments[3];
+
+	        var delegator = this.getDelegator();
+	        if (delegator) {
+	            delegator.removeListener(elm, eventName, callback, capture);
+	        } else if (typeof callback === 'function') {
+	            _vnode$View.prototype.removeListener.call(this, elm, eventName, callback, capture);
+	        }
+	    };
+
+	    View.prototype.get = function get(keypath) {
+	        if (!this.context) return void 0;
+	        var pt = typeof keypath !== "string" ? keypath.join(".") : keypath;
+	        var v;
+	        try {
+	            var getter;
+	            if (!(getter = this._getters[pt])) {
+	                getter = this._getters[pt] = new Function("return this." + pt);
+	            }
+	            v = getter.call(this.context);
+	        } catch (e) {
+	            v = void 0;
+	        }
+	        v = v != void 0 ? v : this.parent ? this.parent.get(keypath) : void 0;
+	        debug('get value "%s": %s', keypath, v);
+	        return v;
+	    };
+
+	    View.prototype.set = function set(path, value) {
+	        debug('set value %s on context %j', value, this.context);
+	        if (!this.context) return void 0;
+	        if (typeof path === "string") path = path.split(".");
+	        var ret = _set(this.context, path, value);
+	        this.updateLater();
+	    };
+
+	    View.prototype.render = function render() {
+	        var _this2 = this;
+
+	        //;
+	        //var section = super.render()
+	        //this.transitions.enter();
+	        return _vnode$View.prototype.render.call(this).then(function (section) {
+	            return _this2.update();
+	        }).then(function () {
+	            return _this2.section.render();
+	        });
+	    };
+
+	    View.prototype.updateLater = function updateLater() {
+	        this._runloop.deferOnce(this);
+	    };
+
+	    View.prototype.ref = function ref(path, gettable, settable) {
+	        debug('reference %s, gettable: %o, settabble: %o', path, gettable, settable);
+	        return new action_1.Reference(this, path, gettable, settable);
+	    };
+
+	    View.prototype.assign = function assign(path, value) {
+	        debug('assignment %s %s', path, value);
+	        return new action_1.Assignment(this, path, value);
+	    };
+
+	    View.prototype.call = function call(keypath, params) {
+	        var caller;
+	        var v;
+	        debug('call keypath "%s", args: "%o"', keypath, params);
+	        if (typeof keypath !== "string") keypath = keypath.join(".");
+	        if (!(caller = this._callers[keypath])) {
+	            var ctxPath = ["this"].concat(keypath.split("."));
+	            ctxPath.pop();
+	            caller = this._callers[keypath] = new Function("params", "return this." + keypath + ".apply(" + ctxPath.join(".") + ", params);");
+	        }
+	        /*try {
+	            v = caller.call(this.context, params);
+	        } catch (e) {
+	            console.error('could not call', e)
+	        }
+	         return v != void 0 ? v : this.parent ? this.parent.call(keypath, params) : void 0;*/
+	        return new action_1.Call(this, keypath, params);
+	    };
+
+	    _createClass(View, [{
+	        key: 'root',
+	        get: function get() {
+	            if (this.parent == null) return this;
+	            var root = this,
+	                tmp = root;
+	            while (tmp) {
+	                tmp = tmp.parent;
+	                if (tmp) root = tmp;
+	            }
+	            return root;
+	        }
+	    }]);
+
+	    return View;
+	}(vnode.View);
+
+	exports.View = View;
+
+/***/ },
+/* 32 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -2511,7 +2879,8 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-	var parser_1 = __webpack_require__(28);
+	var parser_1 = __webpack_require__(33);
+	var orange_1 = __webpack_require__(1);
 	function compile(src, options) {
 	    var str = transpile(src);
 	    return new Function("return " + str)();
@@ -2532,10 +2901,11 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	        for (var k in this) {
 	            if (k.charAt(0) === "_") {
-	                this[k] = this[k].bind(this);
+	                //this[k] = this[k].bind(this);
+	                this[k] = orange_1.bind(this[k], this);
 	            }
 	        }
-	        this.transpile = this.transpile.bind(this);
+	        this.transpile = orange_1.bind(this.transpile, this);
 	    }
 	    /**
 	     */
@@ -2845,7 +3215,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    Transpiler.prototype.__traverse = function __traverse(expr, iterator) {
 	        iterator(expr);
 	        expr.forEach(function (v) {
-	            if (v && (typeof v === "undefined" ? "undefined" : _typeof(v)) === "object") {
+	            if (v && (typeof v === 'undefined' ? 'undefined' : _typeof(v)) === "object") {
 	                this.__traverse(v, iterator);
 	            }
 	        }.bind(this));
@@ -2867,7 +3237,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	 */
 
 /***/ },
-/* 28 */
+/* 33 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -7010,7 +7380,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	}();
 
 /***/ },
-/* 29 */
+/* 34 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -7041,7 +7411,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	        step((generator = generator.apply(thisArg, _arguments)).next());
 	    });
 	};
-	var utils = __webpack_require__(7);
+	var utils = __webpack_require__(30);
 
 	var Binding = function () {
 	    function Binding(ref, view) {
@@ -7144,7 +7514,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	exports.binding = binding;
 
 /***/ },
-/* 30 */
+/* 35 */
 /***/ function(module, exports) {
 
 	"use strict";

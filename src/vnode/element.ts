@@ -2,8 +2,7 @@
 import {VNode, NodeType, AttributeMap, VNodeOptions,
   Renderer, ComponentConstructor, Marker, Section, DynamicAttributeMap,
   IView} from './vnode';
-import * as utils from '../utils';
-
+import {extend} from 'orange';
 import {FragmentSection} from './fragmentsection';
 import {NodeSection, NodeSectionMarker} from './nodesection';
 import {ElementCreator} from '../transpiler';
@@ -41,7 +40,7 @@ export class Element implements VNode {
     if (typeof key === 'string') {
       this.attributes[<string>key] = value;
     } else {
-      utils.extend(this.attributes, key);
+      extend(this.attributes, key);
     }
   }
 

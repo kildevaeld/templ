@@ -5,6 +5,8 @@
 
 	<script src "../node_modules/underscore/underscore.js"></script>
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/babel-polyfill/6.13.0/polyfill.js"></script>
+	<script src="../node_modules/eventsjs/dist/eventsjs.js"></script>
+	<script src="../node_modules/orange/dist/orange.js"></script>
 	<script src="../dist/templ.js"></script>
 
 </head>
@@ -32,7 +34,7 @@
 
 	<script>
 		'use strict';
-		templ.debugging(false)
+		
 		var range = function(start, stop, step) {
 			if (stop == null) {
 				stop = start || 0;

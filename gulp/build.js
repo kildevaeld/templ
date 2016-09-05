@@ -24,7 +24,7 @@ gulp.task('addfiles', (done) => {
 
       return file.replace(process.cwd() +'/', '');
     });
-
+    tsconfig.files.push('typings/index.d.ts');
     jetpack.write('./tsconfig.json', tsconfig);
     gutil.log('Added ' + tsconfig.files.length + ' files')
     done();
@@ -33,7 +33,6 @@ gulp.task('addfiles', (done) => {
 });
 
 const project = tsc.createProject('./tsconfig.json', {
-  typescript: require('typescript'),
   declarationFiles: true,
   preserveConstEnums: false
 });
@@ -46,7 +45,6 @@ gulp.task('build', ['parser'], () => {
   let js = result.js
   .pipe(babel({
     compact: false,
-    "plugins": ["transform-decorators"],
     presets: ["es2015-loose", 'stage-0'],
   }))
   .pipe(gulp.dest('./lib'));

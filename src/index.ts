@@ -1,7 +1,7 @@
 'use strict';
 declare var global:any
 declare var require:any
-
+import {extend} from 'orange';
 
 import {IRepository, Repository} from './repository';
 import * as vnode from './vnode/index';
@@ -45,9 +45,7 @@ export function modifier(name: string, func: (value: any) => any) {
 		modifiers[name] = func;
 }
 
-export function debugging(enabled: boolean) {
-		utils.Debug.enable(enabled)
-}
+
 
 export function compile(str: string, options?: TemplateOptions): vnode.Template {
 		let vn = vnode,
@@ -55,7 +53,7 @@ export function compile(str: string, options?: TemplateOptions): vnode.Template 
 
 		let n = fn(vn.fragment, vn.element, vn.text, vn.comment, vn.dynamic, binding);
 
-		return vn.template(n, utils.extend({
+		return vn.template(n, extend({
 			document: document,
 			viewClass: View,
 			attributes: new Repository(<any>attributes),
